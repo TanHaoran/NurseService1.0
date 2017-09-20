@@ -1,0 +1,217 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="aers_tbl_events_zybl"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="aers_tbl_events_zybl" type="Aersysm.Domain.aers_tbl_events_zybl,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="aers_tbl_events_zybl">
+            <result property="EveZyblId" column="EveZyblId" dbType="String"/>
+            <result property="EveresId" column="EveresId" dbType="String"/>
+            <result property="HospId" column="HospId" dbType="String"/>
+            <result property="HospDepId" column="HospDepId" dbType="String"/>
+            <result property="HappenedDate" column="HappenedDate" dbType="DateTime"/>
+            <result property="SendtoDate" column="SendtoDate" dbType="DateTime"/>
+            <result property="FillStaff" column="FillStaff" dbType="String"/>
+            <result property="HospNumber" column="HospNumber" dbType="String"/>
+            <result property="PatientExpose" column="PatientExpose" dbType="String"/>
+            <result property="ExposeTypeOne" column="ExposeTypeOne" dbType="String"/>
+            <result property="ExposeTypeTwo" column="ExposeTypeTwo" dbType="String"/>
+            <result property="HarmDegree" column="HarmDegree" dbType="String"/>
+            <result property="FomesFrom" column="FomesFrom" dbType="String"/>
+            <result property="PharmacyState" column="PharmacyState" dbType="String"/>
+            <result property="UseDrug" column="UseDrug" dbType="String"/>
+            <result property="UseDrugTime" column="UseDrugTime" dbType="String"/>
+            <result property="StaffType" column="StaffType" dbType="String"/>
+            <result property="StaffTypeQt" column="StaffTypeQt" dbType="String"/>
+            <result property="StaffPosition" column="StaffPosition" dbType="String"/>
+            <result property="StaffEducation" column="StaffEducation" dbType="String"/>
+            <result property="StaffEduQt" column="StaffEduQt" dbType="String"/>
+            <result property="StaffWorkyears" column="StaffWorkyears" dbType="String"/>
+            <result property="AuditFeedback" column="AuditFeedback" dbType="String"/>
+            <result property="AuditStatus" column="AuditStatus" dbType="Int32"/>
+            <result property="Remark" column="Remark" dbType="String"/>
+            <result property="IsFlag" column="IsFlag" dbType="Int32"/>
+            <result property="OperatorDate" column="OperatorDate" dbType="DateTime"/>
+            <result property="OperatorID" column="OperatorID" dbType="String"/>
+            <result property="Other" column="Other" dbType="String"/>
+             <result property="EventLevel" column="EventLevel" dbType="String"/>
+            <result property="TouchPatient" column="TouchPatient" dbType="String"/>
+            <result property="EventDescription" column="EventDescription" dbType="String"/>
+            <result property="DegreeDamage" column="DegreeDamage" dbType="String"/>
+            <result property="PatientExposeQt" column="PatientExposeQt" dbType="String"/>
+            <result property="ExposeTypeOneQt" column="ExposeTypeOneQt" dbType="String"/>
+            <result property="UseDrugQt" column="UseDrugQt" dbType="String"/>
+      
+      
+      
+      
+
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="aers_tbl_events_zybl_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM aers_tbl_events_zybl
+    </select>
+    
+    <select id="aers_tbl_events_zybl_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM aers_tbl_events_zybl
+	</select>
+    
+    <select id="aers_tbl_events_zybl_Find" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_events_zybl_FindAll">
+	    WHERE
+            (EveZyblId = #EveZyblId#)
+	</select>
+
+    <select id="aers_tbl_events_zybl_FindByEveresId" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_events_zybl_FindAll">
+      WHERE
+      (EveresId = #EveresId#)
+    </select>
+
+
+    <select id="aers_tbl_events_zybl_FindByData" parameterClass="String" resultMap="FullResultMap" >
+
+      SELECT * FROM aers_tbl_events_zybl  where EveresId in
+      (select EveresId from aers_tbl_eventsresume where ExamineState=1  and EveresName='156'  and HappenedDate>=#HappenedDate#)
+
+
+    </select>
+    
+    <insert id="aers_tbl_events_zybl_Insert" parameterClass="aers_tbl_events_zybl">
+      INSERT INTO aers_tbl_events_zybl (
+      EveZyblId,
+      EveresId,
+      HospId,
+      HospDepId,
+      HappenedDate,
+      SendtoDate,
+      FillStaff,
+      HospNumber,
+      PatientExpose,
+      ExposeTypeOne,
+      ExposeTypeTwo,
+      HarmDegree,
+      FomesFrom,
+      PharmacyState,
+      UseDrug,
+      UseDrugTime,
+      StaffType,
+      StaffTypeQt,
+      StaffPosition,
+      StaffEducation,
+      StaffEduQt,
+      StaffWorkyears,
+      AuditFeedback,
+      AuditStatus,
+      Remark,
+      IsFlag,
+      OperatorDate,
+      OperatorID,
+      Other,
+      EventLevel,
+      TouchPatient,
+      EventDescription,
+      DegreeDamage,
+      PatientExposeQt,
+      ExposeTypeOneQt,
+      UseDrugQt
+      ) VALUES (
+      #EveZyblId#,
+      #EveresId#,
+      #HospId#,
+      #HospDepId#,
+      #HappenedDate#,
+      #SendtoDate#,
+      #FillStaff#,
+      #HospNumber#,
+      #PatientExpose#,
+      #ExposeTypeOne#,
+      #ExposeTypeTwo#,
+      #HarmDegree#,
+      #FomesFrom#,
+      #PharmacyState#,
+      #UseDrug#,
+      #UseDrugTime#,
+      #StaffType#,
+      #StaffTypeQt#,
+      #StaffPosition#,
+      #StaffEducation#,
+      #StaffEduQt#,
+      #StaffWorkyears#,
+      #AuditFeedback#,
+      #AuditStatus#,
+      #Remark#,
+      #IsFlag#,
+      #OperatorDate#,
+      #OperatorID#,
+      #Other#,
+      #EventLevel#,
+      #TouchPatient#,
+      #EventDescription#,
+      #DegreeDamage#,
+      #PatientExposeQt#,
+      #ExposeTypeOneQt#,
+      #UseDrugQt#
+      )
+    </insert>
+    
+    <update id="aers_tbl_events_zybl_Update" parameterClass="aers_tbl_events_zybl">
+      UPDATE aers_tbl_events_zybl SET
+      EveZyblId = #EveZyblId#,
+      EveresId = #EveresId#,
+      HospId = #HospId#,
+      HospDepId = #HospDepId#,
+      HappenedDate = #HappenedDate#,
+      SendtoDate = #SendtoDate#,
+      FillStaff = #FillStaff#,
+      HospNumber = #HospNumber#,
+      PatientExpose = #PatientExpose#,
+      ExposeTypeOne = #ExposeTypeOne#,
+      ExposeTypeTwo = #ExposeTypeTwo#,
+      HarmDegree = #HarmDegree#,
+      FomesFrom = #FomesFrom#,
+      PharmacyState = #PharmacyState#,
+      UseDrug = #UseDrug#,
+      UseDrugTime = #UseDrugTime#,
+      StaffType = #StaffType#,
+      StaffTypeQt = #StaffTypeQt#,
+      StaffPosition = #StaffPosition#,
+      StaffEducation = #StaffEducation#,
+      StaffEduQt = #StaffEduQt#,
+      StaffWorkyears = #StaffWorkyears#,
+      AuditFeedback = #AuditFeedback#,
+      AuditStatus = #AuditStatus#,
+      Remark = #Remark#,
+      IsFlag = #IsFlag#,
+      OperatorDate = #OperatorDate#,
+      OperatorID = #OperatorID#,
+      Other=#Other#,
+      EventLevel=#EventLevel#,
+      TouchPatient=#TouchPatient#,
+      EventDescription=#EventDescription#,
+      DegreeDamage=#DegreeDamage#,
+      PatientExposeQt=#PatientExposeQt#,
+      ExposeTypeOneQt=#ExposeTypeOneQt#,
+      UseDrugQt=#UseDrugQt#
+      WHERE
+      (EveZyblId = #EveZyblId#)
+    </update>
+    
+    <delete id="aers_tbl_events_zybl_Delete" parameterClass="aers_tbl_events_zybl">
+	    Delete From  aers_tbl_events_zybl 
+	        WHERE
+			(EveZyblId = #EveZyblId#)
+	</delete>
+    <update id="aers_tbl_events_zybl_Update_State" parameterClass="aers_tbl_events_zybl">
+      UPDATE aers_tbl_events_zybl SET
+      AuditFeedback = #AuditFeedback#,
+      AuditStatus = #AuditStatus#
+      WHERE
+      (EveresId = #EveresId#)
+    </update>
+  </statements>
+</sqlMap>

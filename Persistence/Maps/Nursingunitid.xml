@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="nursingunitid" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="nursingunitid" type="Aersysm.Domain.nursingunitid, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="nursingunitid">
+			<result property="NursingUnitId" column="nursingunitid" />
+			<result property="Name" column="name" />
+			<result property="Address" column="address" />
+			<result property="Contact" column="contact" />
+			<result property="Phone" column="phone" />
+			<result property="SpellCode" column="spellcode" />
+			<result property="IsFlag" column="isflag" />
+			<result property="Introduction" column="introduction" />
+			<result property="DisplayOrder" column="displayorder" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="Selectnursingunitid" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  nursingunitid,
+				  name,
+				  address,
+				  contact,
+				  phone,
+				  spellcode,
+				  isflag,
+				  introduction,
+				  displayorder
+			From nursingunitid
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectnursingunitid" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  nursingunitid,
+				  name,
+				  address,
+				  contact,
+				  phone,
+				  spellcode,
+				  isflag,
+				  introduction,
+				  displayorder
+			From nursingunitid
+		</select>
+		
+		<select id="ChildSelectnursingunitid" parameterClass="int" resultMap="SelectResult" extends="BaseSelectnursingunitid">
+			
+		</select>
+				
+		<insert id="Insertnursingunitid" parameterClass="nursingunitid">
+			Insert Into nursingunitid (
+				  nursingunitid,
+				  name,
+				  address,
+				  contact,
+				  phone,
+				  spellcode,
+				  isflag,
+				  introduction,
+				  displayorder
+			)Values(
+				 #NursingUnitId#,
+				 #Name#,
+				 #Address#,
+				 #Contact#,
+				 #Phone#,
+				 #SpellCode#,
+				 #IsFlag#,
+				 #Introduction#,
+				 #DisplayOrder#
+			)
+		</insert>
+		
+		<update id="Updatenursingunitid" parameterClass="nursingunitid">
+			Update nursingunitid Set 
+				nursingunitid=#NursingUnitId#,
+				name=#Name#,
+				address=#Address#,
+				contact=#Contact#,
+				phone=#Phone#,
+				spellcode=#SpellCode#,
+				isflag=#IsFlag#,
+				introduction=#Introduction#,
+				displayorder=#DisplayOrder#
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="Deletenursingunitid" parameterClass="int">
+			Delete From nursingunitid
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

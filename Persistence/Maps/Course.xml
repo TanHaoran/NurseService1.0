@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Course"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="Course" type="Aersysm.Domain.Course,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="Course">
+            <result property="CourseID" column="CourseID" dbType="String"/>
+            <result property="CourseType" column="CourseType" dbType="String"/>
+            <result property="CourseName" column="CourseName" dbType="String"/>
+            <result property="CourseTeacher" column="CourseTeacher" dbType="String"/>
+            <result property="CourseIntro" column="CourseIntro" dbType="String"/>
+            <result property="CourseDuration" column="CourseDuration" dbType="Int32"/>
+            <result property="CourseLevel" column="CourseLevel" dbType="Int32"/>
+            <result property="CourseTag" column="CourseTag" dbType="String"/>
+            <result property="CourseThumb" column="CourseThumb" dbType="String"/>
+            <result property="SuitableDuty" column="SuitableDuty" dbType="String"/>
+            <result property="SuitableYearUp" column="SuitableYearUp" dbType="Int32"/>
+            <result property="SuitableYearDown" column="SuitableYearDown" dbType="Int32"/>
+            <result property="CourseHot" column="CourseHot" dbType="Int32"/>
+            <result property="CourseSort" column="CourseSort" dbType="Int32"/>
+            <result property="AuthorID" column="AuthorID" dbType="String"/>
+            <result property="OperatorID" column="OperatorID" dbType="String"/>
+            <result property="OperateTime" column="OperateTime" dbType="DateTime"/>
+            <result property="Recommend" column="Recommend" dbType="Int32"/>
+           <result property="TeacherIntroduction" column="TeacherIntroduction" dbType="String"/>
+            <result property="ChapterPoints" column="ChapterPoints" dbType="String"/>
+      <result property="HospId" column="HospId" dbType="String"/>
+      <result property="HospdepId" column="HospdepId" dbType="String"/>
+
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="Course_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM Course
+    </select>
+    
+    <select id="Course_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM Course
+	</select>
+
+
+
+    <select id="Course_FindPaging" resultMap="FullResultMap">
+
+      SELECT * FROM Course
+      order by  CourseHot desc
+      limit #pageno#,#pageSize#
+
+    </select>
+
+
+    <select id="Course_FindPagingCourseType" resultMap="FullResultMap">
+
+      SELECT * FROM Course
+      where CourseType=#CourseType#
+      order by  CourseHot desc
+      limit #pageno#,#pageSize#
+
+    </select>
+
+
+    <select id="Course_FindPagingNewTime" resultMap="FullResultMap">
+
+      SELECT * FROM Course
+      order by OperateTime
+      limit #pageno#,#pageSize#
+
+    </select>
+
+    <select id="Course_FindPagingNewTimeDesc" resultMap="FullResultMap">
+
+      SELECT * FROM Course
+      order by OperateTime Desc
+      limit #pageno#,#pageSize#
+
+    </select>
+
+    
+    <select id="Course_FindOrderByRecommend" resultMap="FullResultMap">
+
+      SELECT * FROM Course
+      order by Recommend desc
+      limit #Number#
+
+    </select>
+
+    <select id="Course_FindOrderByCourseHot" resultMap="FullResultMap">
+
+      SELECT * FROM Course 
+      order by CourseHot desc
+      limit #Number#
+
+
+    </select>
+
+    <select id="Course_FindOrderByNewTime" resultMap="FullResultMap">
+
+      SELECT * FROM Course
+      order by OperateTime desc
+      limit #Number#
+
+    </select>
+
+    <select id="Course_FindOrderByCourseID" resultMap="FullResultMap">
+      SELECT * FROM Course
+      where Course.CourseID=#CourseID#
+    </select>
+
+
+    <select id="Course_FindByUserID" resultMap="FullResultMap">
+
+      select * from Course where CourseID in (select CourseID from CourseUser where UserID=#UserID#)  order by CourseID
+
+    </select>
+
+
+
+    <select id="Course_Find" parameterClass="String" resultMap="FullResultMap" extends="Course_FindAll">
+	    WHERE
+            (CourseID = #CourseID#)
+	</select>
+    
+    <insert id="Course_Insert" parameterClass="Course">
+      INSERT INTO Course (
+      CourseID,
+      CourseType,
+      CourseName,
+      CourseTeacher,
+      CourseIntro,
+      CourseDuration,
+      CourseLevel,
+      CourseTag,
+      CourseThumb,
+      SuitableDuty,
+      SuitableYearUp,
+      SuitableYearDown,
+      CourseHot,
+      CourseSort,
+      AuthorID,
+      OperatorID,
+      OperateTime,
+      Recommend,
+      TeacherIntroduction,
+      ChapterPoints,
+      HospId,
+      HospdepId
+      ) VALUES (
+      #CourseID#,
+      #CourseType#,
+      #CourseName#,
+      #CourseTeacher#,
+      #CourseIntro#,
+      #CourseDuration#,
+      #CourseLevel#,
+      #CourseTag#,
+      #CourseThumb#,
+      #SuitableDuty#,
+      #SuitableYearUp#,
+      #SuitableYearDown#,
+      #CourseHot#,
+      #CourseSort#,
+      #AuthorID#,
+      #OperatorID#,
+      #OperateTime#,
+      #Recommend#,
+      #TeacherIntroduction#,
+      #ChapterPoints#,
+      #HospId#,
+      #HospdepId#
+      )
+    </insert>
+    
+    <update id="Course_Update" parameterClass="Course">
+      UPDATE Course SET  CourseType=#CourseType#,
+      CourseName=#CourseName#,
+      CourseTeacher=#CourseTeacher#,
+      CourseIntro=#CourseIntro#,
+      CourseDuration=#CourseDuration#,
+      CourseLevel=#CourseLevel#,
+      CourseTag=#CourseTag#,
+      CourseThumb=#CourseThumb#,
+      SuitableDuty=#SuitableDuty#,
+      SuitableYearUp=#SuitableYearUp#,
+      SuitableYearDown=#SuitableYearDown#,
+      CourseHot=#CourseHot#,
+      CourseSort=#CourseSort#,
+      AuthorID=#AuthorID#,
+      OperatorID=#OperatorID#,
+      Recommend=#Recommend#,
+      TeacherIntroduction=#TeacherIntroduction#,
+      ChapterPoints=#ChapterPoints#,
+      HospId=#HospId#,
+      HospdepId=#HospdepId#
+      WHERE
+      (CourseID = #CourseID#)
+    </update>
+    
+    <delete id="Course_Delete" parameterClass="Course">
+	    Delete From  Course 
+	        WHERE
+			(CourseID = #CourseID#)
+	</delete>
+    
+  </statements>
+</sqlMap>

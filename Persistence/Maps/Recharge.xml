@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Recharge"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="Recharge" type="Aersysm.Domain.Recharge,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="Recharge">
+            <result property="UserID" column="UserID" dbType="String"/>
+            <result property="RechargeTime" column="RechargeTime" dbType="DateTime"/>
+            <result property="Count" column="Count" dbType="Int32"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="Recharge_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM Recharge
+    </select>
+    
+    <select id="Recharge_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM Recharge
+	</select>
+    
+    <select id="Recharge_Find" parameterClass="String" resultMap="FullResultMap" extends="Recharge_FindAll">
+	    WHERE
+            (UserID = #UserID#)
+	</select>
+    
+    <insert id="Recharge_Insert" parameterClass="Recharge">
+	    INSERT INTO Recharge (
+		    AreaName
+			, SuperAreaId
+			, AreaLevel
+			, AreaEnd
+		) VALUES (
+		)
+	</insert>
+    
+    <update id="Recharge_Update" parameterClass="Recharge">
+	    UPDATE area SET
+		WHERE
+		    (UserID = #UserID#)
+	</update>
+    
+    <delete id="Recharge_Delete" parameterClass="Recharge">
+	    Delete From  Recharge 
+	        WHERE
+			(UserID = #UserID#)
+	</delete>
+    
+  </statements>
+</sqlMap>

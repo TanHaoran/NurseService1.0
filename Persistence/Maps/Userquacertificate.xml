@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="userquacertificate" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="userquacertificate" type="Aersysm.Domain.userquacertificate, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="userquacertificate">
+			<result property="RegisterId" column="registerid" />
+			<result property="CertificateId" column="certificateid" />
+			<result property="ManageId" column="manageid" />
+			<result property="Name" column="name" />
+			<result property="Sex" column="sex" />
+			<result property="DateBirth" column="datebirth" />
+			<result property="MajorName" column="majorname" />
+			<result property="QuaLevel" column="qualevel" />
+			<result property="Category" column="category" />
+			<result property="ApproveDate" column="approvedate" />
+			<result property="IssuingAgency" column="issuingagency" />
+			<result property="IssuingDate" column="issuingdate" />
+			<result property="Picture1" column="picture1" />
+			<result property="Picture2" column="picture2" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="Selectuserquacertificate" parameterClass="int" resultMap="SelectResult">
+      Select
+      registerid,
+      certificateid,
+      manageid,
+      name,
+      sex,
+      datebirth,
+      majorname,
+      qualevel,
+      category,
+      approvedate,
+      issuingagency,
+      issuingdate,
+      picture1,
+      picture2
+      From userquacertificate
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+					registerid=#RegisterId# 
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectuserquacertificate" parameterClass="int" resultMap="SelectResult">
+      Select
+      registerid,
+      certificateid,
+      manageid,
+      name,
+      sex,
+      datebirth,
+      majorname,
+      qualevel,
+      category,
+      approvedate,
+      issuingagency,
+      issuingdate,
+      picture1,
+      picture2
+      From userquacertificate
+    </select>
+		
+		<select id="ChildSelectuserquacertificate" parameterClass="int" resultMap="SelectResult" extends="BaseSelectuserquacertificate">
+			
+		</select>
+				
+		<insert id="Insertuserquacertificate" parameterClass="userquacertificate">
+      Insert Into userquacertificate (
+      registerid,
+      certificateid,
+      manageid,
+      name,
+      sex,
+      datebirth,
+      majorname,
+      qualevel,
+      category,
+      approvedate,
+      issuingagency,
+      issuingdate,
+      picture1,
+      picture2
+      )Values(
+      #RegisterId#,
+      #CertificateId#,
+      #ManageId#,
+      #Name#,
+      #Sex#,
+      #DateBirth#,
+      #MajorName#,
+      #QuaLevel#,
+      #Category#,
+      #ApproveDate#,
+      #IssuingAgency#,
+      #IssuingDate#,
+      #Picture1#,
+      #Picture2#
+      )
+    </insert>
+		
+		<update id="Updateuserquacertificate" parameterClass="userquacertificate">
+      Update userquacertificate Set
+      registerid=#RegisterId#,
+      certificateid=#CertificateId#,
+      manageid=#ManageId#,
+      name=#Name#,
+      sex=#Sex#,
+      datebirth=#DateBirth#,
+      majorname=#MajorName#,
+      qualevel=#QuaLevel#,
+      category=#Category#,
+      approvedate=#ApproveDate#,
+      issuingagency=#IssuingAgency#,
+      issuingdate=#IssuingDate#,
+      picture1=#Picture1#,
+      picture2=#Picture2#
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+					registerid=#RegisterId#
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="Deleteuserquacertificate" parameterClass="int">
+			Delete From userquacertificate
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					registerid=#RegisterId#
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

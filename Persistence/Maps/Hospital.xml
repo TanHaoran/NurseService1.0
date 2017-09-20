@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="hospital" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="hospital" type="Aersysm.Domain.hospital, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="hospital">
+			<result property="HospitalId" column="hospitalid" />
+			<result property="AreaCode" column="areacode" />
+			<result property="Province" column="province" />
+			<result property="City" column="city" />
+			<result property="Region" column="region" />
+			<result property="Name" column="name" />
+			<result property="Grade" column="grade" />
+			<result property="Contact" column="contact" />
+			<result property="Phone" column="phone" />
+			<result property="SpellCode" column="spellcode" />
+			<result property="Logo" column="logo" />
+			<result property="IsFlag" column="isflag" />
+			<result property="Introduction" column="introduction" />
+			<result property="DisplayOrder" column="displayorder" />
+			<result property="Address" column="address" />
+      <result property="OperatorId" column="operatorid" />
+      <result property="OperatorTime" column="operatortime" />
+      <result property="IsOpenBLSJ" column="isopenblsj" />
+      <result property="IsOpenPB" column="isopenpb" />
+      <result property="IsOpenXF" column="isopenxf" />
+      <result property="Latitude" column="latitude" />
+      <result property="Longitude" column="longitude" />
+      <result property="IsDelete" column="isdelete" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="Selecthospital" parameterClass="int" resultMap="SelectResult">
+      Select
+      hospitalid,
+      areacode,
+      province,
+      city,
+      region,
+      name,
+      grade,
+      contact,
+      phone,
+      spellcode,
+      logo,
+      isflag,
+      introduction,
+      displayorder,
+      address,
+      operatorid,
+      operatortime,
+      isopenblsj,
+      isopenpb,
+      isopenxf,
+      latitude,
+      longitude,
+      isdelete
+      From hospital
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+					hospitalid=#HospitalId#
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelecthospital" parameterClass="int" resultMap="SelectResult">
+      Select
+      hospitalid,
+      areacode,
+      province,
+      city,
+      region,
+      name,
+      grade,
+      contact,
+      phone,
+      spellcode,
+      logo,
+      isflag,
+      introduction,
+      displayorder,
+      address,
+      operatorid,
+      operatortime,
+      isopenblsj,
+      isopenpb,
+      isopenxf,
+      latitude,
+      longitude,
+      isdelete
+      From hospital
+    </select>
+		
+		<select id="ChildSelecthospital" parameterClass="int" resultMap="SelectResult" extends="BaseSelecthospital">
+			
+		</select>
+				
+		<insert id="Inserthospital" parameterClass="hospital">
+      Insert Into hospital (
+      hospitalid,
+      areacode,
+      province,
+      city,
+      region,
+      name,
+      grade,
+      contact,
+      phone,
+      spellcode,
+      logo,
+      isflag,
+      introduction,
+      displayorder,
+      address,
+      operatorid,
+      operatortime,
+      isopenblsj,
+      isopenpb,
+      isopenxf,
+      latitude,
+      longitude,
+      isdelete
+      )Values(
+      #HospitalId#,
+      #AreaCode#,
+      #Province#,
+      #City#,
+      #Region#,
+      #Name#,
+      #Grade#,
+      #Contact#,
+      #Phone#,
+      #SpellCode#,
+      #Logo#,
+      #IsFlag#,
+      #Introduction#,
+      #DisplayOrder#,
+      #Address#,
+      #OperatorId#,
+      #OperatorTime#,
+      #IsOpenBLSJ#,
+      #IsOpenPB#,
+      #IsOpenXF#,
+      #Latitude#,
+      #Longitude#,
+      #IsDelete#
+      )
+    </insert>
+		
+		<update id="Updatehospital" parameterClass="hospital">
+			Update hospital Set 
+				hospitalid=#HospitalId#,
+				areacode=#AreaCode#,
+				province=#Province#,
+				city=#City#,
+				region=#Region#,
+				name=#Name#,
+				grade=#Grade#,
+				contact=#Contact#,
+				phone=#Phone#,
+				spellcode=#SpellCode#,
+				logo=#Logo#,
+				isflag=#IsFlag#,
+				introduction=#Introduction#,
+				displayorder=#DisplayOrder#,
+				address=#Address#,
+        operatorid=#OperatorId#,
+        operatortime=#OperatorTime#,
+        isopenblsj=#IsOpenBLSJ#,
+        isopenpb=#IsOpenPB#,
+        isopenxf=#IsOpenXF#,
+        latitude=#Latitude#,
+        longitude=#Longitude#,
+        isdelete=#IsDelete#
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					hospitalid=#HospitalId#
+				</isParameterPresent>
+			</dynamic>
+		</update>
+
+    <update id="UpdateDelhospital" parameterClass="hospital">
+      Update hospital Set
+      isdelete=1
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          hospitalid=#HospitalId#
+        </isParameterPresent>
+      </dynamic>
+    </update>
+		
+		<delete id="Deletehospital" parameterClass="int">
+			Delete From hospital
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					hospitalid=#HospitalId#
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+
+    <select id="SelecthospitalLike" parameterClass="int" resultMap="SelectResult">
+      Select
+      hospitalid,
+      areacode,
+      province,
+      city,
+      region,
+      name,
+      grade,
+      contact,
+      phone,
+      spellcode,
+      logo,
+      isflag,
+      introduction,
+      displayorder,
+      address,
+      operatorid,
+      operatortime,
+      isopenblsj,
+      isopenpb,
+      isopenxf,
+      latitude,
+      longitude,
+      isdelete
+      From hospital
+      <dynamic prepend="CONCAT">
+        <isParameterPresent>
+          address=#address#
+        </isParameterPresent>
+      </dynamic>
+    </select>
+	</statements>
+</sqlMap>

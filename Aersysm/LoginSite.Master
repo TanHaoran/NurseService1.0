@@ -1,0 +1,62 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="LoginSite.Master.cs" Inherits="CreditWeb.LoginSiteMaster" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <link href="~/Styles/Site.css" rel="stylesheet" type="text/css" />
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body >
+    <form runat="server">
+    <div class="page">
+        <div class="header">
+            <div class="title">
+                <h1>
+                      <asp:Label ID="lblname" runat="server" Text=""></asp:Label>
+                </h1>
+            </div>
+
+            <div id="divuser" class="loginDisplay" runat="server" visible="false">
+                欢迎你&nbsp;<b><asp:Label ID="lbl_name" runat="server" Text="">  </asp:Label></b>&nbsp;&nbsp;&nbsp;
+                <asp:LinkButton ID="Button2" runat="server" 
+                    PostBackUrl="~/HeadNurse/Pwd.aspx"  >修改密码</asp:LinkButton>&nbsp;
+                 <asp:LinkButton ID="LinkButton1" runat="server"  PostBackUrl="~/out.aspx">注销</asp:LinkButton>
+            </div>
+            <div class="clear hideSkiplink">
+                <asp:Menu ID="NavigationMenu" runat="server" CssClass="menu" EnableViewState="false" IncludeStyleBlock="false" Orientation="Horizontal">
+                    <Items>
+                         <asp:MenuItem NavigateUrl="~/Default.aspx" Text="登录"/>
+                    </Items>
+                </asp:Menu>
+            </div>
+        </div>
+
+         <div class="main">
+               <asp:ContentPlaceHolder ID="MainContent" runat="server"/>
+        </div>
+
+        <div class="clear">
+        </div>
+    </div>
+
+      <div class="footer" style="color:White">
+        
+        <div style="text-align:center; width:425px; margin:0 auto; overflow:hidden;">
+
+            <div style=" margin-top:15px; float:left; ">
+                西安巴斯光年软件科技有限公司&nbsp;&nbsp;&nbsp;电话：029-89521367<br/>
+                Copyright © 2016 Buzzly. All Rights Reserved
+            </div>
+            <asp:Image ID="Image1" runat="server" 
+                ImageUrl="~/image/buzzly.jpg"  style="float:left; margin-left:20px; " />
+        
+        </div>
+
+    </div>
+
+    </form>
+</body>
+</html>

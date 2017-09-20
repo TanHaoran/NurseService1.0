@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="CreditRecord"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="CreditRecord" type="Aersysm.Domain.CreditRecord,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="CreditRecord">
+            <result property="RecordID" column="RecordID" dbType="String"/>
+            <result property="UserID" column="UserID" dbType="String"/>
+            <result property="TrainingID" column="TrainingID" dbType="String"/>
+            <result property="Grade" column="Grade" dbType="String"/>
+            <result property="OperatorID" column="OperatorID" dbType="String"/>
+            <result property="ModifyDate" column="ModifyDate" dbType="DateTime"/>
+            <result property="HID" column="HID" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="CreditRecord_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM CreditRecord
+    </select>
+    
+    <select id="CreditRecord_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM CreditRecord
+	</select>
+    
+    <select id="CreditRecord_Find" parameterClass="String" resultMap="FullResultMap" >
+      SELECT * FROM CreditRecord  WHERE
+      (UserID = #UserID# and TrainingID=#TrainingID#)
+    </select>
+    
+    <insert id="CreditRecord_Insert" parameterClass="CreditRecord">
+	    INSERT INTO CreditRecord (
+                    RecordID,
+                    UserID,
+                    TrainingID,
+                    Grade,
+                    OperatorID,
+                    ModifyDate,
+                    HID
+		    
+		) VALUES (
+                    #RecordID#,
+                    #UserID#,
+                    #TrainingID#,
+                    #Grade#,
+                    #OperatorID#,
+                    #ModifyDate#,
+                    #HID#
+		)
+	</insert>
+    
+    <update id="CreditRecord_Update" parameterClass="CreditRecord">
+	    UPDATE area SET
+                    RecordID = #RecordID#,
+                    UserID = #UserID#,
+                    TrainingID = #TrainingID#,
+                    Grade = #Grade#,
+                    OperatorID = #OperatorID#,
+                    ModifyDate = #ModifyDate#,
+                    HID = #HID#
+		WHERE
+		    (RecordID = #RecordID#)
+	</update>
+    
+    <delete id="CreditRecord_Delete" parameterClass="CreditRecord">
+	    Delete From  CreditRecord 
+	        WHERE
+			(RecordID = #RecordID#)
+	</delete>
+    
+
+    <select id="CreditRecord_FindByUserID" resultMap="FullResultMap">
+      SELECT * FROM CreditRecord  where UserID=#UserID#
+    </select>
+    
+    
+  </statements>
+</sqlMap>

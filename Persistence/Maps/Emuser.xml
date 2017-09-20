@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="Emuser" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="Emuser" type="Aersysm.Domain.Emuser, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="Emuser">
+			<result property="EmUserId" column="emuserid" />
+			<result property="RegisterId" column="registerid" />
+			<result property="EmRegisterId" column="emregisterid" />
+			<result property="EmNickName" column="emnickname" />
+			<result property="IsOnline" column="isonline" />
+			<result property="EmPassword" column="empassword" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="SelectEmuser" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  emuserid,
+				  registerid,
+				  emregisterid,
+				  emnickname,
+				  isonline,
+				  empassword
+			From Emuser
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					emuserid=#EmUserId# 
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectEmuser" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  emuserid,
+				  registerid,
+				  emregisterid,
+				  emnickname,
+				  isonline,
+				  empassword
+			From Emuser
+		</select>
+		
+		<select id="ChildSelectEmuser" parameterClass="int" resultMap="SelectResult" extends="BaseSelectEmuser">
+			
+		</select>
+				
+		<insert id="InsertEmuser" parameterClass="Emuser">
+			Insert Into Emuser (
+				  emuserid,
+				  registerid,
+				  emregisterid,
+				  emnickname,
+				  isonline,
+				  empassword
+			)Values(
+				 #EmUserId#,
+				 #RegisterId#,
+				 #EmRegisterId#,
+				 #EmNickName#,
+				 #IsOnline#,
+				 #EmPassword#
+			)
+		</insert>
+		
+		<update id="UpdateEmuser" parameterClass="Emuser">
+			Update emuser Set 
+				emuserid=#EmUserId#,
+				registerid=#RegisterId#,
+				emregisterid=#EmRegisterId#,
+				emnickname=#EmNickName#,
+				isonline=#IsOnline#,
+				empassword=#EmPassword#
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					emuserid=#EmUserId#
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="DeleteEmuser" parameterClass="int">
+			Delete From Emuser
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					emuserid=#EmUserId#
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

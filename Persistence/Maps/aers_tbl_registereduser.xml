@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="aers_tbl_registereduser"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="aers_tbl_registereduser" type="Aersysm.Domain.aers_tbl_registereduser,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="aers_tbl_registereduser">
+            <result property="ReguserId" column="ReguserId" dbType="String"/>
+            <result property="LoginName" column="LoginName" dbType="String"/>
+            <result property="Password" column="Password" dbType="String"/>
+            <result property="IsFlag" column="IsFlag" dbType="Int32"/>
+            <result property="Remarks" column="Remarks" dbType="String"/>
+            <result property="OperatorId" column="OperatorId" dbType="String"/>
+            <result property="OperatorDate" column="OperatorDate" dbType="DateTime"/>
+            <result property="Address" column="Address" dbType="String"/>
+      
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="aers_tbl_registereduser_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM aers_tbl_registereduser
+    </select>
+    
+    <select id="aers_tbl_registereduser_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM aers_tbl_registereduser
+	</select>
+    
+    <select id="aers_tbl_registereduser_Find" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_registereduser_FindAll">
+	    WHERE
+            (ReguserId = #ReguserId#)
+	</select>
+
+    <select id="aers_tbl_registereduser_ByHospId" parameterClass="String" resultMap="FullResultMap" >
+
+      select * from aers_tbl_registereduser  a
+      LEFT JOIN aers_tbl_staff b on a.ReguserId=b.ReguserId
+      LEFT JOIN aers_tbl_hospdep c on b.DepId=c.HospdepId
+      where c.HospId=#HospId#
+    </select>
+
+    
+    
+    <select id="aers_tbl_registereduser_FindHospState" parameterClass="String" resultMap="FullResultMap" >
+      SELECT tempaers.AersUId,tempaers.AersHosp ,tempaers.AersDep,tempaers.AersName,tempaers.AersRemark,tempaers.AersState FROM
+      (SELECT aers_tbl_hospital.HospName as AersHosp,aers_tbl_hospdep.HospId,aers_tbl_hospdep.HospdepName as AersDep,a.* FROM (
+      SELECT aers_tbl_registereduser.ReguserId as AersUId,aers_tbl_staff.DepId as AersDepId,aers_tbl_staff.`Name` as AersName,aers_tbl_staff.Remarks as AersRemark ,aers_tbl_staff.RoleState as AersState from aers_tbl_staff LEFT JOIN aers_tbl_registereduser on aers_tbl_staff.ReguserId = aers_tbl_registereduser.ReguserId
+      where aers_tbl_staff.RoleState > 0 ) as a LEFT JOIN aers_tbl_hospdep on aers_tbl_hospdep.HospdepId = a.AersDepId
+      LEFT JOIN aers_tbl_hospital on aers_tbl_hospdep.HospId = aers_tbl_hospital.HospId
+      ) as tempaers  WHERE tempaers.AersUId = #ReguserId#
+    </select>
+
+    <select id="aers_tbl_registereduser_FindByLoginName" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_registereduser_FindAll">
+      WHERE
+      (LoginName = #LoginName#)
+    </select>
+    
+    <insert id="aers_tbl_registereduser_Insert" parameterClass="aers_tbl_registereduser">
+      INSERT INTO aers_tbl_registereduser (
+      ReguserId,
+      LoginName,
+      Password,
+      IsFlag,
+      Remarks,
+      OperatorId,
+      OperatorDate,
+      Address
+
+      ) VALUES (
+      #ReguserId#,
+      #LoginName#,
+      #Password#,
+      #IsFlag#,
+      #Remarks#,
+      #OperatorId#,
+      #OperatorDate#,
+      #Address#
+      )
+    </insert>
+    
+    <update id="aers_tbl_registereduser_Update" parameterClass="aers_tbl_registereduser">
+	    UPDATE aers_tbl_registereduser SET
+                    LoginName = #LoginName#,
+                    Password = #Password#,
+                    IsFlag = #IsFlag#,
+                    Remarks = #Remarks#,
+                    OperatorId = #OperatorId#,
+                    OperatorDate = #OperatorDate#
+		WHERE
+		    (ReguserId = #ReguserId#)
+	</update>
+
+
+    <update id="aers_tbl_registereduser_UpdatePwd" parameterClass="aers_tbl_registereduser">
+      UPDATE aers_tbl_registereduser SET
+      Password = #Password#,
+      OperatorDate = #OperatorDate#
+      WHERE
+      (ReguserId = #ReguserId#)
+    </update>
+    
+    <delete id="aers_tbl_registereduser_Delete" parameterClass="aers_tbl_registereduser">
+	    Delete From  aers_tbl_registereduser 
+	        WHERE
+			(ReguserId = #ReguserId#)
+	</delete>
+
+    <select id="aers_tbl_registereduser_FindAllUser" resultMap="FullResultMap">
+      SELECT * FROM aers_tbl_registereduser
+    </select>
+    
+  </statements>
+</sqlMap>

@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="aers_tbl_hospital"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="aers_tbl_hospital" type="Aersysm.Domain.aers_tbl_hospital,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="aers_tbl_hospital">
+            <result property="HospId" column="HospId" dbType="String"/>
+            <result property="HospName" column="HospName" dbType="String"/>
+            <result property="Address" column="Address" dbType="String"/>
+            <result property="Phone" column="Phone" dbType="String"/>
+            <result property="Contact" column="Contact" dbType="String"/>
+            <result property="Grade" column="Grade" dbType="String"/>
+            <result property="Validitytime" column="Validitytime" dbType="DateTime"/>
+            <result property="IsFlag" column="IsFlag" dbType="Int32"/>
+            <result property="Remarks" column="Remarks" dbType="String"/>
+            <result property="OperatorId" column="OperatorId" dbType="String"/>
+            <result property="OperatorDate" column="OperatorDate" dbType="DateTime"/>
+      <result property="Hosplogo" column="Hosplogo" dbType="String"/>
+      <result property="HospUnion" column="HospUnion" dbType="Int32"/>
+
+      
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="aers_tbl_hospital_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM aers_tbl_hospital
+    </select>
+    
+    <select id="aers_tbl_hospital_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM aers_tbl_hospital
+	</select>
+    
+    <select id="aers_tbl_hospital_Find" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_hospital_FindAll">
+	    WHERE
+            (HospId = #HospId#)
+	</select>
+
+
+    <select id="aers_tbl_hospital_HospUnion" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_hospital_FindAll">
+      WHERE
+      (HospUnion = #HospUnion#)
+    </select>
+    
+    <insert id="aers_tbl_hospital_Insert" parameterClass="aers_tbl_hospital">
+      INSERT INTO aers_tbl_hospital (
+      HospId,
+      HospName,
+      Address,
+      Phone,
+      Contact,
+      Grade,
+      Validitytime,
+      IsFlag,
+      Remarks,
+      OperatorId,
+      OperatorDate,
+      Hosplogo,
+      HospUnion
+
+      ) VALUES (
+      #HospId#,
+      #HospName#,
+      #Address#,
+      #Phone#,
+      #Contact#,
+      #Grade#,
+      #Validitytime#,
+      #IsFlag#,
+      #Remarks#,
+      #OperatorId#,
+      #OperatorDate#,
+      #Hosplogo#,
+      #HospUnion#
+      )
+    </insert>
+    
+    <update id="aers_tbl_hospital_Update" parameterClass="aers_tbl_hospital">
+      UPDATE aers_tbl_hospital SET
+      HospName = #HospName#,
+      Address = #Address#,
+      Phone = #Phone#,
+      Contact = #Contact#,
+      Grade = #Grade#,
+      Validitytime = #Validitytime#,
+      IsFlag = #IsFlag#,
+      Remarks = #Remarks#,
+      OperatorId = #OperatorId#,
+      OperatorDate = #OperatorDate#,
+      Hosplogo=#Hosplogo#,
+      HospUnion=#HospUnion#
+      WHERE
+      (HospId = #HospId#)
+    </update>
+    
+    <delete id="aers_tbl_hospital_Delete" parameterClass="aers_tbl_hospital">
+	    Delete From  aers_tbl_hospital 
+	        WHERE
+			(HospId = #HospId#)
+	</delete>
+    
+  </statements>
+</sqlMap>

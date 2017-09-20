@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Notes"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="Notes" type="Aersysm.Domain.Notes,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="Notes">
+            <result property="NoteID" column="NoteID" dbType="String"/>
+            <result property="CourseID" column="CourseID" dbType="String"/>
+            <result property="Content" column="Content" dbType="String"/>
+            <result property="UserID" column="UserID" dbType="String"/>
+            <result property="ModifyDate" column="ModifyDate" dbType="DateTime"/>
+            <result property="IsShare" column="IsShare" dbType="Int32"/>
+      <result property="FavorCount" column="FavorCount" dbType="Int32"/>
+
+      
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="Notes_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM Notes
+    </select>
+
+
+
+    <select id="Notes_FindByCourseID" resultMap="FullResultMap">
+
+      select *  from Notes  where CourseID=#CourseID#   ORDER BY NoteID desc
+
+    </select>
+
+
+
+    <select id="Notes_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM Notes
+	</select>
+    
+    <select id="Notes_Find" parameterClass="String" resultMap="FullResultMap" extends="Notes_FindAll">
+	    WHERE
+            (NoteID = #NoteID#)
+	</select>
+    
+    <insert id="Notes_Insert" parameterClass="Notes">
+      INSERT INTO Notes (
+      NoteID,
+      CourseID,
+      Content,
+      UserID,
+      ModifyDate,
+      IsShare,
+      FavorCount
+      ) VALUES (
+      #NoteID#,
+      #CourseID#,
+      #Content#,
+      #UserID#,
+      #ModifyDate#,
+      #IsShare#,
+      #FavorCount#
+      )
+    </insert>
+    
+    <update id="Notes_Update" parameterClass="Notes">
+	    UPDATE area SET
+		WHERE
+		    (NoteID = #NoteID#)
+	</update>
+    
+    <delete id="Notes_Delete" parameterClass="Notes">
+	    Delete From  Notes 
+	        WHERE
+			(NoteID = #NoteID#)
+	</delete>
+
+   
+    
+  </statements>
+</sqlMap>

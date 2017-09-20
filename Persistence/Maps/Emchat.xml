@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="Emchat" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="Emchat" type="Aersysm.Domain.Emchat, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="Emchat">
+			<result property="EMChatId" column="emchatid" />
+			<result property="MyId" column="myid" />
+			<result property="EMMyId" column="emmyid" />
+			<result property="FriendId" column="friendid" />
+			<result property="EMFriendId" column="emfriendid" />
+			<result property="Remark" column="remark" />
+			<result property="IsFlag" column="isflag" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="SelectEmchat" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  emchatid,
+				  myid,
+				  emmyid,
+				  friendid,
+				  emfriendid,
+				  remark,
+				  isflag
+			From Emchat
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					emchatid=#EMChatId# 
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectEmchat" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  emchatid,
+				  myid,
+				  emmyid,
+				  friendid,
+				  emfriendid,
+				  remark,
+				  isflag
+			From Emchat
+		</select>
+		
+		<select id="ChildSelectEmchat" parameterClass="int" resultMap="SelectResult" extends="BaseSelectEmchat">
+			
+		</select>
+				
+		<insert id="InsertEmchat" parameterClass="Emchat">
+			Insert Into Emchat (
+				  emchatid,
+				  myid,
+				  emmyid,
+				  friendid,
+				  emfriendid,
+				  remark,
+				  isflag
+			)Values(
+				 #EMChatId#,
+				 #MyId#,
+				 #EMMyId#,
+				 #FriendId#,
+				 #EMFriendId#,
+				 #Remark#,
+				 #IsFlag#
+			)
+		</insert>
+		
+		<update id="UpdateEmchat" parameterClass="Emchat">
+			Update emchat Set 
+				emchatid=#EMChatId#,
+				myid=#MyId#,
+				emmyid=#EMMyId#,
+				friendid=#FriendId#,
+				emfriendid=#EMFriendId#,
+				remark=#Remark#,
+				isflag=#IsFlag#
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					emchatid=#EMChatId#
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="DeleteEmchat" parameterClass="int">
+			Delete From Emchat
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					emchatid=#EMChatId#
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

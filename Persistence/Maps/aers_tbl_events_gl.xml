@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="aers_tbl_events_gl"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="aers_tbl_events_gl" type="Aersysm.Domain.aers_tbl_events_gl,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="aers_tbl_events_gl">
+            <result property="EveglId" column="EveglId" dbType="String"/>
+            <result property="EveresId" column="EveresId" dbType="String"/>
+            <result property="HospId" column="HospId" dbType="String"/>
+            <result property="HospDepId" column="HospDepId" dbType="String"/>
+            <result property="HappenedDate" column="HappenedDate" dbType="DateTime"/>
+            <result property="SendtoDate" column="SendtoDate" dbType="DateTime"/>
+            <result property="FillStaff" column="FillStaff" dbType="String"/>
+            <result property="HospNumber" column="HospNumber" dbType="String"/>
+            <result property="PatientSex" column="PatientSex" dbType="Int32"/>
+            <result property="PatientAge" column="PatientAge" dbType="Int32"/>
+            <result property="PatientAgeUnit" column="PatientAgeUnit" dbType="String"/>
+            <result property="NursLevel" column="NursLevel" dbType="String"/>
+            <result property="Diagnosis" column="Diagnosis" dbType="String"/>
+            <result property="IsEvaluate" column="IsEvaluate" dbType="Int32"/>
+            <result property="EvaluateScore" column="EvaluateScore" dbType="String"/>
+            <result property="EvaluateDate" column="EvaluateDate" dbType="String"/>
+            <result property="IsTakePrevent" column="IsTakePrevent" dbType="Int32"/>
+            <result property="InGlTime" column="InGlTime" dbType="DateTime"/>
+            <result property="GlTypeOne" column="GlTypeOne" dbType="String"/>
+            <result property="GlTypeTwo" column="GlTypeTwo" dbType="String"/>
+            <result property="FixedWay" column="FixedWay" dbType="String"/>
+            <result property="OutGlState" column="OutGlState" dbType="String"/>
+            <result property="MentalState" column="MentalState" dbType="String"/>
+            <result property="ActivityAbility" column="ActivityAbility" dbType="String"/>
+            <result property="SelfcareAbility" column="SelfcareAbility" dbType="String"/>
+            <result property="OutGlReason" column="OutGlReason" dbType="String"/>
+            <result property="RestraintStrap" column="RestraintStrap" dbType="String"/>
+            <result property="OtherReasons" column="OtherReasons" dbType="String"/>
+            <result property="OtherReasonsQt" column="OtherReasonsQt" dbType="String"/>
+            <result property="ResetGl" column="ResetGl" dbType="String"/>
+            <result property="Complication" column="Complication" dbType="String"/>
+            <result property="ComplicationCx" column="ComplicationCx" dbType="String"/>
+            <result property="ComplicationQt" column="ComplicationQt" dbType="String"/>
+            <result property="EventDescription" column="EventDescription" dbType="String"/>
+            <result property="EventLevel" column="EventLevel" dbType="String"/>
+            <result property="StaffType" column="StaffType" dbType="String"/>
+            <result property="StaffTypeQt" column="StaffTypeQt" dbType="String"/>
+            <result property="StaffPosition" column="StaffPosition" dbType="String"/>
+            <result property="StaffEducation" column="StaffEducation" dbType="String"/>
+            <result property="StaffEduQt" column="StaffEduQt" dbType="String"/>
+            <result property="StaffWorkyears" column="StaffWorkyears" dbType="String"/>
+            <result property="BedUtilization" column="BedUtilization" dbType="String"/>
+            <result property="BedNurseRatio" column="BedNurseRatio" dbType="String"/>
+            <result property="AuditFeedback" column="AuditFeedback" dbType="String"/>
+            <result property="AuditStatus" column="AuditStatus" dbType="String"/>
+            <result property="Remark" column="Remark" dbType="String"/>
+            <result property="IsFlag" column="IsFlag" dbType="String"/>
+            <result property="OperatorDate" column="OperatorDate" dbType="DateTime"/>
+            <result property="OperatorID" column="OperatorID" dbType="String"/>
+            <result property="GlTypeOneQt" column="GlTypeOneQt" dbType="String"/>
+            <result property="FixedWayQt" column="FixedWayQt" dbType="String"/>
+            <result property="OutGlStateQt" column="OutGlStateQt" dbType="String"/>
+            <result property="MentalStateQt" column="MentalStateQt" dbType="String"/>
+            <result property="ActivityAbilityQt" column="ActivityAbilityQt" dbType="String"/>
+
+
+      
+   
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="aers_tbl_events_gl_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM aers_tbl_events_gl
+    </select>
+    
+    <select id="aers_tbl_events_gl_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM aers_tbl_events_gl
+	</select>
+    
+    <select id="aers_tbl_events_gl_Find" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_events_gl_FindAll">
+	    WHERE
+            (EveglId = #EveglId#)
+	</select>
+
+    <select id="aers_tbl_events_gl_FindByEveresId" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_events_gl_FindAll">
+      WHERE
+      (EveresId = #EveresId#)
+    </select>
+
+
+    <select id="aers_tbl_events_gl_FindByData" parameterClass="String" resultMap="FullResultMap" >
+
+      SELECT * FROM aers_tbl_events_gl  where EveresId in
+      (select EveresId from aers_tbl_eventsresume where ExamineState=1  and EveresName='153'  and HappenedDate>=#HappenedDate#)
+
+
+    </select>
+    
+    
+    
+    <insert id="aers_tbl_events_gl_Insert" parameterClass="aers_tbl_events_gl">
+      INSERT INTO aers_tbl_events_gl (
+      EveglId,
+      EveresId,
+      HospId,
+      HospDepId,
+      HappenedDate,
+      SendtoDate,
+      FillStaff,
+      HospNumber,
+      PatientSex,
+      PatientAge,
+      PatientAgeUnit,
+      NursLevel,
+      Diagnosis,
+      IsEvaluate,
+      EvaluateScore,
+      EvaluateDate,
+      IsTakePrevent,
+      InGlTime,
+      GlTypeOne,
+      GlTypeTwo,
+      FixedWay,
+      OutGlState,
+      MentalState,
+      ActivityAbility,
+      SelfcareAbility,
+      OutGlReason,
+      RestraintStrap,
+      OtherReasons,
+      OtherReasonsQt,
+      ResetGl,
+      Complication,
+      ComplicationCx,
+      ComplicationQt,
+      EventDescription,
+      EventLevel,
+      StaffType,
+      StaffTypeQt,
+      StaffPosition,
+      StaffEducation,
+      StaffEduQt,
+      StaffWorkyears,
+      BedUtilization,
+      BedNurseRatio,
+      AuditFeedback,
+      AuditStatus,
+      Remark,
+      IsFlag,
+      OperatorDate,
+      OperatorID,
+      GlTypeOneQt,
+      FixedWayQt,
+      OutGlStateQt,
+      MentalStateQt,
+      ActivityAbilityQt
+      ) VALUES (
+      #EveglId#,
+      #EveresId#,
+      #HospId#,
+      #HospDepId#,
+      #HappenedDate#,
+      #SendtoDate#,
+      #FillStaff#,
+      #HospNumber#,
+      #PatientSex#,
+      #PatientAge#,
+      #PatientAgeUnit#,
+      #NursLevel#,
+      #Diagnosis#,
+      #IsEvaluate#,
+      #EvaluateScore#,
+      #EvaluateDate#,
+      #IsTakePrevent#,
+      #InGlTime#,
+      #GlTypeOne#,
+      #GlTypeTwo#,
+      #FixedWay#,
+      #OutGlState#,
+      #MentalState#,
+      #ActivityAbility#,
+      #SelfcareAbility#,
+      #OutGlReason#,
+      #RestraintStrap#,
+      #OtherReasons#,
+      #OtherReasonsQt#,
+      #ResetGl#,
+      #Complication#,
+      #ComplicationCx#,
+      #ComplicationQt#,
+      #EventDescription#,
+      #EventLevel#,
+      #StaffType#,
+      #StaffTypeQt#,
+      #StaffPosition#,
+      #StaffEducation#,
+      #StaffEduQt#,
+      #StaffWorkyears#,
+      #BedUtilization#,
+      #BedNurseRatio#,
+      #AuditFeedback#,
+      #AuditStatus#,
+      #Remark#,
+      #IsFlag#,
+      #OperatorDate#,
+      #OperatorID#,
+      #GlTypeOneQt#,
+      #FixedWayQt#,
+      #OutGlStateQt#,
+      #MentalStateQt#,
+      #ActivityAbilityQt#
+      )
+    </insert>
+    
+    <update id="aers_tbl_events_gl_Update" parameterClass="aers_tbl_events_gl">
+      UPDATE aers_tbl_events_gl SET
+      EveglId = #EveglId#,
+      EveresId = #EveresId#,
+      HospId = #HospId#,
+      HospDepId = #HospDepId#,
+      HappenedDate = #HappenedDate#,
+      SendtoDate = #SendtoDate#,
+      FillStaff = #FillStaff#,
+      HospNumber = #HospNumber#,
+      PatientSex = #PatientSex#,
+      PatientAge = #PatientAge#,
+      PatientAgeUnit=#PatientAgeUnit#,
+      NursLevel = #NursLevel#,
+      Diagnosis = #Diagnosis#,
+      IsEvaluate = #IsEvaluate#,
+      EvaluateScore = #EvaluateScore#,
+      EvaluateDate = #EvaluateDate#,
+      IsTakePrevent = #IsTakePrevent#,
+      InGlTime = #InGlTime#,
+      GlTypeOne = #GlTypeOne#,
+      GlTypeTwo = #GlTypeTwo#,
+      FixedWay = #FixedWay#,
+      OutGlState = #OutGlState#,
+      MentalState = #MentalState#,
+      ActivityAbility = #ActivityAbility#,
+      SelfcareAbility = #SelfcareAbility#,
+      OutGlReason = #OutGlReason#,
+      RestraintStrap = #RestraintStrap#,
+      OtherReasons = #OtherReasons#,
+      OtherReasonsQt = #OtherReasonsQt#,
+      ResetGl = #ResetGl#,
+      Complication = #Complication#,
+      ComplicationCx = #ComplicationCx#,
+      ComplicationQt = #ComplicationQt#,
+      EventDescription = #EventDescription#,
+      EventLevel = #EventLevel#,
+      StaffType = #StaffType#,
+      StaffTypeQt = #StaffTypeQt#,
+      StaffPosition = #StaffPosition#,
+      StaffEducation = #StaffEducation#,
+      StaffEduQt = #StaffEduQt#,
+      StaffWorkyears = #StaffWorkyears#,
+      BedUtilization = #BedUtilization#,
+      BedNurseRatio = #BedNurseRatio#,
+      AuditFeedback = #AuditFeedback#,
+      AuditStatus = #AuditStatus#,
+      Remark = #Remark#,
+      IsFlag = #IsFlag#,
+      OperatorDate = #OperatorDate#,
+      OperatorID = #OperatorID#,
+      GlTypeOneQt=#GlTypeOneQt#,
+      FixedWayQt=#FixedWayQt#,
+      OutGlStateQt=#OutGlStateQt#,
+      MentalStateQt=#MentalStateQt#,
+      ActivityAbilityQt=#ActivityAbilityQt#
+      WHERE
+      (EveglId = #EveglId#)
+    </update>
+    
+    <delete id="aers_tbl_events_gl_Delete" parameterClass="aers_tbl_events_gl">
+	    Delete From  aers_tbl_events_gl 
+	        WHERE
+			(EveglId = #EveglId#)
+	</delete>
+    <update id="aers_tbl_events_gl_Update_State" parameterClass="aers_tbl_events_gl">
+      UPDATE aers_tbl_events_gl SET
+      AuditFeedback = #AuditFeedback#,
+      AuditStatus = #AuditStatus#
+      WHERE
+      (EveresId = #EveresId#)
+    </update>
+  </statements>
+</sqlMap>

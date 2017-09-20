@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Questions"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="Questions" type="Aersysm.Domain.Questions,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="Questions">
+            <result property="Qid" column="Qid" dbType="String"/>
+            <result property="ChapterID" column="ChapterID" dbType="String"/>
+            <result property="TypeName" column="TypeName" dbType="String"/>
+            <result property="TitleName" column="TitleName" dbType="String"/>
+            <result property="SpellNo" column="SpellNo" dbType="String"/>
+            <result property="A" column="A" dbType="String"/>
+            <result property="B" column="B" dbType="String"/>
+            <result property="C" column="C" dbType="String"/>
+            <result property="D" column="D" dbType="String"/>
+            <result property="E" column="E" dbType="String"/>
+            <result property="F" column="F" dbType="String"/>
+            <result property="Score" column="Score" dbType="Int32"/>
+            <result property="Result" column="Result" dbType="String"/>
+            <result property="OperatorID" column="OperatorID" dbType="String"/>
+            <result property="ModifyDate" column="ModifyDate" dbType="DateTime"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="Questions_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM Questions
+    </select>
+    
+    <select id="Questions_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM Questions
+	</select>
+    
+    <select id="Questions_Find" parameterClass="String" resultMap="FullResultMap" extends="Questions_FindAll">
+	    WHERE
+            (Qid = #Qid#)
+	</select>
+
+
+
+    <select id="Questions_FindByChapterID" parameterClass="String" resultMap="FullResultMap" extends="Questions_FindAll">
+      WHERE
+      (ChapterID = #ChapterID#)
+      order by TypeName
+    </select>
+    
+    <insert id="Questions_Insert" parameterClass="Questions">
+	    INSERT INTO Questions (
+		    AreaName
+			, SuperAreaId
+			, AreaLevel
+			, AreaEnd
+		) VALUES (
+		)
+	</insert>
+    
+    <update id="Questions_Update" parameterClass="Questions">
+      UPDATE Questions SET
+      ChapterID=#ChapterID#,
+      TypeName=#TypeName#,
+      TitleName=#TitleName#,
+      SpellNo=#SpellNo#,
+      A=#A#,
+      B=#B#,
+      C=#C#,
+      D=#D#,
+      E=#E#,
+      F=#F#,
+      Score=#Score#,
+      Result=#Result#,
+      OperatorID=#OperatorID#,
+      ModifyDate=#ModifyDate#
+      WHERE
+      (Qid = #Qid#)
+    </update>
+    
+    <delete id="Questions_Delete" parameterClass="Questions">
+	    Delete From  Questions 
+	        WHERE
+			(Qid = #Qid#)
+	</delete>
+    
+  </statements>
+</sqlMap>

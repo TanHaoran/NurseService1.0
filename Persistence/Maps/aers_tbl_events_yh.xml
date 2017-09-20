@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="aers_tbl_events_yh"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="aers_tbl_events_yh" type="Aersysm.Domain.aers_tbl_events_yh,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="aers_tbl_events_yh">
+            <result property="EveYhId" column="EveYhId" dbType="String"/>
+            <result property="EveresId" column="EveresId" dbType="String"/>
+            <result property="HospId" column="HospId" dbType="String"/>
+            <result property="HospDepId" column="HospDepId" dbType="String"/>
+            <result property="HappenedDate" column="HappenedDate" dbType="DateTime"/>
+            <result property="SendtoDate" column="SendtoDate" dbType="DateTime"/>
+            <result property="FillStaff" column="FillStaff" dbType="String"/>
+            <result property="HospNumber" column="HospNumber" dbType="String"/>
+            <result property="PatientSex" column="PatientSex" dbType="Int32"/>
+            <result property="PatientAge" column="PatientAge" dbType="Int32"/>
+            <result property="PatientAgeUnit" column="PatientAgeUnit" dbType="String"/>
+            <result property="NursLevel" column="NursLevel" dbType="String"/>
+            <result property="Diagnosis" column="Diagnosis" dbType="String"/>
+            <result property="EventDescription" column="EventDescription" dbType="String"/>
+            <result property="EventLevel" column="EventLevel" dbType="String"/>
+            <result property="StaffType" column="StaffType" dbType="String"/>
+            <result property="StaffTypeQt" column="StaffTypeQt" dbType="String"/>
+            <result property="StaffPosition" column="StaffPosition" dbType="String"/>
+            <result property="StaffEducation" column="StaffEducation" dbType="String"/>
+            <result property="StaffEduQt" column="StaffEduQt" dbType="String"/>
+            <result property="StaffWorkyears" column="StaffWorkyears" dbType="String"/>
+            <result property="BedUtilization" column="BedUtilization" dbType="String"/>
+            <result property="BedNurseRatio" column="BedNurseRatio" dbType="String"/>
+            <result property="AuditFeedback" column="AuditFeedback" dbType="String"/>
+            <result property="AuditStatus" column="AuditStatus" dbType="Int32"/>
+            <result property="Remark" column="Remark" dbType="String"/>
+            <result property="IsFlag" column="IsFlag" dbType="Int32"/>
+            <result property="OperatorDate" column="OperatorDate" dbType="DateTime"/>
+            <result property="OperatorID" column="OperatorID" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="aers_tbl_events_yh_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM aers_tbl_events_yh
+    </select>
+    
+    <select id="aers_tbl_events_yh_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM aers_tbl_events_yh
+	</select>
+    
+    <select id="aers_tbl_events_yh_Find" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_events_yh_FindAll">
+	    WHERE
+            (EveYhId = #EveYhId#)
+	</select>
+
+    <select id="aers_tbl_events_yh_FindByEveresId" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_events_yh_FindAll">
+      WHERE
+      (EveresId = #EveresId#)
+    </select>
+    
+    <insert id="aers_tbl_events_yh_Insert" parameterClass="aers_tbl_events_yh">
+      INSERT INTO aers_tbl_events_yh (
+      EveYhId,
+      EveresId,
+      HospId,
+      HospDepId,
+      HappenedDate,
+      SendtoDate,
+      FillStaff,
+      HospNumber,
+      PatientSex,
+      PatientAge,
+      PatientAgeUnit,
+      NursLevel,
+      Diagnosis,
+      EventDescription,
+      EventLevel,
+      StaffType,
+      StaffTypeQt,
+      StaffPosition,
+      StaffEducation,
+      StaffEduQt,
+      StaffWorkyears,
+      BedUtilization,
+      BedNurseRatio,
+      AuditFeedback,
+      AuditStatus,
+      Remark,
+      IsFlag,
+      OperatorDate,
+      OperatorID
+
+      ) VALUES (
+      #EveYhId#,
+      #EveresId#,
+      #HospId#,
+      #HospDepId#,
+      #HappenedDate#,
+      #SendtoDate#,
+      #FillStaff#,
+      #HospNumber#,
+      #PatientSex#,
+      #PatientAge#,
+      #PatientAgeUnit#,
+      #NursLevel#,
+      #Diagnosis#,
+      #EventDescription#,
+      #EventLevel#,
+      #StaffType#,
+      #StaffTypeQt#,
+      #StaffPosition#,
+      #StaffEducation#,
+      #StaffEduQt#,
+      #StaffWorkyears#,
+      #BedUtilization#,
+      #BedNurseRatio#,
+      #AuditFeedback#,
+      #AuditStatus#,
+      #Remark#,
+      #IsFlag#,
+      #OperatorDate#,
+      #OperatorID#
+      )
+    </insert>
+    
+    <update id="aers_tbl_events_yh_Update" parameterClass="aers_tbl_events_yh">
+      UPDATE aers_tbl_events_yh SET
+      EveYhId = #EveYhId#,
+      EveresId = #EveresId#,
+      HospId = #HospId#,
+      HospDepId = #HospDepId#,
+      HappenedDate = #HappenedDate#,
+      SendtoDate = #SendtoDate#,
+      FillStaff = #FillStaff#,
+      HospNumber = #HospNumber#,
+      PatientSex = #PatientSex#,
+      PatientAge = #PatientAge#,
+      PatientAgeUnit=#PatientAgeUnit#,
+      NursLevel = #NursLevel#,
+      Diagnosis = #Diagnosis#,
+      EventDescription = #EventDescription#,
+      EventLevel = #EventLevel#,
+      StaffType = #StaffType#,
+      StaffTypeQt = #StaffTypeQt#,
+      StaffPosition = #StaffPosition#,
+      StaffEducation = #StaffEducation#,
+      StaffEduQt = #StaffEduQt#,
+      StaffWorkyears = #StaffWorkyears#,
+      BedUtilization = #BedUtilization#,
+      BedNurseRatio = #BedNurseRatio#,
+      AuditFeedback = #AuditFeedback#,
+      AuditStatus = #AuditStatus#,
+      Remark = #Remark#,
+      IsFlag = #IsFlag#,
+      OperatorDate = #OperatorDate#,
+      OperatorID = #OperatorID#
+      WHERE
+      (EveYhId = #EveYhId#)
+    </update>
+    
+    <delete id="aers_tbl_events_yh_Delete" parameterClass="aers_tbl_events_yh">
+	    Delete From  aers_tbl_events_yh 
+	        WHERE
+			(EveYhId = #EveYhId#)
+	</delete>
+
+    <update id="aers_tbl_events_yh_Update_State" parameterClass="aers_tbl_events_yh">
+      UPDATE aers_tbl_events_yh SET
+      AuditFeedback = #AuditFeedback#,
+      AuditStatus = #AuditStatus#
+      WHERE
+      (EveresId = #EveresId#)
+    </update>
+    
+  </statements>
+</sqlMap>

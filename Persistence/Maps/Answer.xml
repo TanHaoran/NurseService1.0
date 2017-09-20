@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Answer"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="Answer" type="Aersysm.Domain.Answer,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="Answer">
+            <result property="AID" column="AID" dbType="String"/>
+            <result property="QID" column="QID" dbType="String"/>
+            <result property="Results" column="Results" dbType="String"/>
+            <result property="UserID" column="UserID" dbType="String"/>
+            <result property="ModifyDate" column="ModifyDate" dbType="DateTime"/>
+            <result property="CourseID" column="CourseID" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="Answer_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM Answer
+    </select>
+    
+    <select id="Answer_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM Answer
+	</select>
+
+    <select id="Answer_ByUserCourseID" parameterClass="String" resultMap="FullResultMap" extends="Answer_FindAll">
+      WHERE
+      (UserID = #UserID#)  and CourseID=#CourseID#
+    </select>
+    
+    <select id="Answer_Find" parameterClass="String" resultMap="FullResultMap" extends="Answer_FindAll">
+	    WHERE
+            (AID = #AID#)
+	</select>
+
+
+
+    <select id="Answer_FindQID" parameterClass="String" resultMap="FullResultMap" >
+      SELECT * FROM Answer  WHERE
+      (UserID = #UserID#)  and CourseID=#CourseID#  and QID=#QID#
+    </select>
+    
+    <insert id="Answer_Insert" parameterClass="Answer">
+      INSERT INTO Answer (
+      AID
+      , QID
+      , Results
+      , UserID
+      ,ModifyDate,
+      CourseID
+      ) VALUES (
+      #AID#
+      , #QID#
+      , #Results#
+      , #UserID#
+      ,#ModifyDate#,
+      #CourseID#
+      )
+    </insert>
+    
+    <update id="Answer_Update" parameterClass="Answer">
+      UPDATE Answer SET
+
+
+
+      Results=#Results#,
+      ModifyDate=#ModifyDate#
+
+
+      WHERE
+      (QID = #QID# and  UserID=#UserID#  and CourseID=#CourseID#)
+    </update>
+    
+    <delete id="Answer_Delete" parameterClass="Answer">
+	    Delete From  Answer 
+	        WHERE
+			(AID = #AID#)
+	</delete>
+    
+  </statements>
+</sqlMap>

@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="aers_tbl_hospdep"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="aers_tbl_hospdep" type="Aersysm.Domain.aers_tbl_hospdep,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="aers_tbl_hospdep">
+            <result property="HospdepId" column="HospdepId" dbType="String"/>
+            <result property="BasedepId" column="BasedepId" dbType="String"/>
+            <result property="HospId" column="HospId" dbType="String"/>
+            <result property="HospdepName" column="HospdepName" dbType="String"/>
+            <result property="SpellNo" column="SpellNo" dbType="String"/>
+            <result property="HospdepLogo" column="HospdepLogo" dbType="String"/>
+            <result property="DisplayOrder" column="DisplayOrder" dbType="Int32"/>
+            <result property="IsFlag" column="IsFlag" dbType="Int32"/>
+            <result property="Remarks" column="Remarks" dbType="String"/>
+            <result property="OperatorId" column="OperatorId" dbType="String"/>
+            <result property="OperatorDate" column="OperatorDate" dbType="DateTime"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="aers_tbl_hospdep_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM aers_tbl_hospdep
+    </select>
+    
+    <select id="aers_tbl_hospdep_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM aers_tbl_hospdep
+	</select>
+
+    <select id="aers_tbl_hospdep_FindByHospId" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_hospdep_FindAll">
+      WHERE
+      (HospId = #HospId#)
+    </select>
+
+
+    <select id="aers_tbl_hospdep_Find" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_hospdep_FindAll">
+	    WHERE
+            (HospdepId = #HospdepId#)
+	</select>
+
+
+
+    <select id="aers_tbl_hospdep_FindByHospdepName" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_hospdep_FindAll">
+      WHERE      HospId = #HospId#  and HospdepName=#HospdepName#
+    </select>
+    
+    <insert id="aers_tbl_hospdep_Insert" parameterClass="aers_tbl_hospdep">
+	    INSERT INTO aers_tbl_hospdep (
+                    HospdepId,
+                    BasedepId,
+                    HospId,
+                    HospdepName,
+                    SpellNo,
+                    HospdepLogo,
+                    DisplayOrder,
+                    IsFlag,
+                    Remarks,
+                    OperatorId,
+                    OperatorDate
+		    
+		) VALUES (
+                    #HospdepId#,
+                    #BasedepId#,
+                    #HospId#,
+                    #HospdepName#,
+                    #SpellNo#,
+                    #HospdepLogo#,
+                    #DisplayOrder#,
+                    #IsFlag#,
+                    #Remarks#,
+                    #OperatorId#,
+                    #OperatorDate#
+		)
+	</insert>
+    
+    <update id="aers_tbl_hospdep_Update" parameterClass="aers_tbl_hospdep">
+	    UPDATE aers_tbl_hospdep SET
+                    BasedepId = #BasedepId#,
+                    HospId = #HospId#,
+                    HospdepName = #HospdepName#,
+                    SpellNo = #SpellNo#,
+                    HospdepLogo = #HospdepLogo#,
+                    DisplayOrder = #DisplayOrder#,
+                    IsFlag = #IsFlag#,
+                    Remarks = #Remarks#,
+                    OperatorId = #OperatorId#,
+                    OperatorDate = #OperatorDate#
+		WHERE
+		    (HospdepId = #HospdepId#)
+	</update>
+    
+    <delete id="aers_tbl_hospdep_Delete" parameterClass="aers_tbl_hospdep">
+	    Delete From  aers_tbl_hospdep 
+	        WHERE
+			(HospdepId = #HospdepId#)
+	</delete>
+    
+  </statements>
+</sqlMap>

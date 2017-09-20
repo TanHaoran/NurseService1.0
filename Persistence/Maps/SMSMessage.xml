@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="SMSMessage"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="SMSMessage" type="Aersysm.Domain.SMSMessage,Aersysm.Domain"/>
+  </alias>
+  <resultMaps>
+    <resultMap id="FullResultMap" class="SMSMessage">
+      <result property="SMSID" column="SMSID" dbType="String"/>
+      <result property="ReguserID" column="ReguserID" dbType="String"/>
+      <result property="PhoneNumber" column="PhoneNumber" dbType="String"/>
+      <result property="VerificationCode" column="VerificationCode" dbType="String"/>
+      <result property="SMSSendTime" column="SMSSendTime" dbType="DateTime"/>
+      <result property="SendStatus" column="SendStatus" dbType="Int32"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="SMSMessage_Insert" parameterClass="SMSMessage">
+      INSERT INTO SMSMessage (
+      SMSID,
+      ReguserID,
+      PhoneNumber,
+      VerificationCode,
+      SMSSendTime,
+      SendStatus
+      ) VALUES (
+      #SMSID#,
+      #ReguserID#,
+      #PhoneNumber#,
+      #VerificationCode#,
+      #SMSSendTime#,
+      #SendStatus#
+      )
+    </insert>
+
+    <update id="SMSMessage_Update" parameterClass="SMSMessage">
+      UPDATE SMSMessage SET
+      ReguserID=#ReguserID#,
+      PhoneNumber=#PhoneNumber#,
+      VerificationCode=#VerificationCode#,
+      SMSSendTime=#SMSSendTime#,
+      SendStatus=#SendStatus#
+      WHERE
+      (SMSID = #SMSID#)
+    </update>
+
+    <delete id="SMSMessage_Delete" parameterClass="SMSMessage">
+      Delete From  SMSMessage
+      WHERE
+      (SMSID = #SMSID#)
+    </delete>
+    
+    <select id="SMSMessage_FindAll" resultMap="FullResultMap">
+      SELECT * FROM SMSMessage
+    </select>
+    
+    <select id="SMSMessage_FindByPhoneNumber" parameterClass="String" resultMap="FullResultMap" extends="SMSMessage_FindAll">
+      WHERE
+      (PhoneNumber = #PhoneNumber#)
+    </select>
+  </statements>
+</sqlMap>

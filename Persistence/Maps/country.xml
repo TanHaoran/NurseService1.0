@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="country" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="country" type="Aersysm.Domain.country, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="country">
+			<result property="CountryId" column="countryid" />
+			<result property="CountryName" column="countryname" />
+			<result property="CountryCode" column="countrycode" />
+			<result property="IsFlag" column="isflag" />
+			<result property="DisplayOrder" column="displayorder" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="Selectcountry" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  countryid,
+				  countryname,
+				  countrycode,
+				  isflag,
+				  displayorder
+			From country
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					countryid=#CountryId# 
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectcountry" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  countryid,
+				  countryname,
+				  countrycode,
+				  isflag,
+				  displayorder
+			From country
+		</select>
+		
+		<select id="ChildSelectcountry" parameterClass="int" resultMap="SelectResult" extends="BaseSelectcountry">
+			
+		</select>
+				
+		<insert id="Insertcountry" parameterClass="country">
+			Insert Into country (
+				  countryid,
+				  countryname,
+				  countrycode,
+				  isflag,
+				  displayorder
+			)Values(
+				 #CountryId#,
+				 #CountryName#,
+				 #CountryCode#,
+				 #IsFlag#,
+				 #DisplayOrder#
+			)
+		</insert>
+		
+		<update id="Updatecountry" parameterClass="country">
+			Update country Set 
+				countryid=#CountryId#,
+				countryname=#CountryName#,
+				countrycode=#CountryCode#,
+				isflag=#IsFlag#,
+				displayorder=#DisplayOrder#
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					countryid=#CountryId#
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="Deletecountry" parameterClass="int">
+			Delete From country
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					countryid=#CountryId#
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

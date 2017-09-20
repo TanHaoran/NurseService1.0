@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{400B98C6-997F-443A-91E5-4F27E1CA8756}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Aersysm.Persistence</RootNamespace>
+    <AssemblyName>Aersysm.Persistence</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="IBatisNet.Common">
+      <HintPath>..\Aersdll\IBatisNet.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="IBatisNet.DataAccess">
+      <HintPath>..\Aersdll\IBatisNet.DataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="IBatisNet.DataMapper">
+      <HintPath>..\Aersdll\IBatisNet.DataMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data">
+      <HintPath>bin\Release\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdmdepartmentSqlMapDao.cs" />
+    <Compile Include="AdministratorSqlMapDao.cs" />
+    <Compile Include="AdmpermissionSqlMapDao.cs" />
+    <Compile Include="AersDAL.cs" />
+    <Compile Include="aers_sys_generalcodeSqlMapDao.cs" />
+    <Compile Include="aers_sys_seedSqlMapDao.cs" />
+    <Compile Include="aers_sys_staffresourcesSqlMapDao.cs" />
+    <Compile Include="aers_sys_statecodeSqlMapDao.cs" />
+    <Compile Include="aers_tbl_basicsdepSqlMapDao.cs" />
+    <Compile Include="aers_tbl_LoginKeySqlMapDao.cs" />
+    <Compile Include="BannerSqlMapDao.cs" />
+    <Compile Include="CertificateAuditSqlMapDao.cs" />
+    <Compile Include="CertificateverifySqlMapDao.cs" />
+    <Compile Include="countrySqlMapDao.cs" />
+    <Compile Include="CourseDistributeSqlMapDao.cs" />
+    <Compile Include="CourseRecordSqlMapDao.cs" />
+    <Compile Include="CourseUserSqlMapDao.cs" />
+    <Compile Include="DepartmentSqlMapDao.cs" />
+    <Compile Include="DepnurunitSqlMapDao.cs" />
+    <Compile Include="EmchatSqlMapDao.cs" />
+    <Compile Include="EmuserSqlMapDao.cs" />
+    <Compile Include="FavourSqlMapDao.cs" />
+    <Compile Include="FeedbackSqlMapDao.cs" />
+    <Compile Include="GroupinfoSqlMapDao.cs" />
+    <Compile Include="GroupuserSqlMapDao.cs" />
+    <Compile Include="HospitalSqlMapDao.cs" />
+    <Compile Include="MessageSqlMapDao.cs" />
+    <Compile Include="NoticeSqlMapDao.cs" />
+    <Compile Include="NursingunitidSqlMapDao.cs" />
+    <Compile Include="ReleaseversionSqlMapDao.cs" />
+    <Compile Include="SMSMessageSqlMapDao.cs" />
+    <Compile Include="SMSSqlMapDao.cs" />
+    <Compile Include="StudyScheduleSqlMapDao.cs" />
+    <Compile Include="TokenSqlMapDao.cs" />
+    <Compile Include="TrainDAL.cs" />
+    <Compile Include="aers_tbl_eventsresumeDAL.cs" />
+    <Compile Include="aers_tbl_eventsresumeSqlMapDao.cs" />
+    <Compile Include="aers_tbl_events_ddzcSqlMapDao.cs" />
+    <Compile Include="aers_tbl_events_glSqlMapDao.cs" />
+    <Compile Include="aers_tbl_events_gySqlMapDao.cs" />
+    <Compile Include="aers_tbl_events_qtSqlMapDao.cs" />
+    <Compile Include="aers_tbl_events_yc_partsSqlMapDao.cs" />
+    <Compile Include="aers_tbl_events_yhSqlMapDao.cs" />
+    <Compile Include="aers_tbl_events_zyblSqlMapDao.cs" />
+    <Compile Include="aers_tbl_hospdepSqlMapDao.cs" />
+    <Compile Include="aers_tbl_events_ycSqlMapDao.cs" />
+    <Compile Include="aers_tbl_hospitalSqlMapDao.cs" />
+    <Compile Include="aers_tbl_registereduserSqlMapDao.cs" />
+    <Compile Include="aers_tbl_staffSqlMapDao.cs" />
+    <Compile Include="AnswerSqlMapDao.cs" />
+    <Compile Include="BaseSqlMapDao.cs" />
+    <Compile Include="CourseCatalogSqlMapDao.cs" />
+    <Compile Include="CourseOfficeSqlMapDao.cs" />
+    <Compile Include="CourseSectionSqlMapDao.cs" />
+    <Compile Include="CourseSqlMapDao.cs" />
+    <Compile Include="CourseTypeSqlMapDao.cs" />
+    <Compile Include="CreditRecordSqlMapDao.cs" />
+    <Compile Include="IntegralSqlMapDao.cs" />
+    <Compile Include="NotesSqlMapDao.cs" />
+    <Compile Include="PlancontentsSqlMapDao.cs" />
+    <Compile Include="ProblemSqlMapDao.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuestionsSqlmapDao.cs" />
+    <Compile Include="RechargeSqlMapDao.cs" />
+    <Compile Include="TrainDetailRecordSqlMapDao.cs" />
+    <Compile Include="TrainRecordSqlMapDao.cs" />
+    <Compile Include="UserauthsSqlMapDao.cs" />
+    <Compile Include="userbasicinfoSqlMapDao.cs" />
+    <Compile Include="UserLoginStatusSqlMapDao.cs" />
+    <Compile Include="UserpracticecertificateSqlMapDao.cs" />
+    <Compile Include="UserquacertificateSqlMapDao.cs" />
+    <Compile Include="UserregisterSqlMapDao.cs" />
+    <Compile Include="UserrelrecordSqlMapDao.cs" />
+    <Compile Include="User_AuthsSqlMapDao.cs" />
+    <Compile Include="User_RegisterSqlMapDao.cs" />
+    <Compile Include="WeiboSqlMapDao.cs" />
+    <Compile Include="WeixinSqlMapDao.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\aers_sys_generalcode.xml" />
+    <EmbeddedResource Include="Maps\aers_sys_seed.xml" />
+    <EmbeddedResource Include="Maps\aers_sys_staffresources.xml" />
+    <EmbeddedResource Include="Maps\aers_tbl_basicsdep.xml" />
+    <EmbeddedResource Include="Maps\aers_tbl_eventsresume.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Maps\aers_tbl_hospdep.xml" />
+    <EmbeddedResource Include="Maps\aers_tbl_hospital.xml" />
+    <EmbeddedResource Include="Maps\aers_tbl_registereduser.xml" />
+    <EmbeddedResource Include="Maps\aers_tbl_staff.xml" />
+    <Compile Include="QqSqlMapDao.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <Project>{1c13eb91-f0b2-413b-b724-601236804c06}</Project>
+      <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Untility\Untility.csproj">
+      <Project>{20671026-f754-45db-b783-4cf19a3d0f32}</Project>
+      <Name>Untility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\aers_tbl_events_yc.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\aers_tbl_events_yc_parts.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\aers_sys_statecode.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\aers_tbl_events_ddzc.xml" />
+    <EmbeddedResource Include="Maps\aers_tbl_events_gl.xml" />
+    <EmbeddedResource Include="Maps\aers_tbl_events_gy.xml" />
+    <EmbeddedResource Include="Maps\aers_tbl_events_qt.xml" />
+    <EmbeddedResource Include="Maps\aers_tbl_events_yh.xml" />
+    <EmbeddedResource Include="Maps\aers_tbl_events_zybl.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\Answer.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\Course.xml" />
+    <EmbeddedResource Include="Maps\CourseCatalog.xml" />
+    <EmbeddedResource Include="Maps\CourseOffice.xml" />
+    <EmbeddedResource Include="Maps\CourseSection.xml" />
+    <EmbeddedResource Include="Maps\CourseType.xml" />
+    <EmbeddedResource Include="Maps\CreditRecord.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Maps\GenericDictionary.xml" />
+    <EmbeddedResource Include="Maps\Integral.xml" />
+    <EmbeddedResource Include="Maps\Notes.xml" />
+    <EmbeddedResource Include="Maps\plancontents.xml" />
+    <EmbeddedResource Include="Maps\Problem.xml" />
+    <EmbeddedResource Include="Maps\Questions.xml" />
+    <EmbeddedResource Include="Maps\Recharge.xml" />
+    <EmbeddedResource Include="Maps\StudySchedule.xml" />
+    <EmbeddedResource Include="Maps\TrainDetailRecord.xml" />
+    <EmbeddedResource Include="Maps\TrainRecord.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\CertificateAudit.xml" />
+    <EmbeddedResource Include="Maps\CourseDistribute.xml" />
+    <EmbeddedResource Include="Maps\Message.xml" />
+    <EmbeddedResource Include="Maps\SMSMessage.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\CourseUser.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\Favour.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\CourseRecord.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\aers_tbl_LoginKey.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\Emchat.xml" />
+    <EmbeddedResource Include="Maps\Banner.xml" />
+    <EmbeddedResource Include="Maps\Notice.xml" />
+    <EmbeddedResource Include="Maps\country.xml" />
+    <EmbeddedResource Include="Maps\Certificateverify.xml" />
+    <EmbeddedResource Include="Maps\Department.xml" />
+    <EmbeddedResource Include="Maps\Depnurunit.xml" />
+    <EmbeddedResource Include="Maps\Hospital.xml" />
+    <EmbeddedResource Include="Maps\Nursingunitid.xml" />
+    <EmbeddedResource Include="Maps\SMS.xml" />
+    <EmbeddedResource Include="Maps\Feedback.xml" />
+    <EmbeddedResource Include="Maps\Releaseversion.xml" />
+    <EmbeddedResource Include="Maps\Qq.xml" />
+    <EmbeddedResource Include="Maps\Userauths.xml" />
+    <EmbeddedResource Include="Maps\Userregister.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Maps\userbasicinfo.xml" />
+    <EmbeddedResource Include="Maps\Userpracticecertificate.xml" />
+    <EmbeddedResource Include="Maps\Userquacertificate.xml" />
+    <EmbeddedResource Include="Maps\Userrelrecord.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\Emuser.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\Groupinfo.xml" />
+    <EmbeddedResource Include="Maps\Groupuser.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\UserLoginStatus.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\Weixin.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\Weibo.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\Admdepartment.xml" />
+    <EmbeddedResource Include="Maps\Administrator.xml" />
+    <EmbeddedResource Include="Maps\Admpermission.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\Token.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

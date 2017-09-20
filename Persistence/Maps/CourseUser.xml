@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="CourseUser"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="CourseUser" type="Aersysm.Domain.CourseUser,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="CourseUser">
+      <result property="ID" column="ID" dbType="String"/>
+      <result property="CourseID" column="CourseID" dbType="String"/>
+      <result property="UserID" column="UserID" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="CourseUser_Insert" parameterClass="CourseUser">
+      INSERT INTO CourseUser (
+      ID,
+      CourseID,
+      UserID
+      ) VALUES (
+      #ID#,
+      #CourseID#,
+      #UserID#
+      )
+    </insert>
+
+    <update id="CourseUser_Update" parameterClass="CourseUser">
+      UPDATE CourseUser SET
+      CourseID=#CourseID#,
+      UserID=#UserID#
+      WHERE
+      (ID = #ID#)
+    </update>
+
+    <delete id="CourseUser_Delete" parameterClass="CourseUser">
+      Delete From  CourseUser
+      WHERE
+      (ID = #ID#)
+    </delete>
+
+    <select id="CourseUser_FindAll" resultMap="FullResultMap">
+      SELECT * FROM CourseUser
+    </select>
+
+  </statements>
+
+</sqlMap>
+

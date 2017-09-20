@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="aers_sys_statecode"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="aers_sys_statecode" type="Aersysm.Domain.aers_sys_statecode,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="aers_sys_statecode">
+            <result property="ECodeId" column="ECodeId" dbType="String"/>
+            <result property="ECodeTag" column="ECodeTag" dbType="String"/>
+            <result property="ECodeValue" column="ECodeValue" dbType="String"/>
+            <result property="IsFlag" column="IsFlag" dbType="Int32"/>
+            <result property="Remarks" column="Remarks" dbType="String"/>
+            <result property="Classify" column="Classify" dbType="String"/>
+
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="aers_sys_statecode_GetCount" resultClass="System.Int32">
+      SELECT count(*) FROM aers_sys_statecode WHERE IsFlag ='0'
+    </select>
+    
+    <select id="aers_sys_statecode_FindAll" resultMap="FullResultMap">
+      SELECT * FROM aers_sys_statecode WHERE IsFlag ='0' 
+    </select>
+    
+    <select id="aers_sys_statecode_Find" parameterClass="String" resultMap="FullResultMap" extends="aers_sys_statecode_FindAll">
+	    WHERE
+            (ECodeId = #ECodeId#)
+	</select>
+    
+    <insert id="aers_sys_statecode_Insert" parameterClass="aers_sys_statecode">
+      INSERT INTO aers_sys_statecode (
+      ECodeId,
+      ECodeTag,
+      ECodeValue,
+      IsFlag,
+      Remarks,
+      Classify
+
+      ) VALUES (
+      #ECodeId#,
+      #ECodeTag#,
+      #ECodeValue#,
+      #IsFlag#,
+      #Remarks#,
+      #Classify#
+      )
+    </insert>
+    
+    <update id="aers_sys_statecode_Update" parameterClass="aers_sys_statecode">
+      UPDATE area SET
+      ECodeId = #ECodeId#,
+      ECodeTag = #ECodeTag#,
+      ECodeValue = #ECodeValue#,
+      IsFlag = #IsFlag#,
+      Remarks = #Remarks#,
+      Classify=#Classify#
+      WHERE
+      (ECodeId = #ECodeId#)
+    </update>
+    
+    <delete id="aers_sys_statecode_Delete" parameterClass="aers_sys_statecode">
+	    Delete From  aers_sys_statecode 
+	        WHERE
+			(ECodeId = #ECodeId#)
+	</delete>
+    
+  </statements>
+</sqlMap>

@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="aers_sys_seed"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="aers_sys_seed" type="Aersysm.Domain.aers_sys_seed,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="aers_sys_seed">
+            <result property="TableName" column="TableName" dbType="String"/>
+            <result property="MaxNo" column="MaxNo" dbType="Int32"/>
+            <result property="Length" column="Length" dbType="Int32"/>
+            <result property="Prefix" column="Prefix" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="aers_sys_seed_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM aers_sys_seed
+    </select>
+    
+    <select id="aers_sys_seed_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM aers_sys_seed
+	</select>
+    
+    <select id="aers_sys_seed_Find" parameterClass="String" resultMap="FullResultMap" extends="aers_sys_seed_FindAll">
+	    WHERE
+            (TableName = #TableName#)
+	</select>
+    
+    <insert id="aers_sys_seed_Insert" parameterClass="aers_sys_seed">
+	    INSERT INTO aers_sys_seed (
+                    TableName,
+                    MaxNo,
+                    Length,
+                    Prefix
+		    
+		) VALUES (
+                    #TableName#,
+                    #MaxNo#,
+                    #Length#,
+                    #Prefix#
+		)
+	</insert>
+    
+    <update id="aers_sys_seed_Update" parameterClass="aers_sys_seed">
+	    UPDATE aers_sys_seed SET
+                    TableName = #TableName#,
+                    MaxNo = #MaxNo#,
+                    Length = #Length#,
+                    Prefix = #Prefix#
+		WHERE
+		    (TableName = #TableName#)
+	</update>
+    
+    <delete id="aers_sys_seed_Delete" parameterClass="aers_sys_seed">
+	    Delete From  aers_sys_seed 
+	        WHERE
+			(TableName = #TableName#)
+	</delete>
+    
+  </statements>
+</sqlMap>

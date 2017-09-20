@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="CourseSection"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="CourseSection" type="Aersysm.Domain.CourseSection,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="CourseSection">
+            <result property="ChapterID" column="ChapterID" dbType="String"/>
+            <result property="CatalogID" column="CatalogID" dbType="String"/>
+            <result property="CourseID" column="CourseID" dbType="String"/>
+            <result property="ChapterName" column="ChapterName" dbType="String"/>
+            <result property="ChapterDuration" column="ChapterDuration" dbType="DateTime"/>
+            <result property="ChapterType" column="ChapterType" dbType="Int32"/>
+            <result property="AuthorizationType" column="AuthorizationType" dbType="Int32"/>
+            <result property="ChapterSort" column="ChapterSort" dbType="Int32"/>
+            <result property="ContentUrl" column="ContentUrl" dbType="String"/>
+            <result property="ThumbUrl" column="ThumbUrl" dbType="String"/>
+            <result property="ChapterPoints" column="ChapterPoints" dbType="Int32"/>
+            <result property="IsEndLevel" column="IsEndLevel" dbType="Int32"/>
+            <result property="OperatorID" column="OperatorID" dbType="String"/>
+            <result property="OperatorTime" column="OperatorTime" dbType="DateTime"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="CourseSection_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM CourseSection
+    </select>
+    
+    <select id="CourseSection_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM CourseSection
+	</select>
+    
+    <select id="CourseSection_Find" parameterClass="String" resultMap="FullResultMap" extends="CourseSection_FindAll">
+	    WHERE
+            (ChapterID = #ChapterID#)
+	</select>
+
+    <select id="CourseSection_FindByCourseID" parameterClass="String" resultMap="FullResultMap" >
+      select * from CourseSection
+      where 
+      (CourseID = #CourseID#)
+    </select>
+
+    <select id="CourseSection_FindByCatalogID" parameterClass="String" resultMap="FullResultMap" >
+      select * from CourseSection
+      where
+      (CatalogID = #CatalogID#)
+    </select>
+   
+
+    <insert id="CourseSection_Insert" parameterClass="CourseSection">
+      INSERT INTO CourseSection (
+      ChapterID
+      ,CatalogID
+      ,CourseID
+      ,ChapterName
+      ,ChapterDuration
+      ,ChapterType
+      ,AuthorizationType
+      ,ChapterSort
+      ,ContentUrl
+      ,ThumbUrl
+      ,ChapterPoints
+      ,IsEndLevel
+      ,OperatorID
+      ,OperatorTime
+      ) VALUES (
+      #ChapterID#
+      ,#CatalogID#
+      ,#CourseID#
+      ,#ChapterName#
+      ,#ChapterDuration#
+      ,#ChapterType#
+      ,#AuthorizationType#
+      ,#ChapterSort#
+      ,#ContentUrl#
+      ,#ThumbUrl#
+      ,#ChapterPoints#
+      ,#IsEndLevel#
+      ,#OperatorID#
+      ,#OperatorTime#
+      )
+    </insert>
+    
+    <update id="CourseSection_Update" parameterClass="CourseSection">
+      UPDATE CourseSection SET
+      CatalogID=#CatalogID#
+      ,CourseID=#CourseID#
+      ,ChapterName=#ChapterName#
+      ,ChapterDuration=#ChapterDuration#
+      ,ChapterType=#ChapterType#
+      ,AuthorizationType=#AuthorizationType#
+      ,ChapterSort=#ChapterSort#
+      ,ContentUrl=#ContentUrl#
+      ,ThumbUrl=#ThumbUrl#
+      ,ChapterPoints=#ChapterPoints#
+      ,IsEndLevel=#IsEndLevel#
+      ,OperatorID=#OperatorID#
+      ,OperatorTime=#OperatorTime#
+      WHERE
+      (ChapterID = #ChapterID#)
+    </update>
+    
+    <delete id="CourseSection_Delete" parameterClass="CourseSection">
+	    Delete From  CourseSection 
+	        WHERE
+			(ChapterID = #ChapterID#)
+	</delete>
+    
+  </statements>
+</sqlMap>

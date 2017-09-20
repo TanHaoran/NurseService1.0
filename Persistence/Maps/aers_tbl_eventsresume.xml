@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="aers_tbl_eventsresume"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="aers_tbl_eventsresume" type="Aersysm.Domain.aers_tbl_eventsresume,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="aers_tbl_eventsresume">
+            <result property="EveresId" column="EveresId" dbType="String"/>
+            <result property="EveresName" column="EveresName" dbType="String"/>
+            <result property="SpellNo" column="SpellNo" dbType="String"/>
+            <result property="EveresLevel" column="EveresLevel" dbType="String"/>
+            <result property="FeedbackState" column="FeedbackState" dbType="Int32"/>
+            <result property="ExamineState" column="ExamineState" dbType="String"/>
+            <result property="HappenedDate" column="HappenedDate" dbType="DateTime"/>
+            <result property="SendtoDate" column="SendtoDate" dbType="DateTime"/>
+            <result property="HospDepId" column="HospDepId" dbType="String"/>
+            <result property="HospId" column="HospId" dbType="String"/>
+            <result property="Remark" column="Remark" dbType="String"/>
+            <result property="IsFlag" column="IsFlag" dbType="Int32"/>
+            <result property="OperatorDate" column="OperatorDate" dbType="DateTime"/>
+            <result property="OperatorID" column="OperatorID" dbType="String"/>
+           <result property="FileName" column="FileName" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="aers_tbl_eventsresume_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM aers_tbl_eventsresume
+    </select>
+    
+    <select id="aers_tbl_eventsresume_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM aers_tbl_eventsresume
+	</select>
+    
+    <select id="aers_tbl_eventsresume_Find" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_eventsresume_FindAll">
+      WHERE
+        (EveresId = #EveresId#)  AND IsFlag ='0' 
+    </select>
+
+    <select id="aers_tbl_eventsresume_FindByDate" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_eventsresume_FindAll">
+      WHERE
+      (HappenedDate Like #HappenedDate#)  AND IsFlag ='0'
+    </select>
+
+
+     
+    <select id="aers_tbl_eventsresume_FindOnekeyInfo" parameterClass="String" resultMap="FullResultMap" >
+      SELECT b.`Name` as FillStaff,c.HospdepName, a.EveresId,a.EveresName,a.IsFlag,a.ExamineState,a.FeedbackState,a.HappenedDate,a.SendtoDate,a.HospDepId,a.OperatorID FROM aers_tbl_eventsresume AS a
+      LEFT JOIN aers_tbl_staff as b ON a.OperatorID = b.ReguserId LEFT JOIN aers_tbl_hospdep as c on a.HospDepId = c.HospdepId   WHERE
+      (a.EveresId = #EveresId#)  AND a.IsFlag ='0'
+    </select>
+
+    <select id="aers_tbl_eventsresume_FindOnekeyByDate" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_eventsresume_FindAll">
+      WHERE
+      (HappenedDate = #HappenedDate# AND SpellNo='ZERO' AND HospDepId = #HospDepId#  AND IsFlag ='0')
+    </select>
+
+    <select id="aers_tbl_eventsresume_FindHospByRud" parameterClass="String" resultMap="FullResultMap" >
+
+      SELECT * FROM aers_tbl_eventsresume
+      WHERE HospId = (SELECT HospId FROM aers_tbl_hospdep WHERE HospdepId =
+      (SELECT DepId FROM aers_tbl_staff WHERE ReguserId=#ReguserId#)) AND IsFlag ='0'
+      and ExamineState=#ExamineState#   ORDER BY SendtoDate DESC
+    </select>
+
+    <select id="aers_tbl_eventsresume_FindHospByData" parameterClass="String" resultMap="FullResultMap" >
+
+      SELECT * FROM aers_tbl_eventsresume
+      WHERE OperatorID=#ReguserId# AND IsFlag ='0'
+      and ExamineState!=3 ORDER BY SendtoDate DESC
+    </select>
+
+
+    <select id="aers_tbl_eventsresume_FindHospByHospId" parameterClass="String" resultMap="FullResultMap" >
+
+      SELECT * FROM aers_tbl_eventsresume WHERE HospId =#HospId#  AND IsFlag ='0'
+      and ExamineState=#ExamineState#   ORDER BY SendtoDate DESC
+    </select>
+    
+    <select id="aers_tbl_eventsresume_FindDepByRud" parameterClass="String" resultMap="FullResultMap" >
+     
+      SELECT * FROM aers_tbl_eventsresume 
+      WHERE HospDepId = (SELECT DepId FROM aers_tbl_staff WHERE ReguserId=#ReguserId#)  AND IsFlag ='0'
+      and  ExamineState=#ExamineState# ORDER BY SendtoDate DESC
+    </select>
+
+    <select id="aers_tbl_eventsresume_FindDepByRudData" parameterClass="String" resultMap="FullResultMap" >
+      SELECT * FROM aers_tbl_eventsresume
+      WHERE HospDepId = (SELECT DepId FROM aers_tbl_staff WHERE ReguserId=#ReguserId# )
+      and  EveresName!=151  and ExamineState!=3  ORDER BY SendtoDate DESC
+    </select>
+
+    <select id="aers_tbl_eventsresume_FindDepByRudDataZ" parameterClass="String" resultMap="FullResultMap" >
+      SELECT * FROM aers_tbl_eventsresume
+      WHERE OperatorID=#ReguserId#
+      and ExamineState!=3  ORDER BY SendtoDate DESC
+    </select>
+  
+
+    <select id="aers_tbl_eventsresume_FindAllByRud" parameterClass="String" resultMap="FullResultMap" >
+       SELECT * FROM aers_tbl_eventsresume 
+       WHERE  ExamineState=#ExamineState# AND IsFlag ='0' and HappenedDate>=#HappenedDate# ORDER BY SendtoDate DESC
+    </select>
+    
+    
+
+    <select id="aers_tbl_eventsresume_FindAllByRudDep" parameterClass="String" resultMap="FullResultMap" >
+      SELECT c.HospId,c.HospdepId,c.HospdepName as DepName,b.`Name` as AersName, a.EveresId,a.EveresName,a.EveresLevel,a.HappenedDate , a.SendtoDate,a.FeedbackState , a.ExamineState from (
+      SELECT * FROM aers_tbl_eventsresume WHERE  ExamineState=#ExamineState# AND IsFlag ='0'
+      ) as a  LEFT JOIN aers_tbl_staff as b on a.OperatorID = b.ReguserId LEFT JOIN aers_tbl_hospdep as c on c.HospdepId = a.HospdepId WHERE a.HappenedDate>#HappenedDate# and c.HospdepId=#HospdepId#   ORDER BY a.SendtoDate DESC
+    </select>
+
+    <select id="aers_tbl_eventsresume_FindAllByRudHosp" parameterClass="String" resultMap="FullResultMap" >
+
+      SELECT * FROM aers_tbl_eventsresume WHERE  ExamineState=#ExamineState# AND IsFlag ='0' and HappenedDate>=#HappenedDate# and  HospId=#HospId# ORDER BY SendtoDate DESC
+
+    </select>
+    
+    <insert id="aers_tbl_eventsresume_Insert" parameterClass="aers_tbl_eventsresume">
+      INSERT INTO aers_tbl_eventsresume (
+      EveresId,
+      EveresName,
+      SpellNo,
+      EveresLevel,
+      FeedbackState,
+      ExamineState,
+      HappenedDate,
+      SendtoDate,
+      HospDepId,
+      HospId,
+      Remark,
+      IsFlag,
+      OperatorDate,
+      OperatorID,
+      FileName
+
+      ) VALUES (
+      #EveresId#,
+      #EveresName#,
+      #SpellNo#,
+      #EveresLevel#,
+      #FeedbackState#,
+      #ExamineState#,
+      #HappenedDate#,
+      #SendtoDate#,
+      #HospDepId#,
+      #HospId#,
+      #Remark#,
+      #IsFlag#,
+      #OperatorDate#,
+      #OperatorID#,
+      #FileName#
+      )
+    </insert>
+    
+    <update id="aers_tbl_eventsresume_Update" parameterClass="aers_tbl_eventsresume">
+      UPDATE aers_tbl_eventsresume SET
+      EveresId = #EveresId#,
+      EveresName = #EveresName#,
+      SpellNo = #SpellNo#,
+      EveresLevel = #EveresLevel#,
+      FeedbackState = #FeedbackState#,
+      ExamineState = #ExamineState#,
+      HappenedDate = #HappenedDate#,
+      SendtoDate = #SendtoDate#,
+      HospDepId = #HospDepId#,
+      HospId = #HospId#,
+      Remark = #Remark#,
+      IsFlag = #IsFlag#,
+      OperatorDate = #OperatorDate#,
+      OperatorID = #OperatorID#,
+      FileName=#FileName#
+      WHERE
+      (EveresId = #EveresId#)
+    </update>
+
+    <update id="aers_tbl_eventsresume_Update_State" parameterClass="aers_tbl_eventsresume">
+      UPDATE aers_tbl_eventsresume SET
+        FeedbackState = #FeedbackState#,
+        ExamineState = #ExamineState#
+      WHERE
+      (EveresId = #EveresId#)
+    </update>
+    
+    <delete id="aers_tbl_eventsresume_Delete" parameterClass="aers_tbl_eventsresume">
+	    Delete From  aers_tbl_eventsresume 
+	        WHERE
+			(EveresId = #EveresId#)
+	</delete>
+    
+  </statements>
+</sqlMap>

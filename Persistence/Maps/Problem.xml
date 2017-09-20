@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Problem"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="Problem" type="Aersysm.Domain.Problem,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="Problem">
+            <result property="QID" column="QID" dbType="String"/>
+            <result property="CourseID" column="CourseID" dbType="String"/>
+            <result property="Title" column="Title" dbType="String"/>
+            <result property="UserID" column="UserID" dbType="String"/>
+            <result property="ModifyDate" column="ModifyDate" dbType="DateTime"/>
+      <result property="FavorCount" column="FavorCount" dbType="Int32"/>
+      
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="Problem_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM Problem
+    </select>
+
+
+    <select id="Problem_FindByCourseID" resultMap="FullResultMap">
+      select * from Problem
+      where CourseID=#CourseID#   ORDER BY QID desc
+
+    </select>
+    
+    
+    <select id="Problem_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM Problem
+	</select>
+    
+    <select id="Problem_Find" parameterClass="String" resultMap="FullResultMap" extends="Problem_FindAll">
+	    WHERE
+            (QID = #QID#)
+	</select>
+
+    <select id="Problem_FindByQID" parameterClass="String" resultMap="FullResultMap" extends="Problem_FindAll">
+      WHERE
+      (QID = #QID#)
+    </select>
+    
+    <insert id="Problem_Insert" parameterClass="Problem">
+      INSERT INTO Problem (
+      QID,
+      CourseID,
+      Title,
+      UserID,
+      ModifyDate,
+      FavorCount
+      ) VALUES (
+      #QID#,
+      #CourseID#,
+      #Title#,
+      #UserID#,
+      #ModifyDate#,
+      #FavorCount#
+      )
+    </insert>
+    
+    <update id="Problem_Update" parameterClass="Problem">
+      UPDATE Problem SET
+      CourseID=#CourseID#,
+      Title=#Title#,
+      UserID=#UserID#,
+      ModifyDate=#ModifyDate#,
+      FavorCount=#FavorCount#
+      WHERE
+      (QID = #QID#)
+    </update>
+    
+     <update id="UpdateFavorCountByMainID" parameterClass="Problem">
+      UPDATE Problem SET
+      FavorCount=#FavorCount#
+      WHERE
+      (QID = #QID#)
+    </update>
+  
+    <delete id="Problem_Delete" parameterClass="Problem">
+	    Delete From  Problem 
+	        WHERE
+			(QID = #QID#)
+	</delete>
+    
+  </statements>
+</sqlMap>

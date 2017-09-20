@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Message"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  <alias>
+    <typeAlias alias="Message" type="Aersysm.Domain.Message,Aersysm.Domain"/>
+  </alias>
+  
+  <resultMaps>
+    <resultMap id="FullResultMap" class="Message">
+      <result property="MessageID" column="MessageID" dbType="String"/>
+      <result property="MessageType" column="MessageType" dbType="Int32"/>
+      <result property="ReceiverID" column="ReceiverID" dbType="String"/>
+      <result property="MessageTitle" column="MessageTitle" dbType="String"/>
+      <result property="MessageContent" column="MessageContent" dbType="String"/>
+      <result property="MessageDate" column="MessageDate" dbType="DateTime"/>
+      <result property="MessageSenderID" column="MessageSenderID" dbType="String"/>
+      <result property="StartTime" column="StartTime" dbType="DateTime"/>
+      <result property="EndTime" column="EndTime" dbType="DateTime"/>
+      <result property="IsRead" column="IsRead" dbType="Int32"/>
+    </resultMap>
+  </resultMaps>
+  
+  <statements>
+    <insert id="Message_Insert" parameterClass="Message">
+      INSERT INTO Message (
+      MessageID,
+      MessageType,
+      ReceiverID,
+      MessageTitle,
+      MessageContent,
+      MessageDate,
+      MessageSenderID,
+      StartTime,
+      EndTime,
+      IsRead
+      ) VALUES (
+      #MessageID#,
+      #MessageType#,
+      #ReceiverID#,
+      #MessageTitle#,
+      #MessageContent#,
+      #MessageDate#,
+      #MessageSenderID#,
+      #StartTime#,
+      #EndTime#,
+      #IsRead#
+      )
+    </insert>
+    
+    <update id="Message_Update" parameterClass="Message">
+      UPDATE Message SET
+      MessageType=#MessageType#,
+      ReceiverID=#ReceiverID#,
+      MessageTitle=#MessageTitle#,
+      MessageContent=#MessageContent#,
+      MessageDate=#MessageDate#,
+      MessageSenderID=#MessageSenderID#,
+      StartTime=#StartTime#,
+      EndTime=#EndTime#,
+      IsRead=#IsRead#
+      WHERE
+      (MessageID = #MessageID#)
+    </update>
+    
+    <delete id="Message_Delete" parameterClass="Message">
+      Delete From  Message
+      WHERE
+      (MessageID = #MessageID#)
+    </delete>
+    
+    <select id="Message_FindAll" resultMap="FullResultMap">
+      SELECT * FROM Message
+    </select>
+    
+  </statements>
+  
+</sqlMap>

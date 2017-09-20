@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="StudySchedule"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="StudySchedule" type="Aersysm.Domain.StudySchedule,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="StudySchedule">
+            <result property="PlanID" column="PlanID" dbType="String"/>
+            <result property="HID" column="HID" dbType="String"/>
+            <result property="PlanName" column="PlanName" dbType="String"/>
+            <result property="StartDate" column="StartDate" dbType="DateTime"/>
+            <result property="EndDate" column="EndDate" dbType="DateTime"/>
+            <result property="OperatorID" column="OperatorID" dbType="String"/>
+            <result property="ModifyDate" column="ModifyDate" dbType="DateTime"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="StudySchedule_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM StudySchedule
+    </select>
+    
+    <select id="StudySchedule_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM StudySchedule
+	</select>
+    
+    <select id="StudySchedule_Find" parameterClass="String" resultMap="FullResultMap" extends="StudySchedule_FindAll">
+	    WHERE
+            (PlanID = #PlanID#)
+	</select>
+    
+    <insert id="StudySchedule_Insert" parameterClass="StudySchedule">
+	    INSERT INTO StudySchedule (
+		    AreaName
+			, SuperAreaId
+			, AreaLevel
+			, AreaEnd
+		) VALUES (
+		)
+	</insert>
+    
+    <update id="StudySchedule_Update" parameterClass="StudySchedule">
+	    UPDATE area SET
+		WHERE
+		    (PlanID = #PlanID#)
+	</update>
+    
+    <delete id="StudySchedule_Delete" parameterClass="StudySchedule">
+	    Delete From  StudySchedule 
+	        WHERE
+			(PlanID = #PlanID#)
+	</delete>
+    
+  </statements>
+</sqlMap>

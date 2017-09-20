@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="depnurunit" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="depnurunit" type="Aersysm.Domain.depnurunit, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="depnurunit">
+			<result property="DepNurUnitId" column="depnurunitid" />
+			<result property="DepartmentId" column="departmentid" />
+			<result property="NursingUnitId" column="nursingunitid" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="Selectdepnurunit" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  depnurunitid,
+				  departmentid,
+				  nursingunitid
+			From depnurunit
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectdepnurunit" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  depnurunitid,
+				  departmentid,
+				  nursingunitid
+			From depnurunit
+		</select>
+		
+		<select id="ChildSelectdepnurunit" parameterClass="int" resultMap="SelectResult" extends="BaseSelectdepnurunit">
+			
+		</select>
+				
+		<insert id="Insertdepnurunit" parameterClass="depnurunit">
+			Insert Into depnurunit (
+				  depnurunitid,
+				  departmentid,
+				  nursingunitid
+			)Values(
+				 #DepNurUnitId#,
+				 #DepartmentId#,
+				 #NursingUnitId#
+			)
+		</insert>
+		
+		<update id="Updatedepnurunit" parameterClass="depnurunit">
+			Update depnurunit Set 
+				depnurunitid=#DepNurUnitId#,
+				departmentid=#DepartmentId#,
+				nursingunitid=#NursingUnitId#
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="Deletedepnurunit" parameterClass="int">
+			Delete From depnurunit
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

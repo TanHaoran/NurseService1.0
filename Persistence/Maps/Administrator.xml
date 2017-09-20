@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Administrator" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Administrator" type="Aersysm.Domain.Administrator, Aersysm.Domain" />
+  </alias>
+  <resultMaps>
+    <resultMap id="SelectResult" class="Administrator">
+      <result property="AdmId" column="admid" />
+      <result property="UserId" column="userid" />
+      <result property="Password" column="password" />
+      <result property="Name" column="name" />
+      <result property="OperatorTime" column="operatortime" />
+      <result property="OperatorId" column="operatorid" />
+      <result property="HospitalId" column="hospitalid" />
+      <result property="Role" column="role" />
+      <result property="RegisterId" column="registerid" />
+      <result property="IsDelete" column="isdelete" />
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="SelectAdministrator" parameterClass="int" resultMap="SelectResult">
+      Select
+      admid,
+      userid,
+      password,
+      name,
+      operatortime,
+      operatorid,
+      hospitalid,
+      role,
+      registerid,
+      isdelete
+      From Administrator
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          admin=#AdmId#
+        </isParameterPresent>
+      </dynamic>
+    </select>
+
+    <select id="BaseSelectAdministrator" parameterClass="int" resultMap="SelectResult">
+      Select
+      admid,
+      userid,
+      password,
+      name,
+      operatortime,
+      operatorid,
+      hospitalid,
+      role,
+      registerid,
+      isdelete
+      From Administrator
+    </select>
+
+    <select id="ChildSelectAdministrator" parameterClass="int" resultMap="SelectResult" extends="BaseSelectAdministrator">
+
+    </select>
+
+    <insert id="InsertAdministrator" parameterClass="Administrator">
+      Insert Into Administrator (
+      admid,
+      userid,
+      password,
+      name,
+      operatortime,
+      operatorid,
+      hospitalid,
+      role,
+      registerid,
+      isdelete
+      )Values(
+      #AdmId#,
+      #UserId#,
+      #Password#,
+      #Name#,
+      #OperatorTime#,
+      #OperatorId#,
+      #HospitalId#,
+      #Role#,
+      #RegisterId#,
+      #IsDelete#
+      )
+    </insert>
+
+    <update id="UpdateAdministrator" parameterClass="Administrator">
+      Update Administrator Set
+      admid=#AdmId#,
+      userid=#UserId#,
+      password=#Password#,
+      name=#Name#,
+      operatortime=#OperatorTime#,
+      operatorid=#OperatorId#,
+      hospitalid=#HospitalId#,
+      role=#Role#,
+      registerid=#RegisterId#,
+      isdelete=#IsDelete#
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          admid=#AdmId#
+        </isParameterPresent>
+      </dynamic>
+    </update>
+
+    <delete id="DeleteAdministrator" parameterClass="int">
+      Delete From Administrator
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          admid=#AdmId#
+        </isParameterPresent>
+      </dynamic>
+    </delete>
+
+    <delete id="UpdateDelAdministrator" parameterClass="int">
+      Update Administrator Set
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          admid=#AdmId#
+        </isParameterPresent>
+      </dynamic>
+    </delete>
+  </statements>
+</sqlMap>
+

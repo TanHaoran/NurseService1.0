@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="Groupinfo" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="Groupinfo" type="Aersysm.Domain.Groupinfo, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="Groupinfo">
+			<result property="GroupId" column="groupid" />
+			<result property="GroupNickName" column="groupnickname" />
+			<result property="UserCount" column="usercount" />
+			<result property="CreaterId" column="createrid" />
+			<result property="CreateTime" column="createtime" />
+			<result property="IsFlag" column="isflag" />
+			<result property="Descg" column="descg" />
+			<result property="MaxGroupCount" column="maxgroupcount" />
+      <result property="HXGroupId" column="hxgroupId" />
+    </resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="SelectGroupinfo" parameterClass="int" resultMap="SelectResult">
+      Select
+      groupid,
+      groupnickname,
+      usercount,
+      createrid,
+      createtime,
+      isflag,
+      descg,
+      maxgroupcount,
+      hxgroupId
+      From Groupinfo
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+					groupid=#GroupId# 
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectGroupinfo" parameterClass="int" resultMap="SelectResult">
+      Select
+      groupid,
+      groupnickname,
+      usercount,
+      createrid,
+      createtime,
+      isflag,
+      descg,
+      maxgroupcount,
+      hxgroupId
+      From Groupinfo
+    </select>
+		
+		<select id="ChildSelectGroupinfo" parameterClass="int" resultMap="SelectResult" extends="BaseSelectGroupinfo">
+			
+		</select>
+				
+		<insert id="InsertGroupinfo" parameterClass="Groupinfo">
+      Insert Into Groupinfo (
+      groupid,
+      groupnickname,
+      usercount,
+      createrid,
+      createtime,
+      isflag,
+      descg,
+      maxgroupcount,
+      hxgroupId
+      )Values(
+      #GroupId#,
+      #GroupNickName#,
+      #UserCount#,
+      #CreaterId#,
+      #CreateTime#,
+      #IsFlag#,
+      #Descg#,
+      #MaxGroupCount#,
+      #HXGroupId#
+      )
+    </insert>
+		
+		<update id="UpdateGroupinfo" parameterClass="Groupinfo">
+      Update groupinfo Set
+      groupid=#GroupId#,
+      groupnickname=#GroupNickName#,
+      usercount=#UserCount#,
+      createrid=#CreaterId#,
+      createtime=#CreateTime#,
+      isflag=#IsFlag#,
+      descg=#Descg#,
+      maxgroupcount=#MaxGroupCount#,
+      hxgroupId=#HXGroupId#
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+					groupid=#GroupId#
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="DeleteGroupinfo" parameterClass="int">
+			Delete From Groupinfo
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					groupid=#GroupId#
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

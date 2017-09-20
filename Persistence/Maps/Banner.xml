@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="Banner" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="Banner" type="Aersysm.Domain.Banner, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="Banner">
+			<result property="BannerId" column="bannerid" />
+			<result property="BannerUrl" column="bannerurl" />
+			<result property="DisplayOrder" column="displayorder" />
+			<result property="IsFlag" column="isflag" />
+			<result property="Type" column="type" />
+			<result property="BannerTime" column="bannertime" />
+			<result property="Issuer" column="issuer" />
+			<result property="BannerToUrl" column="bannertourl" />
+			<result property="HospitalId" column="hospitalid" />
+			<result property="DepartmentId" column="departmentid" />
+      <result property="Agency" column="agency" />
+      <result property="Title" column="title" />
+      <result property="IsDelete" column="isdelete" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="SelectBanner" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  bannerid,
+				  bannerurl,
+				  displayorder,
+				  isflag,
+				  type,
+				  bannertime,
+				  issuer,
+				  bannertourl,
+				  hospitalid,
+				  departmentid,
+          agency,
+          title,
+          isdelete
+			From Banner
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					bannerid=#BannerId# 
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectBanner" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  bannerid,
+				  bannerurl,
+				  displayorder,
+				  isflag,
+				  type,
+				  bannertime,
+				  issuer,
+				  bannertourl,
+				  hospitalid,
+				  departmentid,
+          agency,
+          title,
+          isdelete
+			From Banner
+		</select>
+		
+		<select id="ChildSelectBanner" parameterClass="int" resultMap="SelectResult" extends="BaseSelectBanner">
+			
+		</select>
+				
+		<insert id="InsertBanner" parameterClass="Banner">
+      Insert Into Banner (
+      bannerid,
+      bannerurl,
+      displayorder,
+      isflag,
+      type,
+      bannertime,
+      issuer,
+      bannertourl,
+      hospitalid,
+      departmentid,
+      agency,
+      title,
+      isdelete
+      )Values(
+      #BannerId#,
+      #BannerUrl#,
+      #DisplayOrder#,
+      #IsFlag#,
+      #Type#,
+      #BannerTime#,
+      #Issuer#,
+      #BannerToUrl#,
+      #HospitalId#,
+      #DepartmentId#,
+      #Agency#,
+      #Title#,
+      #IsDelete#
+      )
+    </insert>
+		
+		<update id="UpdateBanner" parameterClass="Banner">
+      Update banner Set
+      bannerid=#BannerId#,
+      bannerurl=#BannerUrl#,
+      displayorder=#DisplayOrder#,
+      isflag=#IsFlag#,
+      type=#Type#,
+      bannertime=#BannerTime#,
+      issuer=#Issuer#,
+      bannertourl=#BannerToUrl#,
+      hospitalid=#HospitalId#,
+      departmentid=#DepartmentId#,
+      agency=#Agency#,
+      title=#Title#,
+      isdelete=#IsDelete#
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+					bannerid=#BannerId#
+				</isParameterPresent>
+			</dynamic>
+		</update>
+
+    <update id="UpdateDelBanner" parameterClass="int">
+      Update banner Set
+      isdelete=1
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          bannerid=#BannerId#
+        </isParameterPresent>
+      </dynamic>
+    </update>
+    
+		<delete id="DeleteBanner" parameterClass="int">
+			Delete From Banner
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					bannerid=#BannerId#
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

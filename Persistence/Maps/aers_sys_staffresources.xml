@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="aers_sys_staffresources"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="aers_sys_staffresources" type="Aersysm.Domain.aers_sys_staffresources,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="aers_sys_staffresources">
+            <result property="ResId" column="ResId" dbType="String"/>
+            <result property="ResName" column="ResName" dbType="String"/>
+            <result property="ResUri" column="ResUri" dbType="String"/>
+            <result property="ParentId" column="ParentId" dbType="String"/>
+            <result property="StaffId" column="StaffId" dbType="String"/>
+            <result property="Remark" column="Remark" dbType="String"/>
+            <result property="IsFlag" column="IsFlag" dbType="Int32"/>
+            <result property="OperatorDate" column="OperatorDate" dbType="DateTime"/>
+            <result property="OperatorID" column="OperatorID" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="aers_sys_staffresources_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM aers_sys_staffresources
+    </select>
+    
+    <select id="aers_sys_staffresources_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM aers_sys_staffresources
+	</select>
+    
+    <select id="aers_sys_staffresources_Find" parameterClass="String" resultMap="FullResultMap" extends="aers_sys_staffresources_FindAll">
+	    WHERE
+            (ResId = #ResId#)
+	</select>
+    
+    <insert id="aers_sys_staffresources_Insert" parameterClass="aers_sys_staffresources">
+	    INSERT INTO aers_sys_staffresources (
+                    ResId,
+                    ResName,
+                    ResUri,
+                    ParentId,
+                    StaffId,
+                    Remark,
+                    IsFlag,
+                    OperatorDate,
+                    OperatorID
+		    
+		) VALUES (
+                    #ResId#,
+                    #ResName#,
+                    #ResUri#,
+                    #ParentId#,
+                    #StaffId#,
+                    #Remark#,
+                    #IsFlag#,
+                    #OperatorDate#,
+                    #OperatorID#
+		)
+	</insert>
+    
+    <update id="aers_sys_staffresources_Update" parameterClass="aers_sys_staffresources">
+	    UPDATE area SET
+                    ResId = #ResId#,
+                    ResName = #ResName#,
+                    ResUri = #ResUri#,
+                    ParentId = #ParentId#,
+                    StaffId = #StaffId#,
+                    Remark = #Remark#,
+                    IsFlag = #IsFlag#,
+                    OperatorDate = #OperatorDate#,
+                    OperatorID = #OperatorID#
+		WHERE
+		    (ResId = #ResId#)
+	</update>
+    
+    <delete id="aers_sys_staffresources_Delete" parameterClass="aers_sys_staffresources">
+	    Delete From  aers_sys_staffresources 
+	        WHERE
+			(ResId = #ResId#)
+	</delete>
+    
+  </statements>
+</sqlMap>

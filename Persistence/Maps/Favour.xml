@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Favour"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="Favour" type="Aersysm.Domain.Favour,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="Favour">
+      <result property="ID" column="ID" dbType="String"/>
+      <result property="TypeID" column="TypeID" dbType="Int32"/>
+      <result property="UserID" column="UserID" dbType="String"/>
+      <result property="MainID" column="MainID" dbType="String"/>
+      <result property="OperatorDate" column="OperatorDate" dbType="DateTime"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="Favour_Insert" parameterClass="Favour">
+      INSERT INTO Favour (
+      ID,
+      TypeID,
+      UserID,
+      MainID,
+      OperatorDate
+      ) VALUES (
+      #ID#,
+      #TypeID#,
+      #UserID#,
+      #MainID#,
+      #OperatorDate#
+      )
+    </insert>
+
+    <update id="Favour_Update" parameterClass="Favour">
+      UPDATE Favour SET
+      TypeID=#TypeID#,
+      UserID=#UserID#,
+      MainID=#MainID#,
+      OperatorDate=#OperatorDate#
+      WHERE
+      (ID = #ID#)
+    </update>
+
+    <delete id="Favour_Delete" parameterClass="Favour">
+      Delete From  Favour
+      WHERE
+      (ID = #ID#)
+    </delete>
+
+    <select id="Favour_FindAll" resultMap="FullResultMap">
+      SELECT * FROM Favour
+    </select>
+
+  </statements>
+
+</sqlMap>
+

@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="feedback" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="feedback" type="Aersysm.Domain.feedback, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="feedback">
+			<result property="FeedbackId" column="feedbackid" />
+			<result property="RegisterId" column="registerid" />
+			<result property="Content" column="content" />
+			<result property="FeedbackTime" column="feedbacktime" />
+			<result property="ServiceTime" column="servicetime" />
+			<result property="ServiceId" column="serviceid" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="Selectfeedback" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  feedbackid,
+				  registerid,
+				  content,
+				  feedbacktime,
+				  servicetime,
+				  serviceid
+			From feedback
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectfeedback" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  feedbackid,
+				  registerid,
+				  content,
+				  feedbacktime,
+				  servicetime,
+				  serviceid
+			From feedback
+		</select>
+		
+		<select id="ChildSelectfeedback" parameterClass="int" resultMap="SelectResult" extends="BaseSelectfeedback">
+			
+		</select>
+				
+		<insert id="Insertfeedback" parameterClass="feedback">
+			Insert Into feedback (
+				  feedbackid,
+				  registerid,
+				  content,
+				  feedbacktime,
+				  servicetime,
+				  serviceid
+			)Values(
+				 #FeedbackId#,
+				 #RegisterId#,
+				 #Content#,
+				 #FeedbackTime#,
+				 #ServiceTime#,
+				 #ServiceId#
+			)
+		</insert>
+		
+		<update id="Updatefeedback" parameterClass="feedback">
+			Update feedback Set 
+				feedbackid=#FeedbackId#,
+				registerid=#RegisterId#,
+				content=#Content#,
+				feedbacktime=#FeedbackTime#,
+				servicetime=#ServiceTime#,
+				serviceid=#ServiceId#
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="Deletefeedback" parameterClass="int">
+			Delete From feedback
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="CourseRecord"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="CourseRecord" type="Aersysm.Domain.CourseRecord,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="CourseRecord">
+      <result property="CouRecID" column="CouRecID" dbType="String"/>
+      <result property="CourseID" column="CourseID" dbType="String"/>
+      <result property="StaffId" column="StaffId" dbType="String"/>
+      <result property="StudyDateCount" column="StudyDateCount" dbType="Int32"/>
+      <result property="LastPlayChapterID" column="LastPlayChapterID" dbType="String"/>
+      <result property="LastPlayDate" column="LastPlayDate" dbType="DateTime"/>
+      <result property="ModifyDate" column="ModifyDate" dbType="DateTime"/>
+      <result property="PlayTime" column="PlayTime" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="CourseRecord_Insert" parameterClass="CourseRecord">
+      INSERT INTO CourseRecord (
+      CouRecID,
+      CourseID,
+      StaffId,
+      StudyDateCount,
+      LastPlayChapterID,
+      LastPlayDate,
+      ModifyDate,
+      PlayTime
+      ) VALUES (
+      #CouRecID#,
+      #CourseID#,
+      #StaffId#,
+      #StudyDateCount#,
+      #LastPlayChapterID#,
+      #LastPlayDate#,
+      #ModifyDate#,
+      #PlayTime#
+      )
+    </insert>
+
+    <update id="CourseRecord_Update" parameterClass="CourseRecord">
+      UPDATE CourseRecord SET
+      StudyDateCount=#StudyDateCount#,
+      LastPlayChapterID=#LastPlayChapterID#,
+      LastPlayDate=#LastPlayDate#,
+      ModifyDate=#ModifyDate#,
+      PlayTime=#PlayTime#
+      WHERE
+      (CourseID = #CourseID# and StaffId=#StaffId#)
+    </update>
+
+    <delete id="CourseRecord_Delete" parameterClass="CourseRecord">
+      Delete From  CourseRecord
+      WHERE
+      (CouRecID = #CouRecID#)
+    </delete>
+
+    <select id="CourseRecord_FindAll" resultMap="FullResultMap">
+      SELECT * FROM CourseRecord
+    </select>
+
+
+    
+  </statements>
+
+</sqlMap>

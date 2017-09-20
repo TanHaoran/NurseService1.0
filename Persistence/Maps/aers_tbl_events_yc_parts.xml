@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="aers_tbl_events_yc_parts"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="aers_tbl_events_yc_parts" type="Aersysm.Domain.aers_tbl_events_yc_parts,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="aers_tbl_events_yc_parts">
+            <result property="PartsId" column="PartsId" dbType="String"/>
+            <result property="EveycId" column="EveycId" dbType="String"/>
+            <result property="PartsName" column="PartsName" dbType="String"/>
+            <result property="MeterLength" column="MeterLength" dbType="String"/>
+            <result property="MeterWidth" column="MeterWidth" dbType="String"/>
+            <result property="MeterHeight" column="MeterHeight" dbType="String"/>
+            <result property="QhPoint" column="QhPoint" dbType="String"/>
+            <result property="QhDepth" column="QhDepth" dbType="String"/>
+            <result property="Staging" column="Staging" dbType="String"/>
+            <result property="DisplayOrder" column="DisplayOrder" dbType="String"/>
+            <result property="Remark" column="Remark" dbType="String"/>
+            <result property="IsFlag" column="IsFlag" dbType="Int32"/>
+            <result property="OperatorDate" column="OperatorDate" dbType="DateTime"/>
+            <result property="OperatorID" column="OperatorID" dbType="String"/>
+            <result property="EveresName" column="EveresName" dbType="String"/>
+            <result property="DamageName" column="DamageName" dbType="String"/>
+            <result property="DamageSite" column="DamageSite" dbType="String"/>
+            <result property="DamageArea" column="DamageArea" dbType="String"/>
+            <result property="DamageRemark" column="DamageRemark" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="aers_tbl_events_yc_parts_GetCount" resultClass="System.Int32">
+      SELECT count(*) FROM aers_tbl_events_yc_parts 
+    </select>
+
+    <select id="aers_tbl_events_yc_parts_FindAll" resultMap="FullResultMap">
+      SELECT * FROM aers_tbl_events_yc_parts 
+    </select>
+    
+    <select id="aers_tbl_events_yc_parts_Find" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_events_yc_parts_FindAll">
+      WHERE
+      (PartsId = #PartsId#)  AND IsFlag ='0'
+    </select>
+
+    <select id="aers_tbl_events_yc_parts_FindByEveycId" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_events_yc_parts_FindAll">
+      WHERE    EveycId = #EveycId#  and  EveresName=#EveresName# AND IsFlag ='0'   order  by PartsId
+    </select>
+    
+    <insert id="aers_tbl_events_yc_parts_Insert" parameterClass="aers_tbl_events_yc_parts">
+	    INSERT INTO aers_tbl_events_yc_parts (
+                    PartsId,
+                    EveycId,
+                    PartsName,
+                    MeterLength,
+                    MeterWidth,
+                    MeterHeight,
+                    QhPoint,
+                    QhDepth,
+                    Staging,
+                    DisplayOrder,
+                    Remark,
+                    IsFlag,
+                    OperatorDate,
+                    OperatorID,
+                    EveresName,
+                    DamageName,
+                    DamageSite,
+                    DamageArea,
+                    DamageRemark
+		    
+		) VALUES (
+                    #PartsId#,
+                    #EveycId#,
+                    #PartsName#,
+                    #MeterLength#,
+                    #MeterWidth#,
+                    #MeterHeight#,
+                    #QhPoint#,
+                    #QhDepth#,
+                    #Staging#,
+                    #DisplayOrder#,
+                    #Remark#,
+                    #IsFlag#,
+                    #OperatorDate#,
+                    #OperatorID#,
+                    #EveresName#,
+                    #DamageName#,
+                    #DamageSite#,
+                    #DamageArea#,
+                    #DamageRemark#
+		)
+	</insert>
+    
+    <update id="aers_tbl_events_yc_parts_Update" parameterClass="aers_tbl_events_yc_parts">
+	    UPDATE aers_tbl_events_yc_parts SET
+                    PartsId = #PartsId#,
+                    EveycId = #EveycId#,
+                    PartsName = #PartsName#,
+                    MeterLength = #MeterLength#,
+                    MeterWidth = #MeterWidth#,
+                    MeterHeight = #MeterHeight#,
+                    QhPoint = #QhPoint#,
+                    QhDepth = #QhDepth#,
+                    Staging = #Staging#,
+                    DisplayOrder = #DisplayOrder#,
+                    Remark = #Remark#,
+                    IsFlag = #IsFlag#,
+                    OperatorDate = #OperatorDate#,
+                    OperatorID = #OperatorID#,
+                    EveresName = #EveresName#,
+                    DamageName = #DamageName#,
+                    DamageSite = #DamageSite#,
+                    DamageArea = #DamageArea#,
+                    DamageRemark = #DamageRemark#
+		WHERE
+		    (PartsId = #PartsId#)
+	</update>
+    
+    <delete id="aers_tbl_events_yc_parts_Delete" parameterClass="aers_tbl_events_yc_parts">
+      Delete From  aers_tbl_events_yc_parts
+      WHERE
+      (EveycId = #EveycId#)
+    </delete>
+    
+  </statements>
+</sqlMap>

@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Admdepartment" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Admdepartment" type="Aersysm.Domain.Admdepartment, Aersysm.Domain" />
+  </alias>
+  <resultMaps>
+    <resultMap id="SelectResult" class="Admdepartment">
+      <result property="Id" column="id" />
+      <result property="AdmId" column="admid" />
+      <result property="DepartmentId" column="departmentid" />
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="SelectAdmdepartment" parameterClass="int" resultMap="SelectResult">
+      Select
+      id,
+      admid,
+      departmentid
+      From Admdepartment
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          id=#Id#
+        </isParameterPresent>
+      </dynamic>
+    </select>
+
+    <select id="BaseSelectAdmdepartment" parameterClass="int" resultMap="SelectResult">
+      Select
+      id,
+      admid,
+      departmentid
+      From Admdepartment
+    </select>
+
+    <select id="ChildSelectAdmdepartment" parameterClass="int" resultMap="SelectResult" extends="BaseSelectAdmdepartment">
+
+    </select>
+
+    <insert id="InsertAdmdepartment" parameterClass="Admdepartment">
+      Insert Into Admdepartment (
+      id,
+      admid,
+      departmentid
+      )Values(
+      #Id#,
+      #AdmId#,
+      #DepartmentId#
+      )
+    </insert>
+
+    <update id="UpdateAdmdepartment" parameterClass="Admdepartment">
+      Update Admdepartment Set
+      id=#Id#,
+      admid=#AdmId#,
+      departmentid=#DepartmentId#
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          id=#Id#
+        </isParameterPresent>
+      </dynamic>
+    </update>
+
+    <delete id="DeleteAdmdepartment" parameterClass="int">
+      Delete From Admdepartment
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          id=#Id#
+        </isParameterPresent>
+      </dynamic>
+    </delete>
+  </statements>
+</sqlMap>
+
+

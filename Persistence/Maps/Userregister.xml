@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="userregister" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="userregister" type="Aersysm.Domain.userregister, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="userregister">
+			<result property="RegisterId" column="registerid" />
+			<result property="NickName" column="nickname" />
+			<result property="Avatar" column="avatar" />
+			<result property="Name" column="name" />
+			<result property="Phone" column="phone" />
+			<result property="Password" column="password" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="Selectuserregister" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  registerid,
+				  nickname,
+				  avatar,
+				  name,
+				  phone,
+				  password
+			From userregister
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					registerid=#RegisterId# 
+				</isParameterPresent>
+			</dynamic>
+		</select>
+
+    <select id="SelectuserregisterByPhone" parameterClass="int" resultMap="SelectResult">
+      Select
+      registerid,
+      nickname,
+      avatar,
+      name,
+      phone,
+      password
+      From userregister
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          phone=#Phone#
+        </isParameterPresent>
+      </dynamic>
+    </select>
+    
+		<select id="BaseSelectuserregister" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  registerid,
+				  nickname,
+				  avatar,
+				  name,
+				  phone,
+				  password
+			From userregister
+		</select>
+		
+		<select id="ChildSelectuserregister" parameterClass="int" resultMap="SelectResult" extends="BaseSelectuserregister">
+			
+		</select>
+				
+		<insert id="Insertuserregister" parameterClass="userregister">
+			Insert Into userregister (
+				  registerid,
+				  nickname,
+				  avatar,
+				  name,
+				  phone,
+				  password
+			)Values(
+				 #RegisterId#,
+				 #NickName#,
+				 #Avatar#,
+				 #Name#,
+				 #Phone#,
+				 #Password#
+			)
+		</insert>
+		
+		<update id="Updateuserregister" parameterClass="userregister">
+			Update userregister Set 
+				registerid=#RegisterId#,
+				nickname=#NickName#,
+				avatar=#Avatar#,
+				name=#Name#,
+				phone=#Phone#,
+				password=#Password#
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					registerid=#RegisterId#
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="Deleteuserregister" parameterClass="int">
+			Delete From userregister
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					registerid=#RegisterId#
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

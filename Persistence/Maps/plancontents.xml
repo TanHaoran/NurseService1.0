@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="plancontents"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="plancontents" type="Aersysm.Domain.plancontents,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="plancontents">
+            <result property="PCID" column="PCID" dbType="String"/>
+            <result property="PlanID" column="PlanID" dbType="String"/>
+            <result property="CourseID" column="CourseID" dbType="String"/>
+            <result property="IndexNo" column="IndexNo" dbType="Int32"/>
+            <result property="Credit" column="Credit" dbType="Decimal"/>
+            <result property="OperatorID" column="OperatorID" dbType="String"/>
+            <result property="ModifyDate" column="ModifyDate" dbType="DateTime"/>
+            <result property="HID" column="HID" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="plancontents_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM plancontents
+    </select>
+    
+    <select id="plancontents_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM plancontents
+	</select>
+    
+    <select id="plancontents_Find" parameterClass="String" resultMap="FullResultMap" extends="plancontents_FindAll">
+	    WHERE
+            (PCID = #PCID#)
+	</select>
+    
+    <insert id="plancontents_Insert" parameterClass="plancontents">
+	    INSERT INTO plancontents (
+		    AreaName
+			, SuperAreaId
+			, AreaLevel
+			, AreaEnd
+		) VALUES (
+		)
+	</insert>
+    
+    <update id="plancontents_Update" parameterClass="plancontents">
+	    UPDATE area SET
+		WHERE
+		    (PCID = #PCID#)
+	</update>
+    
+    <delete id="plancontents_Delete" parameterClass="plancontents">
+	    Delete From  plancontents 
+	        WHERE
+			(PCID = #PCID#)
+	</delete>
+    
+  </statements>
+</sqlMap>

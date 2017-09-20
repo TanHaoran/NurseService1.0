@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Token" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Token" type="Aersysm.Domain.Token, Aersysm.Domain" />
+  </alias>
+  <resultMaps>
+    <resultMap id="SelectResult" class="Token">
+      <result property="RegisterId" column="RegisterId" />
+      <result property="TokenCode" column="TokenCode" />
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="SelectToken" parameterClass="int" resultMap="SelectResult">
+      Select
+      RegisterId,
+      TokenCode
+      From Token
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          RegisterId=#RegisterId#
+        </isParameterPresent>
+      </dynamic>
+    </select>
+
+    <select id="BaseSelectToken" parameterClass="int" resultMap="SelectResult">
+      Select
+      RegisterId,
+      TokenCode
+      From Banner
+    </select>   
+
+    <insert id="InsertToken" parameterClass="Token">
+      Insert Into Token (
+      RegisterId,
+      TokenCode
+      )Values(
+      #RegisterId#,
+      #TokenCode#
+      )
+    </insert>
+
+    <update id="UpdateToken" parameterClass="Token">
+      Update Token Set
+      RegisterId=#RegisterId#,
+      TokenCode=#TokenCode#
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          RegisterId=#RegisterId#
+        </isParameterPresent>
+      </dynamic>
+    </update>
+    
+    <delete id="DeleteToken" parameterClass="int">
+      Delete From Token
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          RegisterId=#RegisterId#
+        </isParameterPresent>
+      </dynamic>
+    </delete>
+
+  </statements>
+</sqlMap>

@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="Notice" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="Notice" type="Aersysm.Domain.Notice, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="Notice">
+			<result property="NoticeId" column="noticeid" />
+			<result property="Title" column="title" />
+			<result property="Content" column="content" />
+			<result property="NoticeTime" column="noticetime" />
+			<result property="IsFlag" column="isflag" />
+			<result property="DisplayOrder" column="displayorder" />
+			<result property="Type" column="type" />
+			<result property="IsVital" column="isvital" />
+			<result property="HospitalId" column="hospitalid" />
+			<result property="DepartmentId" column="departmentid" />
+			<result property="Issuer" column="issuer" />
+      <result property="Agency" column="agency" />
+      <result property="Attachment" column="attachment" />
+      <result property="IsDelete" column="isdelete" />
+      <result property="OperatorId" column="operatorid" />
+      <result property="OperatorTime" column="operatortime" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="SelectNotice" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  noticeid,
+				  title,
+				  content,
+				  noticetime,
+				  isflag,
+				  displayorder,
+				  type,
+				  isvital,
+				  hospitalid,
+				  departmentid,
+				  issuer,
+          agency,
+          attachment,
+          isdelete,
+          operatorid,
+          operatortime
+			From Notice
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					noticeid=#NoticeId# 
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectNotice" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  noticeid,
+				  title,
+				  content,
+				  noticetime,
+				  isflag,
+				  displayorder,
+				  type,
+				  isvital,
+				  hospitalid,
+				  departmentid,
+				  issuer,
+          agency,
+          attachment,
+          isdelete,
+          operatorid,
+          operatortime
+			From Notice
+		</select>
+		
+		<select id="ChildSelectNotice" parameterClass="int" resultMap="SelectResult" extends="BaseSelectNotice">
+			
+		</select>
+				
+		<insert id="InsertNotice" parameterClass="Notice">
+			Insert Into Notice (
+				  noticeid,
+				  title,
+				  content,
+				  noticetime,
+				  isflag,
+				  displayorder,
+				  type,
+				  isvital,
+				  hospitalid,
+				  departmentid,
+				  issuer,
+          agency,
+          attachment,
+          isdelete,
+          operatorid,
+          operatortime
+			)Values(
+				 #NoticeId#,
+				 #Title#,
+				 #Content#,
+				 #NoticeTime#,
+				 #IsFlag#,
+				 #DisplayOrder#,
+				 #Type#,
+				 #IsVital#,
+				 #HospitalId#,
+				 #DepartmentId#,
+				 #Issuer#,
+         #Agency#,
+         #Attachment#,
+         #IsDelete#,
+         #OperatorId#,
+         #OperatorTime#
+			)
+		</insert>
+		
+		<update id="UpdateNotice" parameterClass="Notice">
+      Update notice Set
+      noticeid=#NoticeId#,
+      title=#Title#,
+      content=#Content#,
+      noticetime=#NoticeTime#,
+      isflag=#IsFlag#,
+      displayorder=#DisplayOrder#,
+      type=#Type#,
+      isvital=#IsVital#,
+      hospitalid=#HospitalId#,
+      departmentid=#DepartmentId#,
+      issuer=#Issuer#,
+      agency=#Agency#,
+      attachment=#Attachment#,
+      isdelete=#IsDelete#,
+      operatorid=#OperatorId#,
+      operatortime=#OperatorTime#
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+					noticeid=#NoticeId#
+				</isParameterPresent>
+			</dynamic>
+		</update>
+
+    <update id="UpdateDelNotice" parameterClass="Notice">
+      Update notice Set
+      isdelete=0
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          noticeid=#NoticeId#
+        </isParameterPresent>
+      </dynamic>
+    </update>
+    
+		<delete id="DeleteNotice" parameterClass="int">
+			Delete From Notice
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					noticeid=#NoticeId#
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

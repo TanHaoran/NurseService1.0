@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="CourseCatalog"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="CourseCatalog" type="Aersysm.Domain.CourseCatalog,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="CourseCatalog">
+            <result property="CatalogID" column="CatalogID" dbType="String"/>
+            <result property="CourseID" column="CourseID" dbType="String"/>
+            <result property="CatalogName" column="CatalogName" dbType="String"/>
+            <result property="CatalogSort" column="CatalogSort" dbType="Int32"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="CourseCatalog_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM CourseCatalog
+    </select>
+    
+    <select id="CourseCatalog_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM CourseCatalog
+	</select>
+    
+    <select id="CourseCatalog_Find" parameterClass="String" resultMap="FullResultMap" extends="CourseCatalog_FindAll">
+	    WHERE
+            (CatalogID = #CatalogID#)
+	</select>
+
+
+
+    <select id="CourseCatalog_FindByCourseID" parameterClass="String" resultMap="FullResultMap" extends="CourseCatalog_FindAll">
+      WHERE
+      (CourseID = #CourseID#)
+    </select>
+    
+    <insert id="CourseCatalog_Insert" parameterClass="CourseCatalog">
+      INSERT INTO CourseCatalog (
+      CatalogID
+      , CourseID
+      , CatalogName
+      , CatalogSort
+      ) VALUES (
+
+      #CatalogID#
+      , #CourseID#
+      , #CatalogName#
+      , #CatalogSort#
+      
+      )
+    </insert>
+    
+    <update id="CourseCatalog_Update" parameterClass="CourseCatalog">
+      UPDATE CourseCatalog SET CatalogName=#CatalogName#,CatalogSort=#CatalogSort#,CourseID=#CourseID#
+      WHERE
+      (CatalogID = #CatalogID#)
+    </update>
+    
+    <delete id="CourseCatalog_Delete" parameterClass="CourseCatalog">
+	    Delete From  CourseCatalog 
+	        WHERE
+			(CatalogID = #CatalogID#)
+	</delete>
+    
+  </statements>
+</sqlMap>

@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="userpracticecertificate" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="userpracticecertificate" type="Aersysm.Domain.userpracticecertificate, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="userpracticecertificate">
+			<result property="RegisterId" column="registerid" />
+			<result property="CertificateId" column="certificateid" />
+      <result property="Name" column="name" />
+			<result property="BirthDate" column="birthdate" />
+			<result property="Sex" column="sex" />
+			<result property="Country" column="country" />
+			<result property="PracticeAddress" column="practiceaddress" />
+			<result property="IDCard" column="idcard" />
+			<result property="FirstRegisterDate" column="firstregisterdate" />
+			<result property="LastRegisterDate" column="lastregisterdate" />
+			<result property="RegisterToDate" column="registertodate" />
+			<result property="RegisterAuthority" column="registerauthority" />
+			<result property="CertificateAuthority" column="certificateauthority" />
+			<result property="CertificateDate" column="certificatedate" />
+			<result property="Picture1" column="picture1" />
+			<result property="Picture2" column="picture2" />
+			<result property="Picture3" column="picture3" />
+			<result property="Picture4" column="picture4" />
+      <result property="FirstJobTime" column="firstjobtime" />
+    </resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="Selectuserpracticecertificate" parameterClass="int" resultMap="SelectResult">
+      Select
+      registerid,
+      certificateid,
+      name,
+      birthdate,
+      sex,
+      country,
+      practiceaddress,
+      idcard,
+      firstregisterdate,
+      lastregisterdate,
+      registertodate,
+      registerauthority,
+      certificateauthority,
+      certificatedate,
+      picture1,
+      picture2,
+      picture3,
+      picture4,
+      firstjobtime
+      From userpracticecertificate
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+					registerid=#RegisterId# 
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectuserpracticecertificate" parameterClass="int" resultMap="SelectResult">
+      Select
+      registerid,
+      certificateid,
+      name,
+      birthdate,
+      sex,
+      country,
+      practiceaddress,
+      idcard,
+      firstregisterdate,
+      lastregisterdate,
+      registertodate,
+      registerauthority,
+      certificateauthority,
+      certificatedate,
+      picture1,
+      picture2,
+      picture3,
+      picture4,
+      firstjobtime
+      From userpracticecertificate
+    </select>
+		
+		<select id="ChildSelectuserpracticecertificate" parameterClass="int" resultMap="SelectResult" extends="BaseSelectuserpracticecertificate">
+			
+		</select>
+				
+		<insert id="Insertuserpracticecertificate" parameterClass="userpracticecertificate">
+      Insert Into userpracticecertificate (
+      registerid,
+      certificateid,
+      name,
+      birthdate,
+      sex,
+      country,
+      practiceaddress,
+      idcard,
+      firstregisterdate,
+      lastregisterdate,
+      registertodate,
+      registerauthority,
+      certificateauthority,
+      certificatedate,
+      picture1,
+      picture2,
+      picture3,
+      picture4,
+      firstjobtime
+      )Values(
+      #RegisterId#,
+      #CertificateId#,
+      #Name#,
+      #BirthDate#,
+      #Sex#,
+      #Country#,
+      #PracticeAddress#,
+      #IDCard#,
+      #FirstRegisterDate#,
+      #LastRegisterDate#,
+      #RegisterToDate#,
+      #RegisterAuthority#,
+      #CertificateAuthority#,
+      #CertificateDate#,
+      #Picture1#,
+      #Picture2#,
+      #Picture3#,
+      #Picture4#,
+      #FirstJobTime#
+      )
+    </insert>
+		
+		<update id="Updateuserpracticecertificate" parameterClass="userpracticecertificate">
+      Update userpracticecertificate Set
+      registerid=#RegisterId#,
+      certificateid=#CertificateId#,
+      name=#Name#,
+      birthdate=#BirthDate#,
+      sex=#Sex#,
+      country=#Country#,
+      practiceaddress=#PracticeAddress#,
+      idcard=#IDCard#,
+      firstregisterdate=#FirstRegisterDate#,
+      lastregisterdate=#LastRegisterDate#,
+      registertodate=#RegisterToDate#,
+      registerauthority=#RegisterAuthority#,
+      certificateauthority=#CertificateAuthority#,
+      certificatedate=#CertificateDate#,
+      picture1=#Picture1#,
+      picture2=#Picture2#,
+      picture3=#Picture3#,
+      picture4=#Picture4#,
+      firstjobtime=#FirstJobTime#
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+					registerid=#RegisterId#
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="Deleteuserpracticecertificate" parameterClass="int">
+			Delete From userpracticecertificate
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					registerid=#RegisterId#
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

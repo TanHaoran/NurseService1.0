@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="CourseDistribute"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="CourseDistribute" type="Aersysm.Domain.CourseDistribute,Aersysm.Domain"/>
+  </alias>
+  <resultMaps>
+    <resultMap id="FullResultMap" class="CourseDistribute">
+      <result property="DistributeID" column="DistributeID" dbType="String"/>
+      <result property="CourseID" column="CourseID" dbType="String"/>
+      <result property="DistributeType" column="DistributeType" dbType="Int32"/>
+      <result property="ReceiverID" column="ReceiverID" dbType="String"/>
+      <result property="StartTime" column="StartTime" dbType="DateTime"/>
+      <result property="EndTime" column="EndTime" dbType="DateTime"/>
+      <result property="DistributorID" column="DistributorID" dbType="String"/>
+      <result property="DistributeTime" column="DistributeTime" dbType="DateTime"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="CourseDistribute_Insert" parameterClass="CourseDistribute">
+      INSERT INTO CourseDistribute (
+      DistributeID,
+      CourseID,
+      DistributeType,
+      ReceiverID,
+      StartTime,
+      EndTime,
+      DistributorID,
+      DistributeTime
+      ) VALUES (
+      #DistributeID#,
+      #CourseID#,
+      #DistributeType#,
+      #ReceiverID#,
+      #StartTime#,
+      #EndTime#,
+      #DistributorID#,
+      #DistributeTime#
+      )
+    </insert>
+
+    <update id="CourseDistribute_Update" parameterClass="CourseDistribute">
+      UPDATE CourseDistribute SET
+      CourseID=#CourseID#,
+      DistributeType=#DistributeType#,
+      ReceiverID=#ReceiverID#,
+      StartTime=#StartTime#,
+      EndTime=#EndTime#,
+      DistributorID=#DistributorID#,
+      DistributeTime=#DistributeTime#
+      WHERE
+      (DistributeID = #DistributeID#)
+    </update>
+
+    <delete id="CourseDistribute_Delete" parameterClass="CourseDistribute">
+      Delete From  CourseDistribute
+      WHERE
+      (DistributeID = #DistributeID#)
+    </delete>
+
+    <select id="CourseDistribute_FindAll" resultMap="FullResultMap">
+      SELECT * FROM CourseDistribute
+    </select>
+
+  </statements>
+</sqlMap>

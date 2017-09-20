@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="department" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="department" type="Aersysm.Domain.department, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="department">
+			<result property="DepartmentId" column="departmentid" />
+			<result property="HospitalId" column="hospitalid" />
+			<result property="Name" column="name" />
+			<result property="ParentId" column="parentid" />
+			<result property="Contact" column="contact" />
+			<result property="Phone" column="phone" />
+			<result property="SpellCode" column="spellcode" />
+			<result property="Logo" column="logo" />
+			<result property="IsFlag" column="isflag" />
+			<result property="Introduction" column="introduction" />
+			<result property="DisplayOrder" column="displayorder" />
+			<result property="Address" column="address" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="Selectdepartment" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  departmentid,
+				  hospitalid,
+				  name,
+				  parentid,
+				  contact,
+				  phone,
+				  spellcode,
+				  logo,
+				  isflag,
+				  introduction,
+				  displayorder,
+				  address
+			From department
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					departmentid=#DepartmentId# 
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectdepartment" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  departmentid,
+				  hospitalid,
+				  name,
+				  parentid,
+				  contact,
+				  phone,
+				  spellcode,
+				  logo,
+				  isflag,
+				  introduction,
+				  displayorder,
+				  address
+			From department
+		</select>
+		
+		<select id="ChildSelectdepartment" parameterClass="int" resultMap="SelectResult" extends="BaseSelectdepartment">
+			
+		</select>
+				
+		<insert id="Insertdepartment" parameterClass="department">
+			Insert Into department (
+				  departmentid,
+				  hospitalid,
+				  name,
+				  parentid,
+				  contact,
+				  phone,
+				  spellcode,
+				  logo,
+				  isflag,
+				  introduction,
+				  displayorder,
+				  address
+			)Values(
+				 #DepartmentId#,
+				 #HospitalId#,
+				 #Name#,
+				 #ParentId#,
+				 #Contact#,
+				 #Phone#,
+				 #SpellCode#,
+				 #Logo#,
+				 #IsFlag#,
+				 #Introduction#,
+				 #DisplayOrder#,
+				 #Address#
+			)
+		</insert>
+		
+		<update id="Updatedepartment" parameterClass="department">
+			Update department Set 
+				departmentid=#DepartmentId#,
+				hospitalid=#HospitalId#,
+				name=#Name#,
+				parentid=#ParentId#,
+				contact=#Contact#,
+				phone=#Phone#,
+				spellcode=#SpellCode#,
+				logo=#Logo#,
+				isflag=#IsFlag#,
+				introduction=#Introduction#,
+				displayorder=#DisplayOrder#,
+				address=#Address#
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					departmentid=#DepartmentId#
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="Deletedepartment" parameterClass="int">
+			Delete From department
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					departmentid=#DepartmentId#
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

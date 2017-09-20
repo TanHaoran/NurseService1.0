@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="Releaseversion" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="Releaseversion" type="Aersysm.Domain.Releaseversion, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="Releaseversion">
+			<result property="VersionId" column="versionid" />
+			<result property="Version" column="version" />
+			<result property="ReleaseUrl" column="releaseurl" />
+			<result property="ReleaseTime" column="releasetime" />
+    	<result property="UpdateContent" column="updatecontent" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="Selectreleaseversion" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  versionid,
+				  version,
+				  releaseurl,
+				  releasetime,
+          updatecontent
+			From Releaseversion
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					versionid=#VersionId# 
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectreleaseversion" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  versionid,
+				  version,
+				  releaseurl,
+				  releasetime,
+          updatecontent
+			From Releaseversion
+		</select>
+		
+		<select id="ChildSelectreleaseversion" parameterClass="int" resultMap="SelectResult" extends="BaseSelectreleaseversion">
+			
+		</select>
+				
+		<insert id="InsertReleaseversion" parameterClass="Releaseversion">
+			Insert Into Releaseversion (
+				  versionid,
+				  version,
+				  releaseurl,
+				  releasetime,
+          updatecontent
+			)Values(
+				 #VersionId#,
+				 #Version#,
+				 #ReleaseUrl#,
+				 #ReleaseTime#,
+         #UpdateContent#
+			)
+		</insert>
+		
+		<update id="UpdateReleaseversion" parameterClass="Releaseversion">
+			Update releaseversion Set 
+				versionid=#VersionId#,
+				version=#Version#,
+				releaseurl=#ReleaseUrl#,
+				releasetime=#ReleaseTime#,
+     		updatecontent=#UpdateContent#
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					versionid=#VersionId#
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="DeleteReleaseversion" parameterClass="int">
+			Delete From Releaseversion
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					versionid=#VersionId#
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

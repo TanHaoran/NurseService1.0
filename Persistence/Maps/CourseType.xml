@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="CourseType"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="CourseType" type="Aersysm.Domain.CourseType,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="CourseType">
+            <result property="TypeID" column="TypeID" dbType="String"/>
+            <result property="ParendID" column="ParendID" dbType="String"/>
+            <result property="TypeName" column="TypeName" dbType="String"/>
+            <result property="IndexNo" column="IndexNo" dbType="String"/>
+            <result property="Commentary" column="Commentary" dbType="String"/>
+            <result property="DisplayOrder" column="DisplayOrder" dbType="Int32"/>
+            <result property="IsEndLevel" column="IsEndLevel" dbType="Int32"/>
+            <result property="ModifyDate" column="ModifyDate" dbType="DateTime"/>
+            <result property="OperatorID" column="OperatorID" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="CourseType_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM CourseType
+    </select>
+    
+    <select id="CourseType_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM CourseType
+	</select>
+    
+    <select id="CourseType_Find" parameterClass="String" resultMap="FullResultMap" extends="CourseType_FindAll">
+	    WHERE
+            (TypeID = #TypeID#)
+	</select>
+    
+    <insert id="CourseType_Insert" parameterClass="CourseType">
+	    INSERT INTO CourseType (
+		    AreaName
+			, SuperAreaId
+			, AreaLevel
+			, AreaEnd
+		) VALUES (
+		)
+	</insert>
+    
+    <update id="CourseType_Update" parameterClass="CourseType">
+	    UPDATE area SET
+		WHERE
+		    (TypeID = #TypeID#)
+	</update>
+    
+    <delete id="CourseType_Delete" parameterClass="CourseType">
+	    Delete From  CourseType 
+	        WHERE
+			(TypeID = #TypeID#)
+	</delete>
+    
+  </statements>
+</sqlMap>

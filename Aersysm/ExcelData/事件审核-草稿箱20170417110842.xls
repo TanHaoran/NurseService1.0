@@ -1,0 +1,249 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <Version>16.00</Version>
+ </DocumentProperties>
+ <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
+  <AllowPNG/>
+ </OfficeDocumentSettings>
+ <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+  <WindowHeight>12120</WindowHeight>
+  <WindowWidth>28800</WindowWidth>
+  <WindowTopX>0</WindowTopX>
+  <WindowTopY>0</WindowTopY>
+  <ProtectStructure>False</ProtectStructure>
+  <ProtectWindows>False</ProtectWindows>
+ </ExcelWorkbook>
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font ss:FontName="Arial" x:Family="Swiss"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s62">
+   <Font ss:FontName="Arial" x:Family="Swiss" ss:Bold="1"/>
+  </Style>
+  <Style ss:ID="s63">
+   <NumberFormat ss:Format="@"/>
+  </Style>
+  <Style ss:ID="s64">
+   <NumberFormat ss:Format="mm/dd/yyyy;@"/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="Sheet1">
+  <Table ss:ExpandedColumnCount="8" ss:ExpandedRowCount="19" x:FullColumns="1"
+   x:FullRows="1">
+   <Column ss:Index="5" ss:AutoFitWidth="0" ss:Width="96.75"/>
+   <Column ss:AutoFitWidth="0" ss:Width="123"/>
+   <Row>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">事件编号</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">事件类别</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">事件等级</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">上报状态</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">发生日期</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">上报日期</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">科室</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">反馈</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004739</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">跌倒坠床</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">I</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-29  14:59</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-29  14:51</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">内二科</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004713</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">职业暴露</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">&#45;-</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-27  10:10</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-27  10:01</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">内二科</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004675</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">管路事件</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">III</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-01  05:25</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-23  16:12</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">美容科@￥</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004673</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">给药事件</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">III</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-23  16:10</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-23  16:07</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">美容科@￥</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004671</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">压疮评估</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">&#45;-</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-01  17:25</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-23  15:59</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">美容科@￥</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004669</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">职业暴露</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">II</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-02  06:30</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-23  15:56</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">美容科@￥</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004668</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">职业暴露</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">Ⅳ</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-02  02:50</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-23  15:50</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">美容科@￥</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004667</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">其他事件</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">&#45;-</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-23  15:49</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-23  15:43</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">美容科@￥</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004625</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">隐患事件</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">Ⅳ</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-01  01:05</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-03-16  17:04</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">内二科</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004587</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">压疮评估</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">&#45;-</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-17  15:30</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-17  15:30</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">内二科</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004585</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">管路事件</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">III</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-17  15:25</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-17  15:25</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">内二科</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004584</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">给药事件</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">II</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-17  15:23</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-17  15:24</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">内二科</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004583</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">职业暴露</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">II</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-17  15:22</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-17  15:23</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">内二科</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004582</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">职业暴露</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">Ⅳ</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-17  15:22</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-17  15:22</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">内二科</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004581</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">职业暴露</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">Ⅳ</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-17  15:22</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-17  15:22</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">内二科</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004580</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">职业暴露</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">II</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-17  11:43</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-17  11:44</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">内二科</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004579</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">其他事件</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">&#45;-</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-02  00:15</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-17  11:28</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">内二科</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">0000004578</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">隐患事件</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">Ⅳ</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">未上报</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-01  17:50</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">2017-01-17  11:18</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">内二科</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">无</Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <Print>
+    <ValidPrinterInfo/>
+    <PaperSizeIndex>9</PaperSizeIndex>
+    <HorizontalResolution>600</HorizontalResolution>
+    <VerticalResolution>600</VerticalResolution>
+   </Print>
+   <Selected/>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+</Workbook>

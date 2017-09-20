@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Integral"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="Integral" type="Aersysm.Domain.Integral,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="Integral">
+            <result property="RecordID" column="RecordID" dbType="String"/>
+            <result property="UserID" column="UserID" dbType="String"/>
+            <result property="TrainingID" column="TrainingID" dbType="String"/>
+            <result property="Grade" column="Grade" dbType="String"/>
+            <result property="OperatorID" column="OperatorID" dbType="String"/>
+            <result property="ModifyDate" column="ModifyDate" dbType="DateTime"/>
+            <result property="HID" column="HID" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="Integral_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM Integral
+    </select>
+    
+    <select id="Integral_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM Integral
+	</select>
+    
+    <select id="Integral_Find" parameterClass="String" resultMap="FullResultMap" >
+      SELECT * FROM Integral WHERE
+      (UserID = #UserID#  and TrainingID=#TrainingID#  )
+    </select>
+
+
+    <select id="Integral_FindByUserID" parameterClass="String" resultMap="FullResultMap" >
+      SELECT * FROM Integral WHERE
+      (UserID = #UserID#)
+    </select>
+    
+    <insert id="Integral_Insert" parameterClass="Integral">
+	    INSERT INTO Integral (
+                    RecordID,
+                    UserID,
+                    TrainingID,
+                    Grade,
+                    OperatorID,
+                    ModifyDate,
+                    HID
+		    
+		) VALUES (
+                    #RecordID#,
+                    #UserID#,
+                    #TrainingID#,
+                    #Grade#,
+                    #OperatorID#,
+                    #ModifyDate#,
+                    #HID#
+		)
+	</insert>
+    
+    <update id="Integral_Update" parameterClass="Integral">
+	    UPDATE area SET
+                    RecordID = #RecordID#,
+                    UserID = #UserID#,
+                    TrainingID = #TrainingID#,
+                    Grade = #Grade#,
+                    OperatorID = #OperatorID#,
+                    ModifyDate = #ModifyDate#,
+                    HID = #HID#
+		WHERE
+		    (RecordID = #RecordID#)
+	</update>
+    
+    <delete id="Integral_Delete" parameterClass="Integral">
+	    Delete From  Integral 
+	        WHERE
+			(RecordID = #RecordID#)
+	</delete>
+    
+  </statements>
+</sqlMap>

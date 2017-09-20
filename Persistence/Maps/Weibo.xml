@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Weibo" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Weibo" type="Aersysm.Domain.Weibo, Aersysm.Domain" />
+  </alias>
+  <resultMaps>
+    <resultMap id="SelectResult" class="Weibo">
+      <result property="Id" column="id" />
+      <result property="idstr" column="idstr" />
+      <result property="name" column="name" />
+      <result property="location" column="location" />
+      <result property="description" column="description" />
+      <result property="profile_image_url" column="profile_image_url" />
+      <result property="gender" column="gender" />
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="SelectWeibo" parameterClass="int" resultMap="SelectResult">
+      Select
+      id,
+      idstr,
+      name,
+      location,
+      description,
+      profile_image_url,
+      gender
+      From Weibo
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          id=#Id#
+        </isParameterPresent>
+      </dynamic>
+    </select>
+
+    <select id="BaseSelectWeibo" parameterClass="int" resultMap="SelectResult">
+      Select
+      id,
+      idstr,
+      name,
+      location,
+      description,
+      profile_image_url,
+      gender
+      From Weibo
+    </select>
+
+    <select id="ChildSelectWeibo" parameterClass="int" resultMap="SelectResult" extends="BaseSelectWeibo">
+
+    </select>
+
+    <insert id="InsertWeibo" parameterClass="Weibo">
+      Insert Into Weibo (
+      id,
+      idstr,
+      name,
+      location,
+      description,
+      profile_image_url,
+      gender
+      )Values(
+      #Id#,
+      #idstr#,
+      #name#,
+      #location#,
+      #description#,
+      #profile_image_url#,
+      #gender#
+      )
+    </insert>
+
+    <update id="UpdateWeibo" parameterClass="Weibo">
+      Update weibo Set
+      idstr=#idstr#,
+      name=#name#,
+      location=#location#,
+      description=#description#,
+      profile_image_url=#profile_image_url#,
+      gender=#gender#
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          id=#Id#
+        </isParameterPresent>
+      </dynamic>
+    </update>
+
+    <delete id="DeleteWeibo" parameterClass="int">
+      Delete From Weibo
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          id=#Id#
+        </isParameterPresent>
+      </dynamic>
+    </delete>
+
+    <delete id="DeleteWeiboByOpenId" parameterClass="int">
+      Delete From Weibo
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          id=#Id#
+        </isParameterPresent>
+      </dynamic>
+    </delete>
+
+
+  </statements>
+</sqlMap>
+

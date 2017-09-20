@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="CourseOffice"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="CourseOffice" type="Aersysm.Domain.CourseOffice,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="CourseOffice">
+            <result property="Id" column="Id" dbType="String"/>
+            <result property="CourseID" column="CourseID" dbType="String"/>
+            <result property="OfficeID" column="OfficeID" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="CourseOffice_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM CourseOffice
+    </select>
+    
+    <select id="CourseOffice_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM CourseOffice
+	</select>
+    
+    <select id="CourseOffice_Find" parameterClass="String" resultMap="FullResultMap" extends="CourseOffice_FindAll">
+	    WHERE
+            (Id = #Id#)
+	</select>
+    
+    <insert id="CourseOffice_Insert" parameterClass="CourseOffice">
+	    INSERT INTO CourseOffice (
+		    AreaName
+			, SuperAreaId
+			, AreaLevel
+			, AreaEnd
+		) VALUES (
+		)
+	</insert>
+    
+    <update id="CourseOffice_Update" parameterClass="CourseOffice">
+	    UPDATE area SET
+		WHERE
+		    (Id = #Id#)
+	</update>
+    
+    <delete id="CourseOffice_Delete" parameterClass="CourseOffice">
+	    Delete From  CourseOffice 
+	        WHERE
+			(Id = #Id#)
+	</delete>
+    
+  </statements>
+</sqlMap>

@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="Userauths" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="Userauths" type="Aersysm.Domain.Userauths, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="Userauths">
+			<result property="AuthsId" column="authsid" />
+			<result property="RegisterId" column="registerid" />
+			<result property="LoginType" column="logintype" />
+			<result property="LoginNumber" column="loginnumber" />
+			<result property="LoginLastTime" column="loginlasttime" />
+			<result property="IMEI" column="imei" />
+			<result property="Verified" column="verified" />
+      <result property="Password" column="password" />
+      <result property="ReguserId" column="reguserid" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="SelectUserauths" parameterClass="int" resultMap="SelectResult">
+      Select
+      authsid,
+      registerid,
+      logintype,
+      loginnumber,
+      loginlasttime,
+      imei,
+      verified,
+      password,
+      reguserid
+      From Userauths
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+					authsid=#AuthsId# 
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectUserauths" parameterClass="int" resultMap="SelectResult">
+      Select
+      authsid,
+      registerid,
+      logintype,
+      loginnumber,
+      loginlasttime,
+      imei,
+      verified,
+      password,
+      reguserid
+      From Userauths
+    </select>
+		
+		<select id="ChildSelectUserauths" parameterClass="int" resultMap="SelectResult" extends="BaseSelectUserauths">
+			
+		</select>
+				
+		<insert id="InsertUserauths" parameterClass="Userauths">
+      Insert Into Userauths (
+      authsid,
+      registerid,
+      logintype,
+      loginnumber,
+      loginlasttime,
+      imei,
+      verified,
+      password,
+      reguserid
+      )Values(
+      #AuthsId#,
+      #RegisterId#,
+      #LoginType#,
+      #LoginNumber#,
+      #LoginLastTime#,
+      #IMEI#,
+      #Verified#,
+      #Password#,
+      #ReguserId#
+      )
+    </insert>
+		
+		<update id="UpdateUserauths" parameterClass="Userauths">
+      Update userauths Set
+      authsid=#AuthsId#,
+      registerid=#RegisterId#,
+      logintype=#LoginType#,
+      loginnumber=#LoginNumber#,
+      loginlasttime=#LoginLastTime#,
+      imei=#IMEI#,
+      verified=#Verified#,
+      password=#Password#,
+      reguserid=#ReguserId#
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+					authsid=#AuthsId#
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="DeleteUserauths" parameterClass="int">
+			Delete From Userauths
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					authsid=#AuthsId#
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

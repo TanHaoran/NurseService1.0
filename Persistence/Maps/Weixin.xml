@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Weixin" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Weixin" type="Aersysm.Domain.Weixin, Aersysm.Domain" />
+  </alias>
+  <resultMaps>
+    <resultMap id="SelectResult" class="Weixin">
+      <result property="Id" column="id" />
+      <result property="OpenId" column="openid" />
+      <result property="NickName" column="nickname" />
+      <result property="Sex" column="sex" />
+      <result property="Language" column="language" />
+      <result property="City" column="city" />
+      <result property="Province" column="province" />
+      <result property="Country" column="country" />
+      <result property="HeadImgurl" column="headimgurl" />
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="SelectWeixin" parameterClass="int" resultMap="SelectResult">
+      Select
+      id,
+      openid,
+      nickname,
+      sex,
+      language,
+      city,
+      province,
+      country,
+      headimgurl
+      From Weixin
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          id=#Id#
+        </isParameterPresent>
+      </dynamic>
+    </select>
+
+    <select id="BaseSelectWeixin" parameterClass="int" resultMap="SelectResult">
+      Select
+      id,
+      openid,
+      nickname,
+      sex,
+      language,
+      city,
+      province,
+      country,
+      headimgurl
+      From Weixin
+    </select>
+
+    <select id="ChildSelectWeixin" parameterClass="int" resultMap="SelectResult" extends="BaseSelectWeixin">
+
+    </select>
+
+    <insert id="InsertWeixin" parameterClass="Weixin">
+      Insert Into Weixin (
+      id,
+      openid,
+      nickname,
+      sex,
+      language,
+      city,
+      province,
+      country,
+      headimgurl
+      )Values(
+      #Id#,
+      #OpenId#,
+      #NickName#,
+      #Sex#,
+      #Language#,
+      #City#,
+      #Province#,
+      #Country#,
+      #HeadImgurl#
+      )
+    </insert>
+
+    <update id="UpdateWeixin" parameterClass="Weixin">
+      Update weixin Set
+      id=#Id#,
+      openid=#OpenId#,
+      nickname=#NickName#,
+      sex=#Sex#,
+      language=#Language#,
+      city=#City#,
+      province=#Province#,
+      country=#Country#,
+      headimgurl=#HeadImgurl#
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          id=#Id#
+        </isParameterPresent>
+      </dynamic>
+    </update>
+
+    <delete id="DeleteWeixin" parameterClass="int">
+      Delete From Weixin
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          id=#Id#
+        </isParameterPresent>
+      </dynamic>
+    </delete>
+
+    <delete id="DeleteWeixinByOpenId" parameterClass="int">
+      Delete From Weixin
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          id=#Id#
+        </isParameterPresent>
+      </dynamic>
+    </delete>
+
+
+  </statements>
+</sqlMap>

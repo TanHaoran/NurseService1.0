@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="Userrelrecord" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="Userrelrecord" type="Aersysm.Domain.Userrelrecord, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="Userrelrecord">
+			<result property="RegisterId" column="registerid" />
+			<result property="HospitalId" column="hospitalid" />
+			<result property="HospitalName" column="hospitalname" />
+			<result property="DepartmentId" column="departmentid" />
+			<result property="DepartmentName" column="departmentname" />
+			<result property="NursingUnitId" column="nursingunitid" />
+			<result property="NursingUnitName" column="nursingunitname" />
+			<result property="EmployeeId" column="employeeid" />
+			<result property="Role" column="role" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="Selectuserrelrecord" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  registerid,
+				  hospitalid,
+				  hospitalname,
+				  departmentid,
+				  departmentname,
+				  nursingunitid,
+				  nursingunitname,
+				  employeeid,
+				  role
+			From Userrelrecord
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					registerid=#RegisterId# 
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectuserrelrecord" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  registerid,
+				  hospitalid,
+				  hospitalname,
+				  departmentid,
+				  departmentname,
+				  nursingunitid,
+				  nursingunitname,
+				  employeeid,
+				  role
+			From Userrelrecord
+		</select>
+		
+		<select id="ChildSelectuserrelrecord" parameterClass="int" resultMap="SelectResult" extends="BaseSelectuserrelrecord">
+			
+		</select>
+				
+		<insert id="Insertuserrelrecord" parameterClass="Userrelrecord">
+			Insert Into Userrelrecord (
+				  registerid,
+				  hospitalid,
+				  hospitalname,
+				  departmentid,
+				  departmentname,
+				  nursingunitid,
+				  nursingunitname,
+				  employeeid,
+				  role
+			)Values(
+				 #RegisterId#,
+				 #HospitalId#,
+				 #HospitalName#,
+				 #DepartmentId#,
+				 #DepartmentName#,
+				 #NursingUnitId#,
+				 #NursingUnitName#,
+				 #EmployeeId#,
+				 #Role#
+			)
+		</insert>
+		
+		<update id="Updateuserrelrecord" parameterClass="Userrelrecord">
+			Update userrelrecord Set 
+				registerid=#RegisterId#,
+				hospitalid=#HospitalId#,
+				hospitalname=#HospitalName#,
+				departmentid=#DepartmentId#,
+				departmentname=#DepartmentName#,
+				nursingunitid=#NursingUnitId#,
+				nursingunitname=#NursingUnitName#,
+				employeeid=#EmployeeId#,
+				role=#Role#
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					registerid=#RegisterId#
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="Deleteuserrelrecord" parameterClass="int">
+			Delete From Userrelrecord
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					registerid=#RegisterId#
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

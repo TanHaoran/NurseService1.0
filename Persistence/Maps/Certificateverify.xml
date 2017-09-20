@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="certificateverify" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="Certificateverify" type="Aersysm.Domain.Certificateverify, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="Certificateverify">
+			<result property="VerifyId" column="verifyid" />
+			<result property="RegisterId" column="registerid" />
+			<result property="CertificateId" column="certificateid" />
+      <result property="SubmitTime" column="submittime" />
+			<result property="Type" column="type" />
+			<result property="ServiceId" column="serviceid" />
+			<result property="DealTime" column="dealtime" />
+			<result property="VerifyStatus" column="verifystatus" />
+      <result property="VerifyView" column="verifyview" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="Selectcertificateverify" parameterClass="int" resultMap="SelectResult">
+      Select
+      verifyid,
+      registerid,
+      certificateid,
+      submittime,
+      type,
+      serviceid,
+      dealtime,
+      verifystatus,
+      verifyview
+      From certificateverify
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+					verifyid=#VerifyId# 
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectcertificateverify" parameterClass="int" resultMap="SelectResult">
+      Select
+      verifyid,
+      registerid,
+      certificateid,
+      submittime,
+      type,
+      serviceid,
+      dealtime,
+      verifystatus,
+      verifyview
+      From certificateverify
+    </select>
+		
+		<select id="ChildSelectcertificateverify" parameterClass="int" resultMap="SelectResult" extends="BaseSelectcertificateverify">
+			
+		</select>
+				
+		<insert id="Insertcertificateverify" parameterClass="Certificateverify">
+      Insert Into certificateverify (
+      verifyid,
+      registerid,
+      certificateid,
+      submittime,
+      type,
+      serviceid,
+      dealtime,
+      verifystatus,
+      verifyview
+      )Values(
+      #VerifyId#,
+      #RegisterId#,
+      #CertificateId#,
+      #SubmitTime#,
+      #Type#,
+      #ServiceId#,
+      #DealTime#,
+      #VerifyStatus#,
+      #VerifyView#
+      )
+    </insert>
+		
+		<update id="Updatecertificateverify" parameterClass="Certificateverify">
+      Update certificateverify Set
+      verifyid=#VerifyId#,
+      registerid=#RegisterId#,
+      certificateid=#CertificateId#,
+      submittime=#SubmitTime#,
+      type=#Type#,
+      serviceid=#ServiceId#,
+      dealtime=#DealTime#,
+      verifystatus=#VerifyStatus#,
+      verifyview=#VerifyView#
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+					verifyid=#VerifyId#
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="Deletecertificateverify" parameterClass="int">
+			Delete From certificateverify
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					verifyid=#VerifyId#
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

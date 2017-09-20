@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="sms" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="sms" type="Aersysm.Domain.sms, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="sms">
+			<result property="SMSId" column="smsid" />
+			<result property="Phone" column="phone" dbType="String"/>
+			<result property="Code" column="code" />
+			<result property="SendTime" column="sendtime" />
+			<result property="Status" column="status" />
+      <result property="Type" column="type" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="Selectsms" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  smsid,
+				  phone,
+				  code,
+				  sendtime,
+				  status,
+          type
+			From sms
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectsms" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  smsid,
+				  phone,
+				  code,
+				  sendtime,
+				  status,
+          type
+			From sms
+		</select>
+		
+		<select id="ChildSelectsms" parameterClass="int" resultMap="SelectResult" extends="BaseSelectsms">
+			
+		</select>
+				
+		<insert id="Insertsms" parameterClass="sms">
+      Insert Into sms (
+      smsid,
+      phone,
+      code,
+      sendtime,
+      status,
+      type
+      )Values(
+      #SMSId#,
+      #Phone#,
+      #Code#,
+      #SendTime#,
+      #Status#,
+      #Type#
+      )
+    </insert>
+		
+		<update id="Updatesms" parameterClass="sms">
+      Update sms Set
+      smsid=#SMSId#,
+      phone=#Phone#,
+      code=#Code#,
+      sendtime=#SendTime#,
+      status=#Status#,
+      type=#Type#
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="Deletesms" parameterClass="int">
+			Delete From sms
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

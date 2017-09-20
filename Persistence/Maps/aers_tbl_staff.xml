@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="aers_tbl_staff"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="aers_tbl_staff" type="Aersysm.Domain.aers_tbl_staff,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="aers_tbl_staff">
+            <result property="StaffId" column="StaffId" dbType="String"/>
+            <result property="ReguserId" column="ReguserId" dbType="String"/>
+            <result property="DepId" column="DepId" dbType="String"/>
+            <result property="Name" column="Name" dbType="String"/>
+            <result property="RoleState" column="RoleState" dbType="String"/>
+            <result property="Sex" column="Sex" dbType="String"/>
+            <result property="Position" column="Position" dbType="String"/>
+            <result property="Phone" column="Phone" dbType="String"/>
+            <result property="Address" column="Address" dbType="String"/>
+            <result property="IDNumber" column="IDNumber" dbType="String"/>
+            <result property="IsFlag" column="IsFlag" dbType="Int32"/>
+            <result property="Remarks" column="Remarks" dbType="String"/>
+            <result property="OperatorId" column="OperatorId" dbType="String"/>
+            <result property="OperatorDate" column="OperatorDate" dbType="DateTime"/>
+            <result property="HeadImg" column="HeadImg" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="aers_tbl_staff_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM aers_tbl_staff
+    </select>
+    
+    <select id="aers_tbl_staff_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM aers_tbl_staff
+	</select>
+
+
+
+    <select id="Staff_FindAllByGrade" resultMap="FullResultMap">
+
+      select
+      b.ReguserId,b.HeadImg,b.name,sum(a.Grade) as Grade
+      from Integral a
+      left join aers_tbl_staff b
+      on a.UserID =b.ReguserId
+      <!--GROUP BY b.ReguserId,b.HeadImg,b.name,a.Grade-->
+      GROUP BY b.ReguserId
+      order by Grade DESC,ModifyDate DESC
+      limit #Number#
+
+    </select>
+    
+    
+    
+    <select id="aers_tbl_staff_Find" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_staff_FindAll">
+	    WHERE
+            (StaffId = #StaffId#)
+	</select>
+
+    <select id="aers_tbl_staff_FindByReguserId" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_staff_FindAll">
+      WHERE
+      (ReguserId = #ReguserId#)
+    </select>
+
+    <select id="aers_tbl_staff_FindByPhoneNumber" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_staff_FindAll">
+      WHERE
+      (Phone = #Phone#)
+    </select>
+    
+    <insert id="aers_tbl_staff_Insert" parameterClass="aers_tbl_staff">
+      INSERT INTO aers_tbl_staff (
+      StaffId,
+      ReguserId,
+      DepId,
+      Name,
+      RoleState,
+      Sex,
+      Position,
+      Phone,
+      Address,
+      IDNumber,
+      IsFlag,
+      Remarks,
+      OperatorId,
+      OperatorDate,
+      HeadImg
+
+      ) VALUES (
+      #StaffId#,
+      #ReguserId#,
+      #DepId#,
+      #Name#,
+      #RoleState#,
+      #Sex#,
+      #Position#,
+      #Phone#,
+      #Address#,
+      #IDNumber#,
+      #IsFlag#,
+      #Remarks#,
+      #OperatorId#,
+      #OperatorDate#,
+      #HeadImg#
+      )
+    </insert>
+    
+    <update id="aers_tbl_staff_Update" parameterClass="aers_tbl_staff">
+      UPDATE aers_tbl_staff SET
+      DepId = #DepId#,
+      Name = #Name#,
+      RoleState = #RoleState#,
+      Sex = #Sex#,
+      Position = #Position#,
+      Phone = #Phone#,
+      Address = #Address#,
+      IDNumber = #IDNumber#,
+      IsFlag = #IsFlag#,
+      Remarks = #Remarks#,
+      OperatorId = #OperatorId#,
+      OperatorDate = #OperatorDate#,
+      HeadImg=#HeadImg#
+      WHERE
+      (ReguserId = #ReguserId#)
+    </update>
+    
+    <delete id="aers_tbl_staff_Delete" parameterClass="aers_tbl_staff">
+      Delete From  aers_tbl_staff
+      WHERE
+      (ReguserId = #ReguserId#)
+    </delete>
+    
+  </statements>
+</sqlMap>

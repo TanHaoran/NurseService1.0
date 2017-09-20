@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="Qq" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="Qq" type="Aersysm.Domain.Qq, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="Qq">
+			<result property="Id" column="id" />
+			<result property="OpenId" column="openid" />
+			<result property="FigureUrl" column="figureurl" />
+			<result property="NickName" column="nickname" />
+			<result property="Province" column="province" />
+			<result property="City" column="city" />
+			<result property="Gender" column="gender" />
+			<result property="AccessToken" column="accesstoken" />
+			<result property="Expires" column="expires" />
+      <result property="DeviceId" column="deviceid" />
+    </resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="SelectQq" parameterClass="int" resultMap="SelectResult">
+      Select
+      id,
+      openid,
+      figureurl,
+      nickname,
+      province,
+      city,
+      gender,
+      accesstoken,
+      expires,
+      deviceid
+      From Qq
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectQq" parameterClass="int" resultMap="SelectResult">
+      Select
+      id,
+      openid,
+      figureurl,
+      nickname,
+      province,
+      city,
+      gender,
+      accesstoken,
+      expires,
+      deviceid
+      From Qq
+    </select>
+		
+		<select id="ChildSelectQq" parameterClass="int" resultMap="SelectResult" extends="BaseSelectQq">
+			
+		</select>
+				
+		<insert id="InsertQq" parameterClass="Qq">
+      Insert Into Qq (
+      id,
+      openid,
+      figureurl,
+      nickname,
+      province,
+      city,
+      gender,
+      accesstoken,
+      expires,
+      deviceid
+      )Values(
+      #Id#,
+      #OpenId#,
+      #FigureUrl#,
+      #NickName#,
+      #Province#,
+      #City#,
+      #Gender#,
+      #AccessToken#,
+      #Expires#,
+      #DeviceId#
+      )
+    </insert>
+		
+		<update id="UpdateQq" parameterClass="Qq">
+      Update qq Set
+      id=#Id#,
+      openid=#OpenId#,
+      figureurl=#FigureUrl#,
+      nickname=#NickName#,
+      province=#Province#,
+      city=#City#,
+      gender=#Gender#,
+      accesstoken=#AccessToken#,
+      expires=#Expires#,
+      deviceid=#DeviceId#
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+          id=#Id#
+        </isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="DeleteQq" parameterClass="int">
+			Delete From Qq
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+          id=#Id#
+        </isParameterPresent>
+			</dynamic>
+		</delete>
+
+    <delete id="DeleteqqByOpenId" parameterClass="int">
+      Delete From Qq
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          id=#Id#
+        </isParameterPresent>
+      </dynamic>
+    </delete>
+
+
+  </statements>
+</sqlMap>

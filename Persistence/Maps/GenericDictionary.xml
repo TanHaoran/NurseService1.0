@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="GenericDictionary"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="GenericDictionary" type="Aersysm.Domain.GenericDictionary,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="GenericDictionary">
+            <result property="DictionaryID" column="DictionaryID" dbType="String"/>
+            <result property="Content" column="Content" dbType="String"/>
+            <result property="DisplayOrder" column="DisplayOrder" dbType="Int32"/>
+            <result property="Code" column="Code" dbType="String"/>
+            <result property="SpellNo" column="SpellNo" dbType="String"/>
+            <result property="ClassType" column="ClassType" dbType="String"/>
+            <result property="Remark" column="Remark" dbType="String"/>
+            <result property="OperatorTime" column="OperatorTime" dbType="DateTime"/>
+            <result property="OperatorID" column="OperatorID" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="GenericDictionary_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM GenericDictionary
+    </select>
+
+    
+    
+    <select id="GenericDictionary_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM GenericDictionary
+	</select>
+    
+    <select id="GenericDictionary_Find" parameterClass="String" resultMap="FullResultMap" extends="GenericDictionary_FindAll">
+	    WHERE
+            (DictionaryID = #DictionaryID#)
+	</select>
+    
+    <insert id="GenericDictionary_Insert" parameterClass="GenericDictionary">
+	    INSERT INTO GenericDictionary (
+		    AreaName
+			, SuperAreaId
+			, AreaLevel
+			, AreaEnd
+		) VALUES (
+		)
+	</insert>
+    
+    <update id="GenericDictionary_Update" parameterClass="GenericDictionary">
+	    UPDATE area SET
+		WHERE
+		    (DictionaryID = #DictionaryID#)
+	</update>
+    
+    <delete id="GenericDictionary_Delete" parameterClass="GenericDictionary">
+	    Delete From  GenericDictionary 
+	        WHERE
+			(DictionaryID = #DictionaryID#)
+	</delete>
+    
+  </statements>
+</sqlMap>

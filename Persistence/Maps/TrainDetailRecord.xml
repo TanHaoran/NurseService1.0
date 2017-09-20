@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="TrainDetailRecord"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="TrainDetailRecord" type="Aersysm.Domain.TrainDetailRecord,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="TrainDetailRecord">
+            <result property="DetailID" column="DetailID" dbType="String"/>
+            <result property="RecrodID" column="RecrodID" dbType="String"/>
+            <result property="ChapterID" column="ChapterID" dbType="String"/>
+            <result property="StandScore" column="StandScore" dbType="Int32"/>
+            <result property="Score" column="Score" dbType="Int32"/>
+            <result property="Points" column="Points" dbType="Int32"/>
+            <result property="LearnDate" column="LearnDate" dbType="DateTime"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="TrainDetailRecord_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM TrainDetailRecord
+    </select>
+    
+    <select id="TrainDetailRecord_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM TrainDetailRecord
+	</select>
+    
+    <select id="TrainDetailRecord_Find" parameterClass="String" resultMap="FullResultMap" extends="TrainDetailRecord_FindAll">
+	    WHERE
+            (DetailID = #DetailID#)
+	</select>
+    
+    <insert id="TrainDetailRecord_Insert" parameterClass="TrainDetailRecord">
+	    INSERT INTO TrainDetailRecord (
+		    AreaName
+			, SuperAreaId
+			, AreaLevel
+			, AreaEnd
+		) VALUES (
+		)
+	</insert>
+    
+    <update id="TrainDetailRecord_Update" parameterClass="TrainDetailRecord">
+	    UPDATE area SET
+		WHERE
+		    (DetailID = #DetailID#)
+	</update>
+    
+    <delete id="TrainDetailRecord_Delete" parameterClass="TrainDetailRecord">
+	    Delete From  TrainDetailRecord 
+	        WHERE
+			(DetailID = #DetailID#)
+	</delete>
+    
+  </statements>
+</sqlMap>

@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="Groupuser" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="Groupuser" type="Aersysm.Domain.Groupuser, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="Groupuser">
+			<result property="GroupUserId" column="groupuserid" />
+			<result property="RegisterId" column="registerid" />
+			<result property="NickName" column="nickname" />
+			<result property="JoinTime" column="jointime" />
+			<result property="IsMaster" column="ismaster" />
+			<result property="IsFlag" column="isflag" />
+      <result property="HXGroupId" column="hxgroupid" />
+      <result property="GroupId" column="groupid" />
+    </resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="SelectGroupuser" parameterClass="int" resultMap="SelectResult">
+      Select
+      groupuserid,
+      registerid,
+      nickname,
+      jointime,
+      ismaster,
+      isflag,
+      hxgroupid,
+      groupid
+      From Groupuser
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+					groupuserid=#GroupUserId# 
+				</isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectGroupuser" parameterClass="int" resultMap="SelectResult">
+      Select
+      groupuserid,
+      registerid,
+      nickname,
+      jointime,
+      ismaster,
+      isflag,
+      hxgroupid,
+      groupid
+      From Groupuser
+    </select>
+		
+		<select id="ChildSelectGroupuser" parameterClass="int" resultMap="SelectResult" extends="BaseSelectGroupuser">
+			
+		</select>
+				
+		<insert id="InsertGroupuser" parameterClass="Groupuser">
+      Insert Into Groupuser (
+      groupuserid,
+      registerid,
+      nickname,
+      jointime,
+      ismaster,
+      isflag,
+      hxgroupid,
+      groupid
+      )Values(
+      #GroupUserId#,
+      #RegisterId#,
+      #NickName#,
+      #JoinTime#,
+      #IsMaster#,
+      #IsFlag#,
+      #HXGroupId#,
+      #GroupId#
+      )
+    </insert>
+		
+		<update id="UpdateGroupuser" parameterClass="Groupuser">
+      Update groupuser Set
+      groupuserid=#GroupUserId#,
+      registerid=#RegisterId#,
+      nickname=#NickName#,
+      jointime=#JoinTime#,
+      ismaster=#IsMaster#,
+      isflag=#IsFlag#,
+      hxgroupid=#HXGroupId#,
+      groupid=#GroupId#
+      <dynamic prepend="WHERE">
+				<isParameterPresent>
+					groupuserid=#GroupUserId#
+				</isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="DeleteGroupuser" parameterClass="int">
+			Delete From Groupuser
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+					groupuserid=#GroupUserId#
+				</isParameterPresent>
+			</dynamic>
+		</delete>
+		
+	</statements>
+</sqlMap>

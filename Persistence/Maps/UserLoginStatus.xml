@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="userloginstatus" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="UserLoginStatus" type="Aersysm.Domain.UserLoginStatus, Aersysm.Domain" />
+  </alias>
+  <resultMaps>
+    <resultMap id="SelectResult" class="UserLoginStatus">
+      <result property="RegisterId" column="registerid" />
+      <result property="LoginType" column="logintype" dbType="Int32"/>
+      <result property="FirstLoginTime" column="firstlogintime" />
+      <result property="LastLoginTime" column="lastlogintime" />
+    </resultMap>
+  </resultMaps>
+
+  <!--<statements>
+    <select id="SelectUserLoginStatus" parameterClass="int" resultMap="SelectResult">
+      Select
+      registerid,
+      logintype,
+      firstlogintime,
+      lastlogintime
+      From userregister
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          registerid=#RegisterId#
+        </isParameterPresent>
+      </dynamic>
+    </select>-->
+
+    <statements>
+      <select id="SelectUserLoginStatus" parameterClass="int" resultMap="SelectResult">
+        Select
+       *
+        From UserLoginStatus
+        <dynamic prepend="WHERE">
+          <isParameterPresent>
+            registerid=#RegisterId#
+          </isParameterPresent>
+        </dynamic>
+      </select>
+
+    <select id="BaseSelectUserLoginStatus" parameterClass="int" resultMap="SelectResult">
+      Select
+      registerid,
+      logintype,
+      firstlogintime,
+      lastlogintime
+      From userregister
+    </select>
+
+    <select id="ChildSelectUserLoginStatus" parameterClass="int" resultMap="SelectResult" extends="BaseSelectUserLoginStatus">
+
+    </select>
+
+    <insert id="InsertUserLoginStatus" parameterClass="UserLoginStatus">
+      Insert Into UserLoginStatus (
+      registerid,
+      logintype,
+      firstlogintime,
+      lastlogintime
+      )Values(
+      #RegisterId#,
+      #LoginType#,
+      #FirstLoginTime#,
+      #LastLoginTime#
+      )
+    </insert>
+
+    <update id="UpdateUserLoginStatus" parameterClass="UserLoginStatus">
+      Update UserLoginStatus Set
+      registerid=#RegisterId#,
+      logintype=#LoginType#,
+      firstlogintime=#FirstLoginTime#,
+      lastlogintime=#LastLoginTime#
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          registerid=#RegisterId#
+        </isParameterPresent>
+      </dynamic>
+    </update>
+
+    <delete id="DeleteUserLoginStatus" parameterClass="int">
+      Delete From UserLoginStatus
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          registerid=#RegisterId#
+        </isParameterPresent>
+      </dynamic>
+    </delete>
+
+  </statements>
+</sqlMap>

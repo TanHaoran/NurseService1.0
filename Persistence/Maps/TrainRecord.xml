@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="TrainRecord"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="TrainRecord" type="Aersysm.Domain.TrainRecord,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="TrainRecord">
+            <result property="RecordID" column="RecordID" dbType="String"/>
+            <result property="CourseID" column="CourseID" dbType="String"/>
+            <result property="Score" column="Score" dbType="Int32"/>
+            <result property="Credit" column="Credit" dbType="Decimal"/>
+            <result property="UserID" column="UserID" dbType="String"/>
+            <result property="HID" column="HID" dbType="String"/>
+            <result property="StartTime" column="StartTime" dbType="DateTime"/>
+            <result property="EndDate" column="EndDate" dbType="DateTime"/>
+            <result property="AuditStatus" column="AuditStatus" dbType="Int32"/>
+            <result property="Auditor" column="Auditor" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="TrainRecord_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM TrainRecord
+    </select>
+    
+    <select id="TrainRecord_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM TrainRecord
+	</select>
+    
+    <select id="TrainRecord_Find" parameterClass="String" resultMap="FullResultMap" extends="TrainRecord_FindAll">
+	    WHERE
+            (RecordID = #RecordID#)
+	</select>
+    
+    <insert id="TrainRecord_Insert" parameterClass="TrainRecord">
+	    INSERT INTO TrainRecord (
+		    AreaName
+			, SuperAreaId
+			, AreaLevel
+			, AreaEnd
+		) VALUES (
+		)
+	</insert>
+    
+    <update id="TrainRecord_Update" parameterClass="TrainRecord">
+	    UPDATE area SET
+		WHERE
+		    (RecordID = #RecordID#)
+	</update>
+    
+    <delete id="TrainRecord_Delete" parameterClass="TrainRecord">
+	    Delete From  TrainRecord 
+	        WHERE
+			(RecordID = #RecordID#)
+	</delete>
+    
+  </statements>
+</sqlMap>

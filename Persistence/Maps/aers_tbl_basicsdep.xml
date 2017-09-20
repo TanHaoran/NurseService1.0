@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="aers_tbl_basicsdep"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <alias>
+    <typeAlias alias="aers_tbl_basicsdep" type="Aersysm.Domain.aers_tbl_basicsdep,Aersysm.Domain"/>
+  </alias>
+
+  <resultMaps>
+    <resultMap id="FullResultMap" class="aers_tbl_basicsdep">
+            <result property="BasdepId" column="BasdepId" dbType="String"/>
+            <result property="BasdeptName" column="BasdeptName" dbType="String"/>
+            <result property="SpellNo" column="SpellNo" dbType="String"/>
+            <result property="DisplayOrder" column="DisplayOrder" dbType="Int32"/>
+            <result property="Remarks" column="Remarks" dbType="String"/>
+            <result property="IsFlag" column="IsFlag" dbType="Int32"/>
+            <result property="OperatorId" column="OperatorId" dbType="String"/>
+            <result property="OperatorDate" column="OperatorDate" dbType="DateTime"/>
+           <result property="Basdeplogo" column="Basdeplogo" dbType="String"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="aers_tbl_basicsdep_GetCount" resultClass="System.Int32">
+        SELECT count(*) FROM aers_tbl_basicsdep
+    </select>
+    
+    <select id="aers_tbl_basicsdep_FindAll" resultMap="FullResultMap">
+	    SELECT * FROM aers_tbl_basicsdep
+	</select>
+    
+    <select id="aers_tbl_basicsdep_Find" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_basicsdep_FindAll">
+	    WHERE
+            (BasdepId = #BasdepId#)
+	</select>
+    
+    <insert id="aers_tbl_basicsdep_Insert" parameterClass="aers_tbl_basicsdep">
+	    INSERT INTO aers_tbl_basicsdep (
+                    BasdepId,
+                    BasdeptName,
+                    SpellNo,
+                    DisplayOrder,
+                    Remarks,
+                    IsFlag,
+                    OperatorId,
+                    OperatorDate,
+                    Basdeplogo
+		    
+		) VALUES (
+                    #BasdepId#,
+                    #BasdeptName#,
+                    #SpellNo#,
+                    #DisplayOrder#,
+                    #Remarks#,
+                    #IsFlag#,
+                    #OperatorId#,
+                    #OperatorDate#,
+                    #Basdeplogo#
+		)
+	</insert>
+    
+    <update id="aers_tbl_basicsdep_Update" parameterClass="aers_tbl_basicsdep">
+	    UPDATE aers_tbl_basicsdep SET
+                    BasdepId = #BasdepId#,
+                    BasdeptName = #BasdeptName#,
+                    SpellNo = #SpellNo#,
+                    DisplayOrder = #DisplayOrder#,
+                    Remarks = #Remarks#,
+                    IsFlag = #IsFlag#,
+                    OperatorId = #OperatorId#,
+                    OperatorDate = #OperatorDate#,
+                    Basdeplogo=#Basdeplogo#
+		WHERE
+		    (BasdepId = #BasdepId#)
+	</update>
+    
+    <delete id="aers_tbl_basicsdep_Delete" parameterClass="aers_tbl_basicsdep">
+	    Delete From  aers_tbl_basicsdep 
+	        WHERE
+			(BasdepId = #BasdepId#)
+	</delete>
+    
+  </statements>
+</sqlMap>

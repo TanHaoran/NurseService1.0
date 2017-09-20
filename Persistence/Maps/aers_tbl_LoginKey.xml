@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<sqlMap namespace="aers_tbl_LoginKey"
+	xmlns="http://ibatis.apache.org/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  <alias>
+    <typeAlias alias="aers_tbl_LoginKey" type="Aersysm.Domain.aers_tbl_LoginKey,Aersysm.Domain"/>
+  </alias>
+  
+  <resultMaps>
+    <resultMap id="FullResultMap" class="aers_tbl_LoginKey">
+      <result property="LKId" column="LKId" dbType="String"/>
+      <result property="ReguserId" column="ReguserId" dbType="String"/>
+      <result property="LoginKey" column="LoginKey" dbType="String"/>
+      <result property="LoginTime" column="LoginTime" dbType="DateTime"/>
+      <result property="LoginIP" column="LoginIP" dbType="String"/>
+      <result property="LoginStatus" column="LoginStatus" dbType="Int32"/>
+    </resultMap>
+  </resultMaps>
+  
+  <statements>
+    <insert id="aers_tbl_LoginKey_Insert" parameterClass="aers_tbl_LoginKey">
+      INSERT INTO aers_tbl_LoginKey (
+      LKId,
+      ReguserId,
+      LoginKey,
+      LoginTime,
+      LoginIP,
+      LoginStatus
+      ) VALUES (
+      #LKId#,
+      #ReguserId#,
+      #LoginKey#,
+      #LoginTime#,
+      #LoginIP#,
+      #LoginStatus#
+      )
+    </insert>
+    
+    <update id="aers_tbl_LoginKey_Update" parameterClass="aers_tbl_LoginKey">
+      UPDATE aers_tbl_LoginKey SET
+      ReguserId=#ReguserId#,
+      LoginKey=#LoginKey#,
+      LoginTime=#LoginTime#,
+      LoginIP=#LoginIP#,
+      LoginStatus=#LoginStatus#
+      WHERE
+      (LKId = #LKId#)
+    </update>
+    
+    <delete id="aers_tbl_LoginKey_Delete" parameterClass="aers_tbl_LoginKey">
+      Delete From  aers_tbl_LoginKey
+      WHERE
+      (LKId = #LKId#)
+    </delete>
+    
+    <select id="aers_tbl_LoginKey_FindAll" resultMap="FullResultMap">
+      SELECT * FROM aers_tbl_LoginKey
+    </select>
+    <update id="aers_tbl_LoginKey_UpdateStatus" parameterClass="aers_tbl_LoginKey">
+      UPDATE aers_tbl_LoginKey SET
+      LoginStatus=2
+      WHERE
+      (ReguserId = #ReguserId#)
+    </update>
+
+    <select id="aers_tbl_LoginKey_FindLoginKeyByReuId" resultMap="FullResultMap">
+      SELECT * FROM aers_tbl_LoginKey
+      WHERE
+      (ReguserId = #ReguserId# and LoginStatus=1)
+    </select>
+  </statements>
+  
+</sqlMap>

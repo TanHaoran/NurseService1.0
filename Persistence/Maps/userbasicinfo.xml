@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<sqlMap namespace="UserBasicInfo" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<alias>
+		<typeAlias alias="UserBasicInfo" type="Aersysm.Domain.UserBasicInfo, Aersysm.Domain" />
+	</alias>
+	<resultMaps>
+		<resultMap id="SelectResult" class="UserBasicInfo">
+			<result property="RegisterId" column="registerid" />
+			<result property="Sex" column="sex" />
+			<result property="IDCard" column="idcard" />
+			<result property="Birthday" column="birthday" />
+			<result property="Age" column="age" />
+			<result property="Province" column="province" />
+			<result property="City" column="city" />
+			<result property="Region" column="region" />
+			<result property="Address" column="address" />
+			<result property="Nation" column="nation" />
+			<result property="MeritalStatus" column="meritalstatus" />
+			<result property="Education" column="education" />
+			<result property="QQ" column="qq" />
+			<result property="EMail" column="email" />
+		</resultMap>
+	</resultMaps>
+	
+	<statements>
+		<select id="Selectuserbasicinfo" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  registerid,
+				  sex,
+				  idcard,
+				  birthday,
+				  age,
+				  province,
+				  city,
+				  region,
+				  address,
+				  nation,
+				  meritalstatus,
+				  education,
+				  qq,
+				  email
+			From userbasicinfo
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+          registerid=#RegisterId#
+        </isParameterPresent>
+			</dynamic>
+		</select>
+		
+		<select id="BaseSelectuserbasicinfo" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  registerid,
+				  sex,
+				  idcard,
+				  birthday,
+				  age,
+				  province,
+				  city,
+				  region,
+				  address,
+				  nation,
+				  meritalstatus,
+				  education,
+				  qq,
+				  email
+			From userbasicinfo
+		</select>
+		
+		<select id="ChildSelectuserbasicinfo" parameterClass="int" resultMap="SelectResult" extends="BaseSelectuserbasicinfo">
+			
+		</select>
+				
+		<insert id="Insertuserbasicinfo" parameterClass="UserBasicInfo">
+			Insert Into userbasicinfo (
+				  registerid,
+				  sex,
+				  idcard,
+				  birthday,
+				  age,
+				  province,
+				  city,
+				  region,
+				  address,
+				  nation,
+				  meritalstatus,
+				  education,
+				  qq,
+				  email
+			)Values(
+				 #RegisterId#,
+				 #Sex#,
+				 #IDCard#,
+				 #Birthday#,
+				 #Age#,
+				 #Province#,
+				 #City#,
+				 #Region#,
+				 #Address#,
+				 #Nation#,
+				 #MeritalStatus#,
+				 #Education#,
+				 #QQ#,
+				 #EMail#
+			)
+		</insert>
+		
+		<update id="Updateuserbasicinfo" parameterClass="UserBasicInfo">
+			Update userbasicinfo Set 
+				sex=#Sex#,
+				idcard=#IDCard#,
+				birthday=#Birthday#,
+				age=#Age#,
+				province=#Province#,
+				city=#City#,
+				region=#Region#,
+				address=#Address#,
+				nation=#Nation#,
+				meritalstatus=#MeritalStatus#,
+				education=#Education#,
+				qq=#QQ#,
+				email=#EMail#
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+          registerid=#RegisterId#
+        </isParameterPresent>
+			</dynamic>
+		</update>
+		
+		<delete id="Deleteuserbasicinfo" parameterClass="int">
+			Delete From userbasicinfo
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+          registerid=#RegisterId#
+        </isParameterPresent>
+			</dynamic>
+		</delete>
+
+  </statements>
+</sqlMap>
