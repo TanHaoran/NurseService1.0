@@ -27,8 +27,8 @@ namespace Services
     {
 
         // 极光推送
-        public static String JPUSH_APP_KEY = "90779f5d3a58d54887e1c2bd";
-        public static String JPUSH_MASTER_SECRET = "81628587081477cb32f67007";
+        public static String JPUSH_APP_KEY = "b1ec133146726dd0ea653988";
+        public static String JPUSH_MASTER_SECRET = "0db2d8b4b6f59ed9ad82d40c";
 
         // 容联短信
         public static String CCPREST_ACCOUNT_SID = "8aaf07085d106c7f015d5eab60d1211c";
@@ -40,7 +40,7 @@ namespace Services
         public static DateTime StrToDateTime()
         {
 
-            return Convert.ToDateTime("01/01/1900");
+            return Convert.ToDateTime("01/01/1980");
         }
         #endregion
 

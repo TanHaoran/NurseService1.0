@@ -722,15 +722,12 @@ namespace Services
             if (ishas != null)
             {
                 r.code = 0;
-                UserFirstInfo ur = new UserFirstInfo();
-                ur.RegisterId = ishas.RegisterId;
+                return GetUserFirstInfoById(ishas.RegisterId);
                 //  registerIdd = ishas.RegisterId;
 
                 //var  ur = GetUserFirstInfoByPhone(Phone);
                 // string[] reid = {ur.RegisterId };
                 //  string s=Common.PushMsgByAliasId("您已成功注册注册智护",reid,DeviceId);
-                r.body = ur;
-                return r;
             }
             else
             {
@@ -740,7 +737,7 @@ namespace Services
                     var userregisterId = new aers_sys_seedSqlMapDao().GetMaxID("userregister");  //注册表
                     //registerIdd = userregisterId;
                     userrr.Phone = Phone;
-                    userrr.RegisterId = userregisterId;
+                    userrr.RegisterId = userregisterId;               
                     udao.Adduserregister(userrr);
 
                     //  Common .PushMsg("欢迎注册智护", DeviceRegId, userrr.RegisterId);
@@ -3631,7 +3628,7 @@ namespace Services
                     else
                     {
                         UserauthsSqlMapDao uadao = new UserauthsSqlMapDao(); //建立对应关系，授权表里面插入一条数据,先判断是否已经绑定
-                        var audata = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginType == 4 && o.RegisterId == model.RegisterId && o.LoginNumber == model.LoginName);
+                        var audata = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginType == 4  && o.LoginNumber == model.LoginName);
                         if (audata != null)
                         {
                             r.code = 1;
@@ -6076,8 +6073,6 @@ namespace Services
             }
         }
         #endregion
-
-
 
         #region 后台服务
 
