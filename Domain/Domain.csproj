@@ -102,6 +102,7 @@
     <Compile Include="Notice.cs" />
     <Compile Include="NurseBaseInfo.cs" />
     <Compile Include="Nursingunitid.cs" />
+    <Compile Include="Permission.cs" />
     <Compile Include="plancontents.cs" />
     <Compile Include="Problem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

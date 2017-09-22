@@ -27,12 +27,10 @@ using System.Web;
 using static System.Net.WebRequestMethods;
 
 //可以在模板实现服务
-namespace Services
-{
+namespace Services {
     [Serializable]
     [DataContract]
-    public class Register
-    {
+    public class Register {
         [DataMember]
         public string RegisterId { get; set; }
     }
@@ -42,29 +40,21 @@ namespace Services
     // 注意: 使用“重构”菜单上的“重命名”命令，可以同时更改代码、svc 和配置文件中的类名“UserService”。
     // 注意: 为了启动 WCF 测试客户端以测试此服务，请在解决方案资源管理器中选择 UserService.svc 或 UserService.svc.cs，然后开始调试。
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
-    public class UserService : IUserService
-    {
+    public class UserService : IUserService {
         int pageSize = 10; //每页10条
 
         #region 清空数据库 0
-        public string ClearData()
-        {
-            try
-            {
+        public string ClearData() {
+            try {
                 userregisterSqlMapDao urdao = new userregisterSqlMapDao();
                 int i = urdao.DeleteAll();   //删除所有相关数据
                                              // int m = urdao.UpdateSeed();  //更新最大号表字段
-                if (i > 0)
-                {
+                if (i > 0) {
                     return "0";
-                }
-                else
-                {
+                } else {
                     return "1";
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
 
                 return "1";
             }
@@ -72,24 +62,20 @@ namespace Services
         #endregion
 
         #region 环信测试  0
-        private string _userName
-        {
+        private string _userName {
 
-            get
-            {
+            get {
                 //Thread.Sleep(100);
                 //return DateTime.Now.ToString("yyyyMMddHHmmssffff");
                 return "";
             }
         } //用户名
 
-        public string CreatHXUser()
-        {
+        public string CreatHXUser() {
             ////单个创建
             var syncRequest = Client.DefaultSyncRequest;
 
-            var userr = syncRequest.UserCreate(new UserCreateReqeust()
-            {
+            var userr = syncRequest.UserCreate(new UserCreateReqeust() {
                 nickname = string.Concat("浩然就看见d", this._userName),
                 password = "123456",
                 username = string.Concat("00799944", this._userName),
@@ -103,19 +89,15 @@ namespace Services
         /// 获取全部国家编码
         /// </summary>
         /// <returns></returns>
-        public RsList<country> GetCountryCodeAll()
-        {
+        public RsList<country> GetCountryCodeAll() {
             RsList<country> r = new Services.RsList<country>();
-            try
-            {
+            try {
                 countrySqlMapDao cdao = new countrySqlMapDao();
                 var data = cdao.GetcountryList().ToList();
                 r.code = 0;
                 r.body = data;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "获取国家编码失败";
                 return r;
@@ -123,12 +105,10 @@ namespace Services
         }
         #endregion
 
-        public RsList<Token> GetAllToken(string RegisterId)
-        {
+        public RsList<Token> GetAllToken(string RegisterId) {
             Console.WriteLine(RegisterId);
             RsList<Token> result = new RsList<Token>();
-            if (string.IsNullOrWhiteSpace(RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegisterId)) {
                 result.code = 1;
                 result.msg = "注册Id不能为空";
                 return result;
@@ -151,39 +131,32 @@ namespace Services
         /// <param name="Phone"></param>
         /// <param name="Type">0验证码注册，1验证码登陆，2忘记密码，3验证旧手机号，4邀请好友,5修改手机号，6邀请好友</param>
         /// <returns></returns>
-        public RsModel<string> GetSMSCodeByPhone(string CountryCode, string Phone, int Type)
-        {
+        public RsModel<string> GetSMSCodeByPhone(string CountryCode, string Phone, int Type) {
             // % 2B86
             //  CountryCode = "+86";
             RsModel<string> r = new RsModel<string>();
-            if (string.IsNullOrWhiteSpace(CountryCode))
-            {
+            if (string.IsNullOrWhiteSpace(CountryCode)) {
                 r.code = 1;
                 r.msg = "国家编码不能为空";
                 return r;
             }
 
-            if (string.IsNullOrWhiteSpace(Phone))
-            {
+            if (string.IsNullOrWhiteSpace(Phone)) {
                 r.code = 1;
                 r.msg = "手机号不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(Type.ToString()))
-            {
+            if (string.IsNullOrWhiteSpace(Type.ToString())) {
                 r.code = 1;
                 r.msg = "Type不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 if (!string.IsNullOrWhiteSpace(CountryCode))   //如果是空，暂时直接忽略
                 {
                     string CountryCoded = System.Web.HttpUtility.UrlDecode(CountryCode, System.Text.Encoding.UTF8);  //解码
-                    if (!string.IsNullOrEmpty(CountryCoded))
-                    {
-                        if (CountryCoded != "+86")
-                        {
+                    if (!string.IsNullOrEmpty(CountryCoded)) {
+                        if (CountryCoded != "+86") {
                             r.code = 1;
                             r.msg = "暂不支持您手机号所在地区";
                             return r;
@@ -211,10 +184,8 @@ namespace Services
                 var code = code1.ToString() + code2.ToString() + code3.ToString() + code4.ToString() + code4.ToString() + code6.ToString();
                 string[] SMSCode = { code, "5" };   //5分钟
                 var mes = SendMSMCode(Phone, SMSCode, Type);
-                if (mes.Contains("成功"))
-                {
-                    try
-                    {
+                if (mes.Contains("成功")) {
+                    try {
                         sms sm = new sms();
                         sm.SMSId = new aers_sys_seedSqlMapDao().GetMaxID("sms");
                         sm.Phone = Phone;
@@ -225,16 +196,12 @@ namespace Services
                         sdao.Addsms(sm);
                         r.code = 0;
                         return r;
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         r.code = 1;
                         r.msg = "数据插入失败";
                         return r;
                     }
-                }
-                else
-                {
+                } else {
                     sms sm = new sms();
                     sm.Phone = Phone;
                     sm.SMSId = new aers_sys_seedSqlMapDao().GetMaxID("sms");
@@ -248,9 +215,7 @@ namespace Services
                     r.msg = "短信发送失败";
                     return r;
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "获取验证码失败";
                 return r;
@@ -262,82 +227,61 @@ namespace Services
         /// <param name="Phone"></param>
         /// <param name="SMSCode"></param>
         /// <returns></returns>
-        public string SendMSMCode(string Phone, string[] SMSCode, int Type)
-        {
+        public string SendMSMCode(string Phone, string[] SMSCode, int Type) {
             string ret = null;
             CCPRestSDK.CCPRestSDK api = new CCPRestSDK.CCPRestSDK();
             bool isInit = api.init("app.cloopen.com", "8883");
             api.setAccount(Common.CCPREST_ACCOUNT_SID, Common.CCPREST_ACCOUNT_TOKEN);
             api.setAppId(Common.CCPREST_APP_ID);
-            try
-            {
-                if (isInit)
-                {
+            try {
+                if (isInit) {
                     string msg = "";
                     if (Type == 0)       //验证码注册
                     {
                         msg = "200137";
-                    }
-                    else if (Type == 1)  //验证码登陆
-                    {
+                    } else if (Type == 1)  //验证码登陆
+                      {
                         msg = "200138";
-                    }
-                    else if (Type == 2)  //忘记密码
-                    {
+                    } else if (Type == 2)  //忘记密码
+                      {
                         msg = "200139";
-                    }
-                    else if (Type == 3)  //验证旧手机号
-                    {
+                    } else if (Type == 3)  //验证旧手机号
+                      {
                         msg = "200140";
-                    }
-                    else if (Type == 4)  //修改手机号
-                    {
+                    } else if (Type == 4)  //修改手机号
+                      {
                         msg = "200141";
-                    }
-                    else if (Type == 5)  //第三方绑定手机号
-                    {
+                    } else if (Type == 5)  //第三方绑定手机号
+                      {
                         msg = "200143";
-                    }
-                    else if (Type == 6) //解绑手机号
-                    {
+                    } else if (Type == 6) //解绑手机号
+                      {
                         msg = "200144";
                     }
-                    // 邀请短信
-                    else if (Type == 7)
-                    {
+                      // 邀请短信
+                      else if (Type == 7) {
                         msg = "204933";
                     }
                     Dictionary<string, object> retData = api.SendTemplateSMS(Phone, msg, SMSCode);
                     ret = getDictionaryData(retData);
-                }
-                else
-                {
+                } else {
                     ret = "初始化失败";
                 }
-            }
-            catch (Exception exc)
-            {
+            } catch (Exception exc) {
                 ret = exc.Message;
-            }
-            finally
-            {
+            } finally {
                 // Response.Write(ret);
             }
             return ret;
         }
-        private string getDictionaryData(Dictionary<string, object> data)
-        {
+        private string getDictionaryData(Dictionary<string, object> data) {
             string ret = null;
-            foreach (KeyValuePair<string, object> item in data)
-            {
-                if (item.Value != null && item.Value.GetType() == typeof(Dictionary<string, object>))
-                {
+            foreach (KeyValuePair<string, object> item in data) {
+                if (item.Value != null && item.Value.GetType() == typeof(Dictionary<string, object>)) {
                     ret += item.Key.ToString() + "={";
                     ret += getDictionaryData((Dictionary<string, object>)item.Value);
                     ret += "};";
-                }
-                else
-                {
+                } else {
                     ret += item.Key.ToString() + "=" + (item.Value == null ? "null" : item.Value.ToString()) + ";";
                 }
             }
@@ -354,20 +298,17 @@ namespace Services
         public RsModel<UserFirstInfo> IsOKSMSCode(ViewSMS model)  //只返回注册id  8.11
         {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
-            if (string.IsNullOrWhiteSpace(model.Phone))
-            {
+            if (string.IsNullOrWhiteSpace(model.Phone)) {
                 r.code = 1;
                 r.msg = "手机号不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(model.Code))
-            {
+            if (string.IsNullOrWhiteSpace(model.Code)) {
                 r.code = 1;
                 r.msg = "验证码不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace((model.Type).ToString()))
-            {
+            if (string.IsNullOrWhiteSpace((model.Type).ToString())) {
                 r.code = 1;
                 r.msg = "Type不能为空";
                 return r;
@@ -376,63 +317,48 @@ namespace Services
             smsSqlMapDao sdao = new smsSqlMapDao();
             var data = sdao.GetsmsList();
             var phoneData = data.OrderByDescending(o => o.SendTime).FirstOrDefault(o => o.Phone == model.Phone && o.Type == model.Type && o.Status == 1);  //发送失败status0，成功1
-            if (phoneData == null)
-            {
+            if (phoneData == null) {
                 r.code = 1;
                 r.msg = "手机号有误";
                 return r;
-            }
-            else
-            {
-                if ((DateTime.Now - phoneData.SendTime).Minutes > 50)
-                {
+            } else {
+                if ((DateTime.Now - phoneData.SendTime).Minutes > 50) {
                     r.code = 1;
                     r.msg = "验证码已过期";
                     return r;
-                }
-                else
-                {
+                } else {
                     if (phoneData.Code != model.Code)   //正式时放开  第三方没给客户发送成功情况，status=0时
                     {
                         r.code = 1;
                         r.msg = "验证码错误";
                         return r;
-                    }
-                    else
-                    {
+                    } else {
                         if (model.Type == 0) //注册 
                         {
                             // return Sign(model.Phone,model.DeviceId); //170976fa8ab5fc3cda2
                             return Sign(model.Phone, model.DeviceRegId);
-                        }
-                        else if (model.Type == 1) //验证码登陆 手机号不存在时，进行注册 返回需要的信息
-                        {
+                        } else if (model.Type == 1) //验证码登陆 手机号不存在时，进行注册 返回需要的信息
+                          {
                             return Sign(model.Phone, model.DeviceRegId);
                             // return LoginByCode(model.Phone);
-                        }
-                        else if (model.Type == 2) //忘记密码  返回0
-                        {
+                        } else if (model.Type == 2) //忘记密码  返回0
+                          {
                             return Sign(model.Phone, model.DeviceRegId);
                             // return ForgetPwd();  //和注册一样
-                        }
-                        else if (model.Type == 3) //验证旧手机号 返回0
-                        {
+                        } else if (model.Type == 3) //验证旧手机号 返回0
+                          {
                             return SureOldPhone(model.RegisterId, model.Phone);
-                        }
-                        else if (model.Type == 4) //修改手机号 返回0
-                        {
+                        } else if (model.Type == 4) //修改手机号 返回0
+                          {
                             return ResetPhone(model.RegisterId, model.Phone);
-                        }
-                        else if (model.Type == 5) //绑定手机号
-                        {
+                        } else if (model.Type == 5) //绑定手机号
+                          {
                             return BindPhone(model.Phone, model.RegisterId);
-                        }
-                        else if (model.Type == 6) //解绑手机号
-                        {
+                        } else if (model.Type == 6) //解绑手机号
+                          {
                             return unBindPhone(model.Phone, model.RegisterId);
-                        }
-                        else  //邀请好友
-                        {
+                        } else  //邀请好友
+                          {
                             return SendtoFriend();
                         }
                     }
@@ -447,15 +373,11 @@ namespace Services
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public RsModel<string> UpdateUserRegisterInfo(userregister model)
-        {
+        public RsModel<string> UpdateUserRegisterInfo(userregister model) {
             RsModel<string> r = new Services.RsModel<string>();
-            if (model != null)
-            {
-                try
-                {
-                    if (string.IsNullOrWhiteSpace(model.RegisterId))
-                    {
+            if (model != null) {
+                try {
+                    if (string.IsNullOrWhiteSpace(model.RegisterId)) {
                         r.code = 1;
                         r.msg = "RegisterId不能为空";
                         return r;
@@ -464,61 +386,42 @@ namespace Services
                     var data = udao.GetuserregisterDetail(model.RegisterId); //从库里面查出以前的数据
                     userregister u = new userregister();
                     u.RegisterId = model.RegisterId;
-                    if (!string.IsNullOrWhiteSpace(model.Avatar))
-                    {
+                    if (!string.IsNullOrWhiteSpace(model.Avatar)) {
                         u.Avatar = model.Avatar;
-                    }
-                    else
-                    {
+                    } else {
                         u.Avatar = data.Avatar;
                     }
-                    if (!string.IsNullOrWhiteSpace(model.Name))
-                    {
+                    if (!string.IsNullOrWhiteSpace(model.Name)) {
                         u.Name = model.Name;
-                    }
-                    else
-                    {
+                    } else {
                         u.Name = data.Name;
                     }
-                    if (null !=model.NickName )
-                    {
+                    if (null != model.NickName) {
                         // u.NickName =Common .Encode(model.NickName);
                         u.NickName = model.NickName;
-                    }
-                    else
-                    {
+                    } else {
                         u.NickName = data.NickName;
                     }
-                    if (!string.IsNullOrWhiteSpace(model.Phone))
-                    {
+                    if (!string.IsNullOrWhiteSpace(model.Phone)) {
                         u.Phone = model.Phone;
-                    }
-                    else
-                    {
+                    } else {
                         u.Phone = data.Phone;
                     }
-                    if (!string.IsNullOrWhiteSpace(model.Password))
-                    {
+                    if (!string.IsNullOrWhiteSpace(model.Password)) {
                         u.Password = Common.UserMd5(model.Password);
-                    }
-                    else
-                    {
+                    } else {
                         u.Password = data.Password;
                     }
                     udao.Updateuserregister(u);
                     r.code = 0;
                     return r;
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     r.code = 1;
                     r.msg = "数据更新失败";
                     return r;
                 }
 
-            }
-            else
-            {
+            } else {
                 r.code = 1;
                 r.msg = "所要修改信息不能为空";
                 return r;
@@ -528,19 +431,15 @@ namespace Services
         #endregion
 
         #region 修改用户基本信息 0
-        public RsModel<string> Updateuserbasicinfo(UserBasicInfo model)
-        {
+        public RsModel<string> Updateuserbasicinfo(UserBasicInfo model) {
             RsModel<string> r = new Services.RsModel<string>();
-            if (model == null)
-            {
+            if (model == null) {
                 r.code = 1;
                 r.msg = "所要修改信息不能为空";
                 return r;
             }
-            try
-            {
-                if (string.IsNullOrWhiteSpace(model.RegisterId))
-                {
+            try {
+                if (string.IsNullOrWhiteSpace(model.RegisterId)) {
                     r.code = 1;
                     r.msg = "RegisterId不能为空";
                     return r;
@@ -548,58 +447,46 @@ namespace Services
                 userbasicinfoSqlMapDao udao = new userbasicinfoSqlMapDao();
                 var data = udao.GetuserbasicinfoDetail(model.RegisterId);
 
-                if (string.IsNullOrWhiteSpace(model.Address))
-                {
+                if (string.IsNullOrWhiteSpace(model.Address)) {
                     model.Address = data.Address;
                 }
-                if (string.IsNullOrWhiteSpace(model.Age.ToString()))
-                {
+                if (string.IsNullOrWhiteSpace(model.Age.ToString())) {
                     model.Age = data.Age;
                 }
                 //if (model.Birthday != data.Birthday)   //生日不等于数据库中的数据
                 //{
                 //    model.Birthday = model.Birthday;
                 //}
-                if (string.IsNullOrWhiteSpace(model.City))
-                {
+                if (string.IsNullOrWhiteSpace(model.City)) {
                     model.City = data.City;
                 }
-                if (string.IsNullOrWhiteSpace(model.Education))
-                {
+                if (string.IsNullOrWhiteSpace(model.Education)) {
                     model.Education = data.Education;
                 }
 
-                if (string.IsNullOrWhiteSpace(model.EMail))
-                {
+                if (string.IsNullOrWhiteSpace(model.EMail)) {
                     model.EMail = data.EMail;
                 }
-                if (string.IsNullOrWhiteSpace(model.IDCard))
-                {
+                if (string.IsNullOrWhiteSpace(model.IDCard)) {
                     model.IDCard = data.IDCard;
                 }
-                if (string.IsNullOrWhiteSpace(model.MeritalStatus))
-                {
+                if (string.IsNullOrWhiteSpace(model.MeritalStatus)) {
                     model.MeritalStatus = data.MeritalStatus;
                 }
-                if (string.IsNullOrWhiteSpace(model.Nation))
-                {
+                if (string.IsNullOrWhiteSpace(model.Nation)) {
                     model.Nation = data.Nation;
                 }
-                if (string.IsNullOrWhiteSpace(model.Province))
-                {
+                if (string.IsNullOrWhiteSpace(model.Province)) {
                     model.Province = data.Province;
                 }
 
-                if (string.IsNullOrWhiteSpace(model.QQ))
-                {
+                if (string.IsNullOrWhiteSpace(model.QQ)) {
                     model.QQ = data.QQ;
                 }
-                if (string.IsNullOrWhiteSpace(model.Region))
-                {
+                if (string.IsNullOrWhiteSpace(model.Region)) {
                     model.Region = data.Region;
                 }
-                if (string.IsNullOrWhiteSpace(model.Sex))
-                {
+                if (string.IsNullOrWhiteSpace(model.Sex)) {
                     model.Sex = data.Sex;
                 }
 
@@ -607,9 +494,7 @@ namespace Services
                 r.code = 0;
                 return r;
 
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "数据更新失败";
                 return r;
@@ -619,13 +504,11 @@ namespace Services
 
 
         #region qq登陆时进行注册
-        public RsModel<UserFirstInfo> Signqq(string DeviceRegId)
-        {
+        public RsModel<UserFirstInfo> Signqq(string DeviceRegId) {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
 
 
-            try
-            {
+            try {
                 userregister user = new userregister();
                 userregisterSqlMapDao udao = new userregisterSqlMapDao();
                 userregister userrr = new userregister();
@@ -686,8 +569,7 @@ namespace Services
                 //环信注册用户单个创建
                 var syncRequest = Client.DefaultSyncRequest;
 
-                var userr = syncRequest.UserCreate(new UserCreateReqeust()
-                {
+                var userr = syncRequest.UserCreate(new UserCreateReqeust() {
                     nickname = string.Concat(eu.EmNickName, this._userName),
                     password = eu.EmPassword,
                     username = string.Concat(eu.EmRegisterId, this._userName),
@@ -700,9 +582,7 @@ namespace Services
                 ur.RegisterId = userregisterId;  //返回注册Id
                 r.body = ur;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "数据插入失败";
                 return r;
@@ -712,15 +592,13 @@ namespace Services
         #endregion
 
         #region 注册0
-        public RsModel<UserFirstInfo> Sign(string Phone, string DeviceRegId)
-        {
+        public RsModel<UserFirstInfo> Sign(string Phone, string DeviceRegId) {
             //  string registerIdd;
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
             userregister user = new userregister();
             userregisterSqlMapDao udao = new userregisterSqlMapDao();
             var ishas = udao.GetuserregisterDetailByPhone(Phone);   //已经有账号
-            if (ishas != null)
-            {
+            if (ishas != null) {
                 r.code = 0;
                 return GetUserFirstInfoById(ishas.RegisterId);
                 //  registerIdd = ishas.RegisterId;
@@ -728,16 +606,13 @@ namespace Services
                 //var  ur = GetUserFirstInfoByPhone(Phone);
                 // string[] reid = {ur.RegisterId };
                 //  string s=Common.PushMsgByAliasId("您已成功注册注册智护",reid,DeviceId);
-            }
-            else
-            {
-                try
-                {
+            } else {
+                try {
                     userregister userrr = new userregister();
                     var userregisterId = new aers_sys_seedSqlMapDao().GetMaxID("userregister");  //注册表
                     //registerIdd = userregisterId;
                     userrr.Phone = Phone;
-                    userrr.RegisterId = userregisterId;               
+                    userrr.RegisterId = userregisterId;
                     udao.Adduserregister(userrr);
 
                     //  Common .PushMsg("欢迎注册智护", DeviceRegId, userrr.RegisterId);
@@ -793,8 +668,7 @@ namespace Services
                     //环信注册用户单个创建
                     var syncRequest = Client.DefaultSyncRequest;
 
-                    var userr = syncRequest.UserCreate(new UserCreateReqeust()
-                    {
+                    var userr = syncRequest.UserCreate(new UserCreateReqeust() {
                         nickname = string.Concat(eu.EmNickName, this._userName),
                         password = eu.EmPassword,
                         username = string.Concat(eu.EmRegisterId, this._userName),
@@ -819,9 +693,7 @@ namespace Services
                     //string s = Common.PushMsgByAliasId("您已成功注册注册智护", reid, DeviceId);
                     r.body = ur;
                     return r;
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     r.code = 1;
                     r.msg = "数据插入失败";
                     return r;
@@ -831,23 +703,18 @@ namespace Services
         #endregion
 
         #region  环信注册测试
-        public string HXregiste(Emuser eu)
-        {
+        public string HXregiste(Emuser eu) {
             // Emuser eu = new Emuser();
-            try
-            {
+            try {
                 var syncRequest = Client.DefaultSyncRequest;
 
-                var userr = syncRequest.UserCreate(new UserCreateReqeust()
-                {
+                var userr = syncRequest.UserCreate(new UserCreateReqeust() {
                     nickname = string.Concat(eu.EmNickName, this._userName),
                     password = eu.EmPassword,
                     username = string.Concat(eu.EmRegisterId, this._userName),
                 });
                 return "0";
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
 
                 return e.ToString();
             }
@@ -858,8 +725,7 @@ namespace Services
         #endregion
 
         #region 不良事件登陆  0
-        public string GetUser(aers_tbl_registereduser model)
-        {
+        public string GetUser(aers_tbl_registereduser model) {
             UserauthsSqlMapDao urdao = new UserauthsSqlMapDao();
             var data = urdao.GetUserauthsList().FirstOrDefault(o => o.LoginNumber == model.LoginName && o.Password == model.Password);
             return data.ReguserId;
@@ -868,8 +734,7 @@ namespace Services
         #endregion
 
         #region 导入以前不良事件用户数据用  0  没用
-        public string GetUserregiserId()
-        {
+        public string GetUserregiserId() {
             userregister user = new userregister();
             userregisterSqlMapDao udao = new userregisterSqlMapDao();
 
@@ -916,8 +781,7 @@ namespace Services
             //单个创建
             var syncRequest = Client.DefaultSyncRequest;
 
-            var userr = syncRequest.UserCreate(new UserCreateReqeust()
-            {
+            var userr = syncRequest.UserCreate(new UserCreateReqeust() {
                 nickname = string.Concat(userregisterId, this._userName),
                 password = "WAJB357",
                 username = string.Concat(userregisterId, this._userName),
@@ -928,15 +792,13 @@ namespace Services
         #endregion
 
         #region 验证码登陆1 0
-        private RsModel<UserFirstInfo> LoginByCode(string Phone)
-        {
+        private RsModel<UserFirstInfo> LoginByCode(string Phone) {
             return GetUserFirstInfoByPhone(Phone);
         }
         #endregion
 
         #region 忘记密码2 0
-        private RsModel<UserFirstInfo> ForgetPwd()
-        {
+        private RsModel<UserFirstInfo> ForgetPwd() {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
             r.code = 0;
             return r;
@@ -944,11 +806,9 @@ namespace Services
         #endregion
 
         #region 验证旧手机号3  0
-        private RsModel<UserFirstInfo> SureOldPhone(string RegisterId, string Phone)
-        {
+        private RsModel<UserFirstInfo> SureOldPhone(string RegisterId, string Phone) {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
-            if (string.IsNullOrWhiteSpace(RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegisterId)) {
                 r.code = 1;
                 r.msg = "注册Id不能为空";
                 return r;
@@ -956,8 +816,7 @@ namespace Services
             userregister user = new userregister();
             userregisterSqlMapDao udao = new userregisterSqlMapDao();
             var oldPhone = udao.GetuserregisterDetail(RegisterId).Phone;
-            if (oldPhone != Phone)
-            {
+            if (oldPhone != Phone) {
                 r.code = 1;
                 r.msg = "手机号有误";
                 return r;
@@ -968,27 +827,22 @@ namespace Services
         #endregion
 
         #region 修改手机号4  0
-        private RsModel<UserFirstInfo> ResetPhone(string RegisterId, string Phone)
-        {
+        private RsModel<UserFirstInfo> ResetPhone(string RegisterId, string Phone) {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
-            if (string.IsNullOrWhiteSpace(RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegisterId)) {
                 r.code = 1;
                 r.msg = "注册Id不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(Phone))
-            {
+            if (string.IsNullOrWhiteSpace(Phone)) {
                 r.code = 1;
                 r.msg = "手机号不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 userregisterSqlMapDao udao = new userregisterSqlMapDao();
                 var data = udao.GetuserregisterDetail(RegisterId);
-                if (data.Phone == Phone)
-                {
+                if (data.Phone == Phone) {
                     r.code = 1;
                     r.msg = "该手机号已注册";
                     return r;
@@ -1004,9 +858,7 @@ namespace Services
                 udao.Updateuserregister(u);
                 r.code = 0;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "修改手机号失败";
                 return r;
@@ -1015,33 +867,25 @@ namespace Services
         #endregion
 
         #region 第三方绑定手机号5  0
-        private RsModel<UserFirstInfo> BindPhone(string phone, string RegisterId)
-        {
+        private RsModel<UserFirstInfo> BindPhone(string phone, string RegisterId) {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
-            if (string.IsNullOrWhiteSpace(phone))
-            {
+            if (string.IsNullOrWhiteSpace(phone)) {
                 r.code = 1;
                 r.msg = "手机号不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
-            }
-            else
-            {
+            } else {
                 userregisterSqlMapDao urdao = new userregisterSqlMapDao();
                 var urdata = urdao.GetuserregisterDetailByPhone(phone);
-                if (urdata != null)
-                {
+                if (urdata != null) {
                     r.code = 1;
                     r.msg = "该手机号已被绑定";
                     return r;
-                }
-                else
-                {
+                } else {
                     r.code = 0;
                     return r;
                 }
@@ -1050,17 +894,14 @@ namespace Services
         #endregion
 
         #region 第三方解绑手机号  6
-        private RsModel<UserFirstInfo> unBindPhone(string phone, string RegisterId)
-        {
+        private RsModel<UserFirstInfo> unBindPhone(string phone, string RegisterId) {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
-            if (string.IsNullOrWhiteSpace(phone))
-            {
+            if (string.IsNullOrWhiteSpace(phone)) {
                 r.code = 1;
                 r.msg = "手机号不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
@@ -1068,13 +909,10 @@ namespace Services
 
             userregisterSqlMapDao urdao = new userregisterSqlMapDao();
             var urdataPhone = urdao.GetuserregisterDetail(RegisterId).Phone;
-            if (urdataPhone != phone)
-            {
+            if (urdataPhone != phone) {
                 r.code = 1;
                 return r;
-            }
-            else
-            {
+            } else {
                 r.code = 0;
                 return r;
             }
@@ -1082,8 +920,7 @@ namespace Services
         #endregion
 
         #region 邀请好友5  未做
-        private RsModel<UserFirstInfo> SendtoFriend()
-        {
+        private RsModel<UserFirstInfo> SendtoFriend() {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
             r.code = 0;
             return r;
@@ -1173,10 +1010,8 @@ namespace Services
         /// <param name="model"></param>
         /// <returns></returns>
 
-        public string SetPwdByPhone(ViewRegister model)
-        {
-            try
-            {
+        public string SetPwdByPhone(ViewRegister model) {
+            try {
                 userregisterSqlMapDao udao = new userregisterSqlMapDao();
                 userregister user = new userregister();
                 var data = udao.GetuserregisterList().FirstOrDefault(o => o.Phone == model.Phone);
@@ -1188,9 +1023,7 @@ namespace Services
                 user.NickName = data.NickName;
                 udao.Updateuserregister(user);
                 return "0";
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return "1";
             }
 
@@ -1203,16 +1036,14 @@ namespace Services
         /// </summary>
         /// <param name="RegisterId"></param>
         /// <returns></returns>
-        public userregister GetUserReginfoById(string RegisterId)
-        {
+        public userregister GetUserReginfoById(string RegisterId) {
             userregisterSqlMapDao udao = new userregisterSqlMapDao();
             return udao.GetuserregisterDetail(RegisterId);
         }
         #endregion
 
         #region 查注册信息 phone  1
-        public userregister GetUserReginfoByPhone(string Phone)
-        {
+        public userregister GetUserReginfoByPhone(string Phone) {
             userregisterSqlMapDao udao = new userregisterSqlMapDao();
             var data = udao.GetuserregisterList().FirstOrDefault(o => o.Phone == Phone);
             return data;
@@ -1221,8 +1052,7 @@ namespace Services
         #endregion
 
         #region 查基本信息  1
-        public UserBasicInfo GetUserBasicinfoById(string RegisterId)
-        {
+        public UserBasicInfo GetUserBasicinfoById(string RegisterId) {
             userbasicinfoSqlMapDao udao = new userbasicinfoSqlMapDao();
             var data = udao.GetuserbasicinfoDetail(RegisterId);
             return data;
@@ -1230,17 +1060,14 @@ namespace Services
         #endregion
 
         #region 查资格证  QC   2   0
-        public RsModel<Userquacertificate> GetUserQuacetById(string RegisterId)
-        {
+        public RsModel<Userquacertificate> GetUserQuacetById(string RegisterId) {
             RsModel<Userquacertificate> r = new RsModel<Userquacertificate>();
-            if (string.IsNullOrWhiteSpace(RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 Userquacertificate uq = new Userquacertificate();
                 UserquacertificateSqlMapDao udao = new UserquacertificateSqlMapDao();
                 var data = udao.GetuserquacertificateDetail(RegisterId);
@@ -1260,17 +1087,14 @@ namespace Services
                 uq.Sex = data.Sex;
                 CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
                 var cdata = cdao.GetcertificateverifyList().FirstOrDefault(o => o.RegisterId == RegisterId && o.Type == 2);//资格证类型是2  从审核表中取审核数据（状态和意见）
-                if (cdata != null)
-                {
+                if (cdata != null) {
                     uq.VerifyStatus = cdata.VerifyStatus;
                     uq.VerifyView = cdata.VerifyView;
                 }
                 r.code = 0;
                 r.body = uq;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "查数据失败";
                 return r;
@@ -1279,28 +1103,22 @@ namespace Services
         #endregion
 
         #region 查资格证后台  2假分页 0
-        public RsList<Userpracticecertificate> GetPCInfo(int pageSize, int pageNumber, string CertificateId, string Name)
-        {
+        public RsList<Userpracticecertificate> GetPCInfo(int pageSize, int pageNumber, string CertificateId, string Name) {
             RsList<Userpracticecertificate> r = new Services.RsList<Userpracticecertificate>();
             UserpracticecertificateSqlMapDao pdao = new UserpracticecertificateSqlMapDao();
             var datalist = pdao.GetuserpracticecertificateList();
-            if (!string.IsNullOrEmpty(CertificateId))
-            {
+            if (!string.IsNullOrEmpty(CertificateId)) {
                 datalist = datalist.Where(o => o.CertificateId == CertificateId).ToList();
             }
-            if (!string.IsNullOrEmpty(Name))
-            {
+            if (!string.IsNullOrEmpty(Name)) {
                 datalist = datalist.Where(o => o.Name == Name).ToList();
             }
             CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
             var cdata = cdao.GetcertificateverifyList();
-            if (cdata != null)
-            {
-                foreach (var item in datalist)
-                {
+            if (cdata != null) {
+                foreach (var item in datalist) {
                     var c = cdata.FirstOrDefault(o => o.RegisterId == item.RegisterId && o.Type == 2);
-                    if (c != null)
-                    {
+                    if (c != null) {
                         item.VerifyStatus = c.VerifyStatus;
                         item.VerifyView = c.VerifyView;
                     }
@@ -1308,8 +1126,7 @@ namespace Services
             }
             datalist = datalist.Where(o => o.VerifyStatus != 0).ToList();
             List<Userpracticecertificate> uqclist = new List<Userpracticecertificate>();
-            foreach (var item in datalist)
-            {
+            foreach (var item in datalist) {
                 uqclist.Add(item);
             }
             r.code = 0;
@@ -1320,17 +1137,14 @@ namespace Services
         #endregion
 
         #region 查执业证  PC   1   0    
-        public RsModel<Userpracticecertificate> GetUserPtccetById(string RegisterId)
-        {
+        public RsModel<Userpracticecertificate> GetUserPtccetById(string RegisterId) {
             RsModel<Userpracticecertificate> r = new RsModel<Userpracticecertificate>();
-            if (string.IsNullOrWhiteSpace(RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 Userpracticecertificate up = new Userpracticecertificate();
                 UserpracticecertificateSqlMapDao udao = new UserpracticecertificateSqlMapDao();
                 var data = udao.GetuserpracticecertificateDetail(RegisterId);
@@ -1356,17 +1170,14 @@ namespace Services
 
                 CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
                 var cdata = cdao.GetcertificateverifyList().FirstOrDefault(o => o.RegisterId == RegisterId && o.Type == 1);//执业证类型是1  从审核表中取审核数据（状态和意见）
-                if (cdata != null)
-                {
+                if (cdata != null) {
                     up.VerifyStatus = cdata.VerifyStatus;
                     up.VerifyView = cdata.VerifyView;
                 }
                 r.code = 0;
                 r.body = up;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "查数据失败";
                 return r;
@@ -1406,29 +1217,23 @@ namespace Services
         //    datalist = datalist.Where(o => o.VerifyStatus != 0).ToList();
         //    return datalist.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
         //}
-        public RsList<Userquacertificate> GetQCInfo(int pageSize, int pageNumber, string CertificateId, string Name)
-        {
+        public RsList<Userquacertificate> GetQCInfo(int pageSize, int pageNumber, string CertificateId, string Name) {
             RsList<Userquacertificate> r = new Services.RsList<Userquacertificate>();
             UserquacertificateSqlMapDao qdao = new UserquacertificateSqlMapDao();
             var datalist = qdao.GetuserquacertificateList();
-            if (!string.IsNullOrEmpty(CertificateId))
-            {
+            if (!string.IsNullOrEmpty(CertificateId)) {
                 datalist = datalist.Where(o => o.CertificateId == CertificateId).ToList();
             }
-            if (!string.IsNullOrEmpty(Name))
-            {
+            if (!string.IsNullOrEmpty(Name)) {
                 datalist = datalist.Where(o => o.Name == Name).ToList();
             }
             CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
 
             var cdata = cdao.GetcertificateverifyList();
-            if (cdata != null)
-            {
-                foreach (var item in datalist)
-                {
+            if (cdata != null) {
+                foreach (var item in datalist) {
                     var c = cdata.FirstOrDefault(o => o.RegisterId == item.RegisterId && o.Type == 1);
-                    if (c != null)
-                    {
+                    if (c != null) {
                         item.VerifyStatus = c.VerifyStatus;
                         item.VerifyView = c.VerifyView;
                     }
@@ -1436,8 +1241,7 @@ namespace Services
             }
             datalist = datalist.Where(o => o.VerifyStatus != 0).ToList();
             List<Userquacertificate> uqclist = new List<Userquacertificate>();
-            foreach (var item in datalist)
-            {
+            foreach (var item in datalist) {
                 uqclist.Add(item);
             }
             r.code = 0;
@@ -1448,10 +1252,8 @@ namespace Services
         #endregion
 
         #region 证书审核认证  0 后台审核，盛
-        public string UpdateAuditStatus(Certificateverify model)
-        {
-            try
-            {
+        public string UpdateAuditStatus(Certificateverify model) {
+            try {
                 CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
                 Certificateverify c = new Certificateverify();
                 var data = cdao.GetcertificateverifyList().FirstOrDefault(o => o.CertificateId == model.CertificateId && o.RegisterId == model.RegisterId);
@@ -1466,33 +1268,28 @@ namespace Services
                 c.CertificateId = data.CertificateId;
                 cdao.Updatecertificateverify(c);
                 return "0";
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return "1";
             }
         }
         #endregion
 
         #region 查医院科室护理单元关系信息
-        public Userrelrecord GetUserRelcodById(string RegisterId)
-        {
+        public Userrelrecord GetUserRelcodById(string RegisterId) {
             UserrelrecordSqlMapDao udao = new UserrelrecordSqlMapDao();
             return udao.GetUserrelrecordList().FirstOrDefault(o => o.RegisterId == RegisterId);
         }
         #endregion
 
         #region 查医院信息
-        public Hospital GethospitalById(string HospitalId)
-        {
+        public Hospital GethospitalById(string HospitalId) {
             HospitalSqlMapDao hdao = new HospitalSqlMapDao();
             return hdao.GethospitalDetail(HospitalId);
         }
         #endregion
 
         #region 查科室信息
-        public Department GetdepartmentById(string DepartmentId)
-        {
+        public Department GetdepartmentById(string DepartmentId) {
             DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
             return ddao.GetdepartmentDetail(DepartmentId);
         }
@@ -1509,14 +1306,10 @@ namespace Services
         #endregion
 
         #region 查证件审核 post  1
-        public Certificateverify GetcertificateverifyInfo(string VerifyId)
-        {
-            if (string.IsNullOrEmpty(VerifyId))
-            {
+        public Certificateverify GetcertificateverifyInfo(string VerifyId) {
+            if (string.IsNullOrEmpty(VerifyId)) {
                 return null;
-            }
-            else
-            {
+            } else {
                 CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
                 var data = cdao.GetcertificateverifyDetail(VerifyId);
                 return data;
@@ -1525,24 +1318,17 @@ namespace Services
         #endregion
 
         #region 设置昵称  弃用
-        public string SetNickNameById(userregister model)
-        {
-            try
-            {
-                if (model != null)
-                {
+        public string SetNickNameById(userregister model) {
+            try {
+                if (model != null) {
 
                     userregisterSqlMapDao udao = new userregisterSqlMapDao();
                     udao.Updateuserregister(model);
                     return "0";
-                }
-                else
-                {
+                } else {
                     return "1";
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return "1";
             }
         }
@@ -1552,28 +1338,23 @@ namespace Services
 
 
         #region 修改用户执业证信息  0  执业证 type=1  p
-        public RsModel<string> UpdateuserpracticecertificateInfo(Userpracticecertificate model)
-        {
+        public RsModel<string> UpdateuserpracticecertificateInfo(Userpracticecertificate model) {
             RsModel<string> r = new Services.RsModel<string>();
-            if (model == null)
-            {
+            if (model == null) {
                 r.code = 1;
                 r.msg = "证件信息不能为空";
             }
-            if (string.IsNullOrWhiteSpace(model.RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(model.RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(model.CertificateId))
-            {
+            if (string.IsNullOrWhiteSpace(model.CertificateId)) {
                 r.code = 1;
                 r.msg = "证件编号不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 //证书表
                 UserpracticecertificateSqlMapDao udao = new UserpracticecertificateSqlMapDao();
                 udao.Updateuserpracticecertificate(model);
@@ -1583,8 +1364,7 @@ namespace Services
                 CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
                 Certificateverify c = new Certificateverify();
                 var data = cdao.GetcertificateverifyList().FirstOrDefault(o => o.RegisterId == model.RegisterId && o.Type == 1);
-                if (data == null)
-                {
+                if (data == null) {
                     c.VerifyId = new aers_sys_seedSqlMapDao().GetMaxID("certificateverify");
                     c.CertificateId = model.CertificateId;
                     c.RegisterId = model.RegisterId;
@@ -1593,9 +1373,7 @@ namespace Services
                     c.VerifyStatus = 1;  //0未认证
                     c.DealTime = Common.StrToDateTime();
                     cdao.Addcertificateverify(c);
-                }
-                else
-                {
+                } else {
                     c.VerifyId = data.VerifyId;
                     c.CertificateId = data.CertificateId;
                     c.RegisterId = data.RegisterId;
@@ -1607,9 +1385,7 @@ namespace Services
                 }
                 r.code = 0;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "数据操作失败";
                 return r;
@@ -1618,29 +1394,24 @@ namespace Services
         #endregion  
 
         #region 修改用户资格证信息  0  资格证type=2  q
-        public RsModel<string> UpdateuserquacertificateInfo(Userquacertificate model)
-        {
+        public RsModel<string> UpdateuserquacertificateInfo(Userquacertificate model) {
 
             RsModel<string> r = new Services.RsModel<string>();
-            if (model == null)
-            {
+            if (model == null) {
                 r.code = 1;
                 r.msg = "证件信息不能为空";
             }
-            if (string.IsNullOrWhiteSpace(model.RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(model.RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(model.CertificateId))
-            {
+            if (string.IsNullOrWhiteSpace(model.CertificateId)) {
                 r.code = 1;
                 r.msg = "证件编号不能为空";
                 return r;
             }
-            try
-            {
+            try {
 
                 UserquacertificateSqlMapDao udao = new UserquacertificateSqlMapDao();
                 udao.Updateuserquacertificate(model);
@@ -1648,8 +1419,7 @@ namespace Services
                 CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
                 Certificateverify c = new Certificateverify();
                 var data = cdao.GetcertificateverifyList().FirstOrDefault(o => o.RegisterId == model.RegisterId && o.Type == 2);
-                if (data == null)
-                {
+                if (data == null) {
                     c.VerifyId = new aers_sys_seedSqlMapDao().GetMaxID("certificateverify");
                     c.CertificateId = model.CertificateId;
                     c.RegisterId = model.RegisterId;
@@ -1658,9 +1428,7 @@ namespace Services
                     c.VerifyStatus = 1;  //认证中
                     c.DealTime = Common.StrToDateTime();
                     cdao.Addcertificateverify(c);
-                }
-                else
-                {
+                } else {
                     c.VerifyId = data.VerifyId;
                     c.CertificateId = data.CertificateId;
                     c.RegisterId = data.RegisterId;
@@ -1672,9 +1440,7 @@ namespace Services
                 }
                 r.code = 0;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "数据操作失败";
                 return r;
@@ -1683,58 +1449,46 @@ namespace Services
         #endregion
 
         #region 修改医院科室护理单元关系信息  0
-        public RsModel<string> UpdateuserrelrecordInfo(Userrelrecord model)
-        {
+        public RsModel<string> UpdateuserrelrecordInfo(Userrelrecord model) {
             RsModel<string> r = new Services.RsModel<string>();
-            if (model == null)
-            {
+            if (model == null) {
                 r.code = 1;
                 r.msg = "传入信息不能为null";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(model.RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(model.RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 UserrelrecordSqlMapDao udao = new UserrelrecordSqlMapDao();
                 var data = udao.GetuserrelrecordDetail(model.RegisterId);
 
-                if (string.IsNullOrWhiteSpace(model.DepartmentId))
-                {
+                if (string.IsNullOrWhiteSpace(model.DepartmentId)) {
                     model.DepartmentId = data.DepartmentId;
                 }
-              
-                if (string.IsNullOrWhiteSpace(model.DepartmentName))
-                {
+
+                if (string.IsNullOrWhiteSpace(model.DepartmentName)) {
                     model.DepartmentName = data.DepartmentName;
                 }
-                if (null == model.EmployeeId)
-                {
+                if (null == model.EmployeeId) {
                     model.EmployeeId = data.EmployeeId;
                 }
-                if (string.IsNullOrWhiteSpace(model.HospitalId))
-                {
+                if (string.IsNullOrWhiteSpace(model.HospitalId)) {
                     model.HospitalId = data.HospitalId;
                 }
 
-                if (string.IsNullOrWhiteSpace(model.HospitalName))
-                {
+                if (string.IsNullOrWhiteSpace(model.HospitalName)) {
                     model.HospitalName = data.HospitalName;
                 }
-                if (string.IsNullOrWhiteSpace(model.NursingUnitId))
-                {
+                if (string.IsNullOrWhiteSpace(model.NursingUnitId)) {
                     model.NursingUnitId = data.NursingUnitId;
                 }
-                if (string.IsNullOrWhiteSpace(model.NursingUnitName))
-                {
+                if (string.IsNullOrWhiteSpace(model.NursingUnitName)) {
                     model.NursingUnitName = data.NursingUnitName;
                 }
-                if (string.IsNullOrWhiteSpace(model.Role))
-                {
+                if (string.IsNullOrWhiteSpace(model.Role)) {
                     model.Role = data.Role;
                 }
                 udao.Updateuserrelrecord(model);
@@ -1742,9 +1496,7 @@ namespace Services
                 r.code = 0;
                 return r;
 
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "数据操作失败";
                 return r;
@@ -1753,48 +1505,36 @@ namespace Services
         #endregion
 
         #region 添加用户基本信息
-        public string AdduserbasicinfoInfo(UserBasicInfo model)
-        {
-            try
-            {
+        public string AdduserbasicinfoInfo(UserBasicInfo model) {
+            try {
                 userbasicinfoSqlMapDao udao = new userbasicinfoSqlMapDao();
                 udao.Adduserbasicinfo(model);
                 return "0";
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return "1";
             }
         }
         #endregion
 
         #region 添加用户执业证信息
-        public string AdduserpracticecertificateInfo(Userpracticecertificate model)
-        {
-            try
-            {
+        public string AdduserpracticecertificateInfo(Userpracticecertificate model) {
+            try {
                 UserpracticecertificateSqlMapDao udao = new UserpracticecertificateSqlMapDao();
                 udao.Adduserpracticecertificate(model);
                 return "0";
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return "1";
             }
         }
         #endregion
 
         #region 添加用户资格证信息
-        public string AdduserquacertificateInfo(Userquacertificate model)
-        {
-            try
-            {
+        public string AdduserquacertificateInfo(Userquacertificate model) {
+            try {
                 UserquacertificateSqlMapDao udao = new UserquacertificateSqlMapDao();
                 udao.Adduserquacertificate(model);
                 return "0";
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return "1";
             }
         }
@@ -1803,47 +1543,38 @@ namespace Services
 
         #region 修改密码  0
 
-        public RsModel<string> ResetPassword(ViewResetPassword model)
-        {
+        public RsModel<string> ResetPassword(ViewResetPassword model) {
             RsModel<string> r = new Services.RsModel<string>();
-            if (model == null)
-            {
+            if (model == null) {
                 r.code = 1;
                 r.msg = "model不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(model.RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(model.RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(model.PasswordOld))
-            {
+            if (string.IsNullOrWhiteSpace(model.PasswordOld)) {
                 r.code = 1;
                 r.msg = "原密码不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(model.PasswordNew))
-            {
+            if (string.IsNullOrWhiteSpace(model.PasswordNew)) {
                 r.code = 1;
                 r.msg = "新密码不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 userregisterSqlMapDao udao = new userregisterSqlMapDao();
                 var data = udao.GetuserregisterDetail(model.RegisterId);
 
                 var oldPwd = data.Password;
-                if (oldPwd != Common.UserMd5(model.PasswordOld))
-                {
+                if (oldPwd != Common.UserMd5(model.PasswordOld)) {
                     r.code = 1;
                     r.msg = "原密码错误";
                     return r;
-                }
-                else
-                {
+                } else {
                     userregister u = new userregister();
                     u.RegisterId = model.RegisterId;
                     u.Password = Common.UserMd5(model.PasswordNew);
@@ -1856,9 +1587,7 @@ namespace Services
                     r.msg = "密码修改成功";
                     return r;
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "密码修改失败";
                 return r;
@@ -1867,18 +1596,14 @@ namespace Services
         #endregion
 
         #region 提交证件审核   
-        public string AddcertificateverifyInfo(Certificateverify model)
-        {
-            try
-            {
+        public string AddcertificateverifyInfo(Certificateverify model) {
+            try {
                 CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
                 Certificateverify c = new Certificateverify();
                 c.VerifyId = new aers_sys_seedSqlMapDao().GetMaxID("userregister");
                 cdao.Addcertificateverify(model);
                 return "0";
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return "1";
             }
         }
@@ -1902,23 +1627,19 @@ namespace Services
         #endregion
 
         #region 根据经纬度获取医院    需优化  0
-        public RsList<XMLDatatable> GetAddressByLngLat(string lng, string lat)
-        {
+        public RsList<XMLDatatable> GetAddressByLngLat(string lng, string lat) {
             RsList<XMLDatatable> r = new Services.RsList<XMLDatatable>();
-            if (string.IsNullOrWhiteSpace(lng))
-            {
+            if (string.IsNullOrWhiteSpace(lng)) {
                 r.code = 1;
                 r.msg = "经度不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(lat))
-            {
+            if (string.IsNullOrWhiteSpace(lat)) {
                 r.code = 1;
                 r.msg = "纬度不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 DataTable dataTable = Common.GetAddress(lng, lat, "医院", "2000");
                 if (dataTable == null)  //?
                 {
@@ -1938,8 +1659,7 @@ namespace Services
                 DataTable dt = new DataTable();
                 dt.Columns.Add("Name");
                 dt.Columns.Add("HospitalId");
-                foreach (var info in dataList)
-                {
+                foreach (var info in dataList) {
                     DataRow dr = dt.NewRow();
                     dr["Name"] = info;
                     dr["HospitalId"] = data.FirstOrDefault(o => o.Name == info).HospitalId;
@@ -1949,9 +1669,7 @@ namespace Services
                 r.body = ModelConvertHelper<XMLDatatable>.ConvertToModel(dt);
                 return r;
                 //  return ModelConvertHelper<XMLDatatable>.ConvertToModel(dt);
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "获取医院失败";
                 return r;
@@ -1959,10 +1677,8 @@ namespace Services
         }
 
         #region 添加医院
-        public string AddHospital()
-        {
-            try
-            {
+        public string AddHospital() {
+            try {
 
                 // var dd= GetHospital();
                 //foreach (var item in )
@@ -1976,9 +1692,7 @@ namespace Services
                 //h.
                 //hdao.Addhospital(h);
                 return "0";
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return "1";
             }
         }
@@ -1987,38 +1701,31 @@ namespace Services
         #endregion
 
         #region 软件反馈   0
-        public RsModel<string> AddfeedbackInfo(Feedback model)
-        {
+        public RsModel<string> AddfeedbackInfo(Feedback model) {
             RsModel<string> r = new Services.RsModel<string>();
-            if (model == null)
-            {
+            if (model == null) {
                 r.code = 1;
                 r.msg = "model不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(model.RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(model.RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(model.Content))
-            {
+            if (string.IsNullOrWhiteSpace(model.Content)) {
                 r.code = 1;
                 r.msg = "反馈内容不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 FeedbackSqlMapDao fdao = new FeedbackSqlMapDao();
                 model.ServiceTime = Common.StrToDateTime();
                 model.FeedbackId = model.RegisterId;
                 fdao.Addfeedback(model);
                 r.code = 0;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "反馈失败";
                 return r;
@@ -2027,19 +1734,15 @@ namespace Services
         #endregion
 
         #region 查取版本号   0
-        public RsModel<Releaseversion> GetReleaseversionInfo()
-        {
+        public RsModel<Releaseversion> GetReleaseversionInfo() {
             RsModel<Releaseversion> r = new Services.RsModel<Releaseversion>();
-            try
-            {
+            try {
                 ReleaseversionSqlMapDao rdao = new ReleaseversionSqlMapDao();
                 var data = rdao.GetReleaseversionList().OrderByDescending(o => o.ReleaseTime).ToList()[0];
                 r.code = 0;
                 r.body = data;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "获取版本信息失败";
                 return r;
@@ -2049,8 +1752,7 @@ namespace Services
         #endregion
 
         #region 添加版本号
-        public string AddreleaseversionInfo(Releaseversion model)
-        {
+        public string AddreleaseversionInfo(Releaseversion model) {
             ReleaseversionSqlMapDao rdao = new ReleaseversionSqlMapDao();
             rdao.Addreleaseversion(model);
             return "0";
@@ -2058,8 +1760,7 @@ namespace Services
         #endregion
 
         #region 更新版本号
-        public string UpdatereleaseversionInfo(Releaseversion model)
-        {
+        public string UpdatereleaseversionInfo(Releaseversion model) {
             ReleaseversionSqlMapDao rdao = new ReleaseversionSqlMapDao();
             rdao.Updatereleaseversion(model);
             return "0";
@@ -2067,25 +1768,20 @@ namespace Services
         #endregion
 
         #region 根据医院Id获取科室信息  0
-        public RsList<Department> GetDepartmentList(string HospitalId)
-        {
+        public RsList<Department> GetDepartmentList(string HospitalId) {
             RsList<Department> r = new RsList<Department>();
-            if (string.IsNullOrWhiteSpace(HospitalId))
-            {
+            if (string.IsNullOrWhiteSpace(HospitalId)) {
                 r.code = 1;
                 r.msg = "医院编号不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
                 var data = ddao.GetdepartmentList().Where(o => o.HospitalId == HospitalId).ToList();
                 r.code = 0;
                 r.body = data;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "获取数据失败";
                 return r;
@@ -2151,14 +1847,12 @@ namespace Services
         public RsList<ViewFriendInfo> GetContactByHopDepId(string HospitalId, string DepartmentId) //  ViewFriendInfo
         {
             RsList<ViewFriendInfo> r = new RsList<ViewFriendInfo>();
-            if (string.IsNullOrWhiteSpace(HospitalId))
-            {
+            if (string.IsNullOrWhiteSpace(HospitalId)) {
                 r.code = 0;
                 r.msg = "医院Id不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(DepartmentId))
-            {
+            if (string.IsNullOrWhiteSpace(DepartmentId)) {
                 r.code = 0;
                 r.msg = "科室Id不能为空";
                 return r;
@@ -2168,14 +1862,12 @@ namespace Services
             var data = udao.GetUserrelrecordList();
 
             var dataList = data.Where(o => o.HospitalId == HospitalId && o.DepartmentId == DepartmentId).ToList();  //可优化
-            if (dataList == null)
-            {
+            if (dataList == null) {
                 r.code = 0;
                 r.msg = "暂无该医院科室人员信息";
                 return r;
             }
-            try
-            {
+            try {
                 //userregisterSqlMapDao rdao = new userregisterSqlMapDao();
                 //var userDataList = rdao.GetuserregisterList();
                 //List<userregister> urlist = new List<userregister>();
@@ -2199,8 +1891,7 @@ namespace Services
                 userregisterSqlMapDao urdao = new userregisterSqlMapDao();
 
                 List<ViewFriendInfo> flist = new List<ViewFriendInfo>();
-                foreach (var item in dataList)
-                {
+                foreach (var item in dataList) {
                     ViewFriendInfo fi = new ViewFriendInfo();
                     var urdata = urdao.GetuserregisterDetail(item.RegisterId);
                     fi.FriendId = item.RegisterId;
@@ -2215,9 +1906,7 @@ namespace Services
                 r.code = 0;
                 r.body = flist;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "获取信息失败";
                 return r;
@@ -2227,8 +1916,7 @@ namespace Services
         #endregion
 
         #region 第三方登陆 院内账号  
-        public RsModel<UserFirstInfo> ThirdPartLoginHospital(userregister model)
-        {
+        public RsModel<UserFirstInfo> ThirdPartLoginHospital(userregister model) {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
             if (string.IsNullOrWhiteSpace(model.LoginType.ToString())) //院内账号登陆时，4不良事件 5学分 6排班
             {
@@ -2236,8 +1924,7 @@ namespace Services
                 r.msg = "院内账号类型不能为空";
                 return r;
             }
-            if (model.LoginType != 4)
-            {
+            if (model.LoginType != 4) {
                 if (string.IsNullOrWhiteSpace(model.HospitalId))  //不良事件没有医院区分，学分、排班时必须传入医院Id
                 {
                     r.code = 1;
@@ -2246,14 +1933,12 @@ namespace Services
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(model.Phone))
-            {
+            if (string.IsNullOrWhiteSpace(model.Phone)) {
                 r.code = 1;
                 r.msg = "用户名不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(model.Password))
-            {
+            if (string.IsNullOrWhiteSpace(model.Password)) {
                 r.code = 1;
                 r.msg = "密码不能为空";
                 return r;
@@ -2261,17 +1946,14 @@ namespace Services
             if (model.LoginType == 4) //不良事件时
             {
                 return ThirdPartLoginHospitalBLSJ(model);
-            }
-            else if (model.LoginType == 5) //学分时
-            {
+            } else if (model.LoginType == 5) //学分时
+              {
                 return ThirdPartLoginHospitalXF(model);
-            }
-            else if (model.LoginType == 6) //排班时
-            {
+            } else if (model.LoginType == 6) //排班时
+              {
                 return ThirdPartLoginHospitalPB(model);
-            }
-            else  //后续添加其他系统
-            {
+            } else  //后续添加其他系统
+              {
                 r.code = 0;
                 r.msg = "其他系统暂无数据";
                 return r;
@@ -2282,8 +1964,7 @@ namespace Services
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public RsModel<UserFirstInfo> ThirdPartLoginHospitalBLSJ(userregister model)
-        {
+        public RsModel<UserFirstInfo> ThirdPartLoginHospitalBLSJ(userregister model) {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
             //  string pwd = Common.UserMd5(model.Password);
             var vaUser = ValidateBlsjUser(model.Phone, model.Password);  //在不良事件库进行用户名密码验证
@@ -2292,11 +1973,9 @@ namespace Services
                 r.code = 1;
                 r.msg = "用户名或密码错误";
                 return r;
-            }
-            else   //不良事件验证通过时，第一次登陆时授权表里面插入数据
-            {
-                try
-                {
+            } else   //不良事件验证通过时，第一次登陆时授权表里面插入数据
+              {
+                try {
                     UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();
                     var udata = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginType == 4 && o.LoginNumber == model.Phone);  //不良事件4 
 
@@ -2305,17 +1984,13 @@ namespace Services
                         var importdata = ImportUserData(vaUser.msg);  //如果登陆成功，则取msg中的注册Id
                         LoginStatus(model.DeviceRegId, importdata.msg, 4);  //院内账号第一次登陆时 登陆表添加数据，并进行消息推送
                         return GetUserFirstInfoById(importdata.msg);
-                    }
-                    else
-                    {
+                    } else {
                         LoginStatus(model.DeviceRegId, udata.RegisterId, 4);  //院内账号第一次登陆时 登陆表添加数据，并进行消息推送
                         return GetUserFirstInfoById(udata.RegisterId);
                     }
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     r.code = 1;
-                    r.msg = "登陆失败" +e;
+                    r.msg = "登陆失败" + e;
                     return r;
                 }
             }
@@ -2325,8 +2000,7 @@ namespace Services
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public RsModel<UserFirstInfo> ThirdPartLoginHospitalXF(userregister model)
-        {
+        public RsModel<UserFirstInfo> ThirdPartLoginHospitalXF(userregister model) {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
             string pwd = Common.UserMd5(model.Password);
             var vaUser = ValidateXFUser(model.Phone, pwd);  //在学分库进行用户名密码验证
@@ -2335,17 +2009,12 @@ namespace Services
                 r.code = 1;
                 r.msg = "用户名或密码错误";
                 return r;
-            }
-            else
-            {
-                try
-                {
+            } else {
+                try {
                     r.msg = "学分系统暂无数据";
                     r.code = 0;
                     return r;
-                }
-                catch (Exception)
-                {
+                } catch (Exception) {
                     r.code = 1;
                     r.msg = "登陆失败";
                     return r;
@@ -2358,8 +2027,7 @@ namespace Services
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public RsModel<UserFirstInfo> ThirdPartLoginHospitalPB(userregister model)
-        {
+        public RsModel<UserFirstInfo> ThirdPartLoginHospitalPB(userregister model) {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
             string pwd = Common.UserMd5(model.Password);
             var vaUser = ValidatePBUser(model.Phone, pwd);  //在排班库进行用户名密码验证
@@ -2368,17 +2036,12 @@ namespace Services
                 r.code = 1;
                 r.msg = "用户名或密码错误";
                 return r;
-            }
-            else
-            {
-                try
-                {
+            } else {
+                try {
                     r.msg = "学分系统暂无数据";
                     r.code = 0;
                     return r;
-                }
-                catch (Exception )
-                {
+                } catch (Exception) {
                     r.code = 1;
                     r.msg = "登陆失败";
                     return r;
@@ -2388,23 +2051,19 @@ namespace Services
         #endregion
 
         #region   第三方登陆   qq  0
-        public RsModel<UserFirstInfo> ThirdPartLoginQQ(Qq model)
-        {
+        public RsModel<UserFirstInfo> ThirdPartLoginQQ(Qq model) {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
-            if (model == null)
-            {
+            if (model == null) {
                 r.code = 1;
                 r.msg = "qq信息不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(model.OpenId))
-            {
+            if (string.IsNullOrWhiteSpace(model.OpenId)) {
                 r.code = 1;
                 r.msg = "QQOpenId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();  //授权表
 
                 var data = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginNumber == model.OpenId && o.LoginType == 1);
@@ -2413,9 +2072,8 @@ namespace Services
                 {
                     return GetUserFirstInfoById(data.RegisterId);
 
-                }
-                else //授权表里面没数据，以前没用QQ登陆过  创建新用户账号
-                {
+                } else //授权表里面没数据，以前没用QQ登陆过  创建新用户账号
+                  {
                     Userauths ua = new Userauths();
                     //   var registerdata = Sign("");   //其他几张表进行注册  /////////////////////////////////////////////////////这样传值有问题
                     var registerdata = Signqq(model.DeviceRegId);
@@ -2457,9 +2115,7 @@ namespace Services
                     return GetUserFirstInfoById(ua.RegisterId);
                 }
 
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "登陆失败" + e;
                 return r;
@@ -2469,25 +2125,21 @@ namespace Services
         #endregion
 
         #region 第三方登陆   微信  0
-        public RsModel<UserFirstInfo> ThirdPartLoginWeixin(Weixin model)
-        {
+        public RsModel<UserFirstInfo> ThirdPartLoginWeixin(Weixin model) {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
-            if (string.IsNullOrWhiteSpace(model.OpenId))
-            {
+            if (string.IsNullOrWhiteSpace(model.OpenId)) {
                 r.code = 1;
                 r.msg = "微信OpenId不能为空";
             }
-            try
-            {
+            try {
                 UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();  //授权表
 
                 var data = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginNumber == model.OpenId && o.LoginType == 2); //微信是2  QQ是1
                 if (data != null) //授权表里面有数据，以前登陆过
                 {
                     return GetUserFirstInfoById(data.RegisterId);
-                }
-                else //授权表里面没数据，以前没用微信登陆过  创建新用户账号
-                {
+                } else //授权表里面没数据，以前没用微信登陆过  创建新用户账号
+                  {
                     Userauths ua = new Userauths();
                     //   var registerdata = Sign("");   //其他几张表进行注册  /////////////////////////////////////////////////////这样传值有问题
                     var registerdata = Signqq(model.DeviceRegId);  //微信注册时和qq一样
@@ -2528,9 +2180,7 @@ namespace Services
 
                     return GetUserFirstInfoById(ua.RegisterId);
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "登陆失败" + e;
                 return r;
@@ -2539,16 +2189,13 @@ namespace Services
         #endregion
 
         #region 第三方登陆  微博  0
-        public RsModel<UserFirstInfo> ThirdPartLoginWeibo(Weibo model)
-        {
+        public RsModel<UserFirstInfo> ThirdPartLoginWeibo(Weibo model) {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
-            if (string.IsNullOrWhiteSpace(model.idstr))
-            {
+            if (string.IsNullOrWhiteSpace(model.idstr)) {
                 r.code = 1;
                 r.msg = "微博OpenId不能为空";
             }
-            try
-            {
+            try {
                 //  string Id;
                 UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();  //授权表
 
@@ -2557,9 +2204,8 @@ namespace Services
                 {
                     return GetUserFirstInfoById(data.RegisterId);
 
-                }
-                else //授权表里面没数据，以前没用微信登陆过  创建新用户账号
-                {
+                } else //授权表里面没数据，以前没用微信登陆过  创建新用户账号
+                  {
                     Userauths ua = new Userauths();
                     //   var registerdata = Sign("");   //其他几张表进行注册  /////////////////////////////////////////////////////这样传值有问题
                     var registerdata = Signqq(model.DeviceRegId);  //微信注册时和qq一样
@@ -2598,9 +2244,7 @@ namespace Services
 
                     return GetUserFirstInfoById(ua.RegisterId);
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "登陆失败";
                 return r;
@@ -2695,17 +2339,14 @@ namespace Services
         #endregion
 
         #region 生成二维码  并加密
-        public RsModel<ViewJsonCommon> GetQRCodeById(string RegisterId)
-        {
+        public RsModel<ViewJsonCommon> GetQRCodeById(string RegisterId) {
             RsModel<ViewJsonCommon> r = new Services.RsModel<ViewJsonCommon>();
-            if (string.IsNullOrWhiteSpace(RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 // var dCode = Common.SaveCodeFile(RegisterId);
                 //var eid = Common.DESEncrypt("bu" + RegisterId);
                 //var dCode = Common.SaveCodeFile(eid);
@@ -2734,9 +2375,7 @@ namespace Services
                 //r.code = 0;
                 //r.body = jc;
                 //return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "生成二维码失败" + e.ToString();
                 return r;
@@ -2764,15 +2403,13 @@ namespace Services
         #endregion
 
         #region 查询qq昵称  弃用
-        public Qq GetQQNickNameById(string RegisterId)
-        {
+        public Qq GetQQNickNameById(string RegisterId) {
             QqSqlMapDao qdao = new QqSqlMapDao();
             var data = qdao.GetQqList();
             UserauthsSqlMapDao udao = new UserauthsSqlMapDao();
             var udata = udao.GetUserauthsList();
             var qid = udata.FirstOrDefault(o => o.RegisterId == RegisterId);
-            if (qid == null)
-            {
+            if (qid == null) {
                 return null;
             }
             Qq qqdata = qdao.GetQqList().FirstOrDefault(o => o.OpenId == qid.LoginNumber);
@@ -2781,19 +2418,15 @@ namespace Services
         #endregion
 
         #region 注册Id和qq进行绑定
-        public string SetQQBind(Qq model)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(model.RegisterId))
-                {
+        public string SetQQBind(Qq model) {
+            try {
+                if (string.IsNullOrEmpty(model.RegisterId)) {
                     return "注册ID不能为空";
                 }
                 UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();  //授权表
                 Userauths ua = new Userauths();
                 var data = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginNumber == model.OpenId);
-                if (data != null)
-                {
+                if (data != null) {
                     return "该qq已被绑定";
                 }
                 ua.AuthsId = new aers_sys_seedSqlMapDao().GetMaxID("userauths");
@@ -2821,24 +2454,19 @@ namespace Services
                 qq.RegisterId = model.RegisterId;
                 qdao.Addqq(qq);
                 return "0";
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return "1" + e;
             }
         }
         #endregion
 
         #region qq绑定手机号
-        public string QQBindPhone(Qq model)
-        {
-            try
-            {
+        public string QQBindPhone(Qq model) {
+            try {
                 userregisterSqlMapDao udao = new userregisterSqlMapDao();
                 userregister u = new userregister();
                 var ishas = udao.GetuserregisterList().FirstOrDefault(o => o.Phone == model.Phone);
-                if (ishas != null)
-                {
+                if (ishas != null) {
                     return "该手机号已绑定";
                 }
                 var data = udao.GetuserregisterDetail(model.RegisterId);
@@ -2850,9 +2478,7 @@ namespace Services
                 u.RegisterId = data.RegisterId;
                 udao.Updateuserregister(u);
                 return "0";
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return "1";
             }
         }
@@ -2996,17 +2622,14 @@ namespace Services
         #endregion
 
         #region 解绑   0   9.7不能删除，只改状态
-        public RsModel<string> UnBind(ViewBind model)
-        {
+        public RsModel<string> UnBind(ViewBind model) {
             RsModel<string> r = new Services.RsModel<string>();
-            if (string.IsNullOrWhiteSpace(model.RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(model.RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 if (model.LoginType == 0) //解绑手机号
                 {
                     if (string.IsNullOrWhiteSpace(model.Phone))  //手机号不为空，解绑当前注册Id的手机号
@@ -3027,18 +2650,14 @@ namespace Services
                     urdao.Updateuserregister(ur);
                     r.code = 0;
                     return r;
-                }
-
-                else if (model.LoginType == 1) //解绑qq
-                {
-                    if (model.QQData != null)
-                    {
+                } else if (model.LoginType == 1) //解绑qq
+                  {
+                    if (model.QQData != null) {
                         if (!string.IsNullOrWhiteSpace(model.QQData.OpenId))  //QQOpenId 不是空，解绑qq   需要优化
                         {
                             UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();
                             var data = uadao.GetUserauthsList().FirstOrDefault(o => o.RegisterId == model.RegisterId && o.LoginType == 1 && o.LoginNumber == model.QQData.OpenId);
-                            if (data == null)
-                            {
+                            if (data == null) {
                                 r.code = 1;
                                 r.msg = "LoginType不能为空";
                                 return r;
@@ -3050,31 +2669,24 @@ namespace Services
                             qdao.Deleteqq(qdata.Id);
                             r.code = 0;
                             return r;
-                        }
-                        else
-                        {
+                        } else {
                             r.code = 1;
                             r.msg = "QQopenId不能为空";
                             return r;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         r.code = 1;
                         r.msg = "QQopenId不能为空";
                         return r;
                     }
-                }
-                else if (model.LoginType == 2) //解绑微信
-                {
-                    if (model.WXData != null)
-                    {
+                } else if (model.LoginType == 2) //解绑微信
+                  {
+                    if (model.WXData != null) {
                         if (!string.IsNullOrWhiteSpace(model.WXData.OpenId))  //QQOpenId 不是空，解绑qq   需要优化
                         {
                             UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();
                             var data = uadao.GetUserauthsList().FirstOrDefault(o => o.RegisterId == model.RegisterId && o.LoginType == 2 && o.LoginNumber == model.WXData.OpenId);
-                            if (data == null)
-                            {
+                            if (data == null) {
                                 r.code = 1;
                                 r.msg = "LoginType不能为空";
                                 return r;
@@ -3086,31 +2698,24 @@ namespace Services
                             wdao.DeleteWeixin(wdata.Id);
                             r.code = 0;
                             return r;
-                        }
-                        else
-                        {
+                        } else {
                             r.code = 1;
                             r.msg = "微信openId不能为空";
                             return r;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         r.code = 1;
                         r.msg = "微信openId不能为空";
                         return r;
                     }
-                }
-                else if (model.LoginType == 3) //解绑微博
-                {
-                    if (model.WBData != null)
-                    {
+                } else if (model.LoginType == 3) //解绑微博
+                  {
+                    if (model.WBData != null) {
                         if (!string.IsNullOrWhiteSpace(model.WBData.idstr))  //QQOpenId 不是空，解绑qq   需要优化
                         {
                             UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();
                             var data = uadao.GetUserauthsList().FirstOrDefault(o => o.RegisterId == model.RegisterId && o.LoginType == 3 && o.LoginNumber == model.WBData.idstr);
-                            if (data == null)
-                            {
+                            if (data == null) {
                                 r.code = 1;
                                 r.msg = "LoginType不能为空";
                                 return r;
@@ -3122,64 +2727,50 @@ namespace Services
                             wdao.DeleteWeibo(wdata.Id);
                             r.code = 0;
                             return r;
-                        }
-                        else
-                        {
+                        } else {
                             r.code = 1;
                             r.msg = "微信openId不能为空";
                             return r;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         r.code = 1;
                         r.msg = "微信openId不能为空";
                         return r;
                     }
-                }
-
-                else if (model.LoginType == 4) //不良事件  解绑时改状态，目前直接删除
-                {
+                } else if (model.LoginType == 4) //不良事件  解绑时改状态，目前直接删除
+                  {
 
                     UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();
                     var data = uadao.GetUserauthsList().FirstOrDefault(o => o.RegisterId == model.RegisterId && o.LoginType == 4 && o.LoginNumber == model.LoginName);  //phone传的是不良事件的登陆账号
-                    if (data != null)
-                    {
+                    if (data != null) {
                         uadao.Deleteuserauths(data.AuthsId); //目前先直接删除，以后需要进行改状态处理
                         r.code = 0;
                         return r;
-                    }
-                    else
-                    {
+                    } else {
                         r.code = 1;
                         r.msg = "该不良事件账号不存在";
                         return r;
                     }
 
-                }
-                else if (model.LoginType == 5) //学分
-                {
+                } else if (model.LoginType == 5) //学分
+                  {
                     r.code = 1;
                     r.msg = "学分系统暂不可用";
                     return r;
 
-                }
-                else if (model.LoginType == 6) //排班
-                {
+                } else if (model.LoginType == 6) //排班
+                  {
                     r.code = 1;
                     r.msg = "排班系统暂不可用";
                     return r;
-                }
-                else   //排班
-                {
+                } else   //排班
+                  {
                     r.code = 1;
                     r.msg = "其他系统待开发";
                     return r;
                 }
 
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "解绑失败";
                 return r;
@@ -3414,22 +3005,18 @@ namespace Services
         #endregion
 
         #region 绑定  0
-        public RsModel<UserFirstInfo> Bind(ViewBind model)
-        {
+        public RsModel<UserFirstInfo> Bind(ViewBind model) {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
             UserFirstInfo UFI = new UserFirstInfo();
-            if (string.IsNullOrWhiteSpace(model.RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(model.RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 if (model.LoginType == 0) //绑定手机号
                 {
-                    if (string.IsNullOrWhiteSpace(model.Phone))
-                    {
+                    if (string.IsNullOrWhiteSpace(model.Phone)) {
                         r.code = 1;
                         r.msg = "手机号不能为空";
                         return r;
@@ -3447,18 +3034,15 @@ namespace Services
                     r.code = 0;
                     return r;
 
-                }
-                else if (model.LoginType == 1) //QQ
-                {
-                    if (model.QQData != null)
-                    {
+                } else if (model.LoginType == 1) //QQ
+                  {
+                    if (model.QQData != null) {
                         if (model.QQData.OpenId != null)   //绑定qq号
                         {
                             UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();  //授权表
                             Userauths ua = new Userauths();
                             var data = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginType == 1 && o.LoginNumber == model.QQData.OpenId);
-                            if (data != null)
-                            {
+                            if (data != null) {
                                 r.code = 1;
                                 r.msg = "该qq号已被绑定";
                                 return r;
@@ -3489,32 +3073,24 @@ namespace Services
                             qdao.Addqq(qq);
                             r.code = 0;
                             return r;
-                        }
-                        else
-                        {
+                        } else {
                             r.code = 1;
                             r.msg = "OpenId不能为空";
                             return r;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         r.code = 1;
                         r.msg = "QQ信息不能为空";
                         return r;
                     }
-                }
-                else if (model.LoginType == 2) //微信
-                {
-                    if (model.WXData != null)
-                    {
-                        if (!string.IsNullOrWhiteSpace(model.WXData.OpenId))
-                        {
+                } else if (model.LoginType == 2) //微信
+                  {
+                    if (model.WXData != null) {
+                        if (!string.IsNullOrWhiteSpace(model.WXData.OpenId)) {
                             UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();  //授权表
                             Userauths ua = new Userauths();
                             var data = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginType == 2 && o.LoginNumber == model.WXData.OpenId);
-                            if (data != null)
-                            {
+                            if (data != null) {
                                 r.code = 1;
                                 r.msg = "该微信已被绑定";
                                 return r;
@@ -3543,32 +3119,24 @@ namespace Services
                             wdao.AddWeixin(w);
                             r.code = 0;
                             return r;
-                        }
-                        else
-                        {
+                        } else {
                             r.code = 1;
                             r.msg = "OpenId不能为空";
                             return r;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         r.code = 1;
                         r.msg = "微博信息不能为空";
                         return r;
                     }
-                }
-                else if (model.LoginType == 3) //微博
-                {
-                    if (model.WBData != null)
-                    {
-                        if (!string.IsNullOrWhiteSpace(model.WBData.idstr))
-                        {
+                } else if (model.LoginType == 3) //微博
+                  {
+                    if (model.WBData != null) {
+                        if (!string.IsNullOrWhiteSpace(model.WBData.idstr)) {
                             UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();  //授权表
                             Userauths ua = new Userauths();
                             var data = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginType == 3 && o.LoginNumber == model.WBData.idstr);
-                            if (data != null)
-                            {
+                            if (data != null) {
                                 r.code = 1;
                                 r.msg = "该微博已被绑定";
                                 return r;
@@ -3595,50 +3163,37 @@ namespace Services
                             wdao.AddWeibo(w);
                             r.code = 0;
                             return r;
-                        }
-                        else
-                        {
+                        } else {
                             r.code = 1;
                             r.msg = "OpenId不能为空";
                             return r;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         r.code = 1;
                         r.msg = "微博信息不能为空";
                         return r;
                     }
-                }
-                else if (model.LoginType == 4) //不良事件
-                {
-                    if (string.IsNullOrWhiteSpace(model.LoginName))
-                    {
+                } else if (model.LoginType == 4) //不良事件
+                  {
+                    if (string.IsNullOrWhiteSpace(model.LoginName)) {
                         r.code = 1;
                         r.msg = "不良事件登陆账号不能为空";
                         return r;
                     }
                     var vacode = ValidateBlsjUser(model.LoginName, model.Password);  //不良时间用户体系进行合法性验证
-                    if (vacode.code != 0)
-                    {
+                    if (vacode.code != 0) {
                         r.code = 1;
                         r.msg = vacode.msg;
                         return r;
-                    }
-                    else
-                    {
+                    } else {
                         UserauthsSqlMapDao uadao = new UserauthsSqlMapDao(); //建立对应关系，授权表里面插入一条数据,先判断是否已经绑定
-                        var audata = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginType == 4  && o.LoginNumber == model.LoginName);
-                        if (audata != null)
-                        {
+                        var audata = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginType == 4 && o.LoginNumber == model.LoginName);
+                        if (audata != null) {
                             r.code = 1;
                             r.msg = "该院内账号已被绑定";
                             return r;
-                        }
-                        else
-                        {
-                            try
-                            {
+                        } else {
+                            try {
                                 aers_tbl_registereduserSqlMapDao ardao = new aers_tbl_registereduserSqlMapDao(); //根据用户名密码查出用户注册id
                                 var ardataRegusterId = ardao.FindByLoginName(model.LoginName).ReguserId;
                                 Userauths ua = new Userauths();
@@ -3651,13 +3206,14 @@ namespace Services
                                 ua.ReguserId = ardataRegusterId;
                                 ua.Verified = 1;  //绑定时，可用状态为1
                                 uadao.Adduserauths(ua);
+                                // 更新userrelrecord表中的数据
+                                UpdateRecordInfo(model.RegisterId, ardataRegusterId);
+
                                 r.code = 0;
                                 UFI.ReguserId = ardataRegusterId;
                                 r.body = UFI;
                                 return r;
-                            }
-                            catch (Exception e)
-                            {
+                            } catch (Exception e) {
                                 r.code = 1;
                                 r.msg = "院内账号绑定失败";
                                 return r;
@@ -3665,42 +3221,69 @@ namespace Services
                         }
 
                     }
-                }
-                else if (model.LoginType == 5) //学分
-                {
+                } else if (model.LoginType == 5) //学分
+                  {
                     r.code = 0;
                     r.msg = "学分系统暂未开通";
                     return r;
-                }
-
-                else if (model.LoginType == 6) //排班
-                {
+                } else if (model.LoginType == 6) //排班
+                  {
                     r.code = 0;
                     r.msg = "排班系统暂未开通";
                     return r;
-                }
-
-                else
-                {
+                } else {
                     r.msg = "其他账号绑定待开发";
                     return r;
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "绑定失败" + e;
                 return r;
             }
         }
+
+        /// <summary>
+        /// 更新userrelrecord表中的数据
+        /// </summary>
+        /// <param name="registerId"></param>
+        /// <param name="regusterId"></param>
+        private void UpdateRecordInfo(string registerId, string regusterId) {
+            // 首先查询到这条数据
+            UserrelrecordSqlMapDao recordDao = new UserrelrecordSqlMapDao();
+            Userrelrecord record = recordDao.GetuserrelrecordDetail(registerId);
+
+            // 然后查询在院内这个人的信息
+            aers_tbl_staffSqlMapDao staffDao = new aers_tbl_staffSqlMapDao();
+            aers_tbl_staff staff = staffDao.FindByRUid(regusterId);
+
+            // 查询科室信息
+            aers_tbl_hospdepSqlMapDao depDao = new aers_tbl_hospdepSqlMapDao();
+            aers_tbl_hospdep dep =  depDao.Find(staff.DepId);
+
+            // 查询医院信息
+            aers_tbl_events_ycSqlMapDao hdao = new aers_tbl_events_ycSqlMapDao();
+            aers_tbl_hospital hos = hdao.hospitalFindByHospId(dep.HospId);
+
+            // 获取姓名
+            userregisterSqlMapDao registerDao = new userregisterSqlMapDao();
+            userregister register = registerDao.GetuserregisterDetail(registerId);
+            register.Name = staff.Name;
+            registerDao.Updateuserregister(register);
+
+            // 赋值
+            record.DepartmentId = dep.HospdepId;
+            record.DepartmentName = dep.HospdepName;
+            record.HospitalId = hos.HospId;
+            record.HospitalName = hos.HospName;
+            
+            recordDao.Updateuserrelrecord(record);
+        }
         #endregion
 
         #region 获取公告信息分页可优化   0  浩然只传页数，第几页 传医院，科室
-        public RsList<Notice> GetNotice(int pageNumber, string HospitalId, string DepartmentId)
-        {
+        public RsList<Notice> GetNotice(int pageNumber, string HospitalId, string DepartmentId) {
             RsList<Notice> r = new Services.RsList<Notice>();
-            try
-            {
+            try {
                 NoticeSqlMapDao ndao = new NoticeSqlMapDao();
 
 
@@ -3709,42 +3292,30 @@ namespace Services
                 var list1 = datalist.Where(o => o.IsDelete == 0).ToList();  //获取系统公告
                 IList<Notice> noticelist;
                 IList<Notice> list2;
-                if (!string.IsNullOrWhiteSpace(HospitalId))
-                {
-                    if (datalist.Where(o => o.HospitalId == HospitalId) != null)
-                    {
+                if (!string.IsNullOrWhiteSpace(HospitalId)) {
+                    if (datalist.Where(o => o.HospitalId == HospitalId) != null) {
                         list2 = datalist.Where(o => o.Type == 1 && o.HospitalId == HospitalId && o.IsFlag == 1).ToList();
                         noticelist = list1.Union(list2).ToList();
-                    }
-                    else
-                    {
+                    } else {
                         noticelist = list1;
                     }
-                }
-                else
-                {
+                } else {
                     noticelist = list1;
                 }
                 IList<Notice> list3;
-                if (!string.IsNullOrWhiteSpace(HospitalId) && !string.IsNullOrWhiteSpace(DepartmentId))
-                {
-                    if (datalist.Where(o => o.DepartmentId == DepartmentId && o.HospitalId == HospitalId) != null)
-                    {
+                if (!string.IsNullOrWhiteSpace(HospitalId) && !string.IsNullOrWhiteSpace(DepartmentId)) {
+                    if (datalist.Where(o => o.DepartmentId == DepartmentId && o.HospitalId == HospitalId) != null) {
                         list3 = datalist.Where(o => o.Type == 2 && o.HospitalId == HospitalId && o.DepartmentId == DepartmentId && o.IsFlag == 1).ToList();
                         noticelist = noticelist.Union(list3).ToList();
                     }
 
                 }
                 DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
-                if (!string.IsNullOrEmpty(HospitalId) && !string.IsNullOrEmpty(DepartmentId))
-                {
+                if (!string.IsNullOrEmpty(HospitalId) && !string.IsNullOrEmpty(DepartmentId)) {
                     var depdata = ddao.GetdepartmentList().Where(o => o.DepartmentId == DepartmentId && o.HospitalId == HospitalId);
-                    if (depdata != null)
-                    {
-                        foreach (var item in noticelist)
-                        {
-                            if (depdata.FirstOrDefault(o => o.HospitalId == item.HospitalId && o.DepartmentId == item.DepartmentId) != null)
-                            {
+                    if (depdata != null) {
+                        foreach (var item in noticelist) {
+                            if (depdata.FirstOrDefault(o => o.HospitalId == item.HospitalId && o.DepartmentId == item.DepartmentId) != null) {
                                 item.Agency = depdata.FirstOrDefault(o => o.HospitalId == item.HospitalId && o.DepartmentId == item.DepartmentId).Name;
                             }
 
@@ -3755,9 +3326,7 @@ namespace Services
                 r.code = 0;
                 // r.msg = noticelist.Count.ToString();
                 r.body = noticelist;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = e.ToString();
                 r.body = null;
@@ -3768,53 +3337,39 @@ namespace Services
         #endregion
 
         #region 获取banner信息  0
-        public RsList<Banner> GetBanner(string HospitalId, string DepartmentId)
-        {
+        public RsList<Banner> GetBanner(string HospitalId, string DepartmentId) {
             RsList<Banner> r = new Services.RsList<Banner>();
-            try
-            {
+            try {
                 BannerSqlMapDao bdao = new BannerSqlMapDao();
                 var datalist = bdao.GetBannerList().OrderByDescending(o => o.BannerTime).ToList();
                 // var list1 = datalist.Where(o => o.Type == 0 && o.IsFlag == 1).ToList();  //获取系统公告测试用
                 var list1 = datalist.ToList();  //获取系统公告
                 IList<Banner> bannerlist;
                 IList<Banner> list2;
-                if (!string.IsNullOrWhiteSpace(HospitalId))
-                {
-                    if (datalist.Where(o => o.HospitalId == HospitalId) != null)
-                    {
+                if (!string.IsNullOrWhiteSpace(HospitalId)) {
+                    if (datalist.Where(o => o.HospitalId == HospitalId) != null) {
                         list2 = datalist.Where(o => o.Type == 1 && o.HospitalId == HospitalId && o.IsFlag == 1).ToList();
                         bannerlist = list1.Union(list2).ToList();
-                    }
-                    else
-                    {
+                    } else {
                         bannerlist = list1;
                     }
-                }
-                else
-                {
+                } else {
                     bannerlist = list1;
                 }
                 IList<Banner> list3;
-                if (!string.IsNullOrWhiteSpace(HospitalId) && !string.IsNullOrWhiteSpace(DepartmentId))
-                {
-                    if (datalist.Where(o => o.DepartmentId == DepartmentId && o.HospitalId == HospitalId) != null)
-                    {
+                if (!string.IsNullOrWhiteSpace(HospitalId) && !string.IsNullOrWhiteSpace(DepartmentId)) {
+                    if (datalist.Where(o => o.DepartmentId == DepartmentId && o.HospitalId == HospitalId) != null) {
                         list3 = datalist.Where(o => o.Type == 2 && o.HospitalId == HospitalId && o.DepartmentId == DepartmentId && o.IsFlag == 1).ToList();
                         bannerlist = bannerlist.Union(list3).ToList();
                     }
 
                 }
                 DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
-                if (!string.IsNullOrEmpty(HospitalId) && !string.IsNullOrEmpty(DepartmentId))
-                {
+                if (!string.IsNullOrEmpty(HospitalId) && !string.IsNullOrEmpty(DepartmentId)) {
                     var depdata = ddao.GetdepartmentList().Where(o => o.DepartmentId == DepartmentId && o.HospitalId == HospitalId);
-                    if (depdata != null)
-                    {
-                        foreach (var item in bannerlist)
-                        {
-                            if (depdata.FirstOrDefault(o => o.HospitalId == item.HospitalId && o.DepartmentId == item.DepartmentId) != null)
-                            {
+                    if (depdata != null) {
+                        foreach (var item in bannerlist) {
+                            if (depdata.FirstOrDefault(o => o.HospitalId == item.HospitalId && o.DepartmentId == item.DepartmentId) != null) {
                                 item.Agency = depdata.FirstOrDefault(o => o.HospitalId == item.HospitalId && o.DepartmentId == item.DepartmentId).Name;
                             }
 
@@ -3823,9 +3378,7 @@ namespace Services
                 }
                 r.code = 0;
                 r.body = bannerlist.Take(5).ToList(); //banner取前5条数据
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = e.ToString();
                 r.body = null;
@@ -3835,11 +3388,9 @@ namespace Services
         #endregion
 
         #region 首页信息只根据手机号,比如通过验证码登陆时只有手机号 0  可改成私有
-        public RsModel<UserFirstInfo> GetUserFirstInfoByPhone(string Phone)
-        {
+        public RsModel<UserFirstInfo> GetUserFirstInfoByPhone(string Phone) {
             RsModel<UserFirstInfo> r = new RsModel<UserFirstInfo>();
-            if (string.IsNullOrEmpty(Phone))
-            {
+            if (string.IsNullOrEmpty(Phone)) {
                 r.code = 1;
                 r.msg = "手机号不能为空";
                 r.body = null;
@@ -3847,8 +3398,7 @@ namespace Services
             }
             userregisterSqlMapDao rrdao = new userregisterSqlMapDao();
             var rrdata = rrdao.GetuserregisterDetailByPhone(Phone);
-            if (rrdata == null)
-            {
+            if (rrdata == null) {
                 r.code = 1;
                 r.msg = "手机号不存在";
                 r.body = null;
@@ -3865,12 +3415,10 @@ namespace Services
         /// <param name="Phone"></param>
         /// <param name="Password"></param>
         /// <returns></returns>
-        public RsModel<UserFirstInfo> Login(userregister model)
-        {
+        public RsModel<UserFirstInfo> Login(userregister model) {
             RsModel<UserFirstInfo> r = new RsModel<UserFirstInfo>();
 
-            if (string.IsNullOrWhiteSpace(model.CountryCode))
-            {
+            if (string.IsNullOrWhiteSpace(model.CountryCode)) {
                 r.code = 1;
                 r.msg = "国家编码不能为空";
                 return r;
@@ -3879,24 +3427,20 @@ namespace Services
             if (!string.IsNullOrWhiteSpace(model.CountryCode))   //如果是空，暂时直接忽略
             {
                 // string CountryCode = System.Web.HttpUtility.UrlDecode(model.CountryCode, System.Text.Encoding.UTF8);  //解码
-                if (!string.IsNullOrEmpty(model.CountryCode))
-                {
-                    if (model.CountryCode != "+86")
-                    {
+                if (!string.IsNullOrEmpty(model.CountryCode)) {
+                    if (model.CountryCode != "+86") {
                         r.code = 1;
                         r.msg = "暂不支持您手机号所在地区";
                         return r;
                     }
                 }
             }
-            if (string.IsNullOrWhiteSpace(model.Phone))
-            {
+            if (string.IsNullOrWhiteSpace(model.Phone)) {
                 r.code = 1;
                 r.msg = "手机号不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(model.Password))
-            {
+            if (string.IsNullOrWhiteSpace(model.Password)) {
                 r.code = 1;
                 r.msg = "密码不能为空";
                 return r;
@@ -3904,14 +3448,12 @@ namespace Services
 
             userregisterSqlMapDao udao = new userregisterSqlMapDao();
             var rdata = udao.GetuserregisterDetailByPhone(model.Phone);
-            if (rdata == null)
-            {
+            if (rdata == null) {
                 r.code = 1;
                 r.msg = "手机号或密码错误";
                 return r;
             }
-            if (rdata.Password != Common.UserMd5(model.Password))
-            {
+            if (rdata.Password != Common.UserMd5(model.Password)) {
                 r.code = 1;
                 r.msg = "手机号或密码错误";
                 return r;
@@ -3924,22 +3466,18 @@ namespace Services
         #endregion
 
         #region 获取首页信息根据注册ID 0    
-        public RsModel<UserFirstInfo> GetUserFirstInfoById(string RegisterId)
-        {
+        public RsModel<UserFirstInfo> GetUserFirstInfoById(string RegisterId) {
             RsModel<UserFirstInfo> r = new RsModel<UserFirstInfo>();
-            if (string.IsNullOrWhiteSpace(RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 UserFirstInfo ufi = new UserFirstInfo();
                 UserrelrecordSqlMapDao urdao = new UserrelrecordSqlMapDao();
                 var urdata = urdao.GetuserrelrecordDetail(RegisterId);
-                if (urdata != null)
-                {
+                if (urdata != null) {
                     ufi.HospitalId = urdata.HospitalId;
                     ufi.HospitalName = urdata.HospitalName;
                     ufi.DepartmentId = urdata.DepartmentId;
@@ -3948,23 +3486,19 @@ namespace Services
                 }
                 UserquacertificateSqlMapDao uqdao = new UserquacertificateSqlMapDao();
                 var uqdata = uqdao.GetuserquacertificateDetail(RegisterId);
-                if (uqdata != null)
-                {
+                if (uqdata != null) {
                     CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
                     var cdata = cdao.GetcertificateverifyList().FirstOrDefault(o => o.RegisterId == RegisterId && o.Type == 2);
-                    if (cdata != null)
-                    {
+                    if (cdata != null) {
                         ufi.QStatus = cdata.VerifyStatus;
                     }
                 }
                 UserpracticecertificateSqlMapDao updao = new UserpracticecertificateSqlMapDao();
                 var updata = updao.GetuserpracticecertificateDetail(RegisterId);
-                if (updata != null)
-                {
+                if (updata != null) {
                     CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
                     var cdata = cdao.GetcertificateverifyList().FirstOrDefault(o => o.RegisterId == RegisterId && o.Type == 1);
-                    if (cdata != null)
-                    {
+                    if (cdata != null) {
                         ufi.PStatus = cdata.VerifyStatus;
                     }
                 }
@@ -3977,64 +3511,52 @@ namespace Services
                     ufi.Name = urgdata.Name;
                     ufi.RegisterId = RegisterId;
 
-                    if (string.IsNullOrWhiteSpace(urgdata.NickName))
-                    {
+                    if (string.IsNullOrWhiteSpace(urgdata.NickName)) {
 
                         UserauthsSqlMapDao uadaoo = new UserauthsSqlMapDao();
                         var uadataa = uadaoo.GetUserauthsList().FirstOrDefault(o => o.RegisterId == RegisterId);
-                        if (uadataa != null)
-                        {
+                        if (uadataa != null) {
                             string loginnumber = uadataa.LoginNumber;
 
                             QqSqlMapDao qdao = new QqSqlMapDao();
                             var qqdata = qdao.GetQqList().FirstOrDefault(o => o.OpenId == loginnumber);   //查qq表
-                            if (qqdata != null)
-                            {
+                            if (qqdata != null) {
                                 ufi.NickName = qqdata.NickName;
                                 // ufi.NickName =Common.Decode(qqdata.NickName);
                             }
 
                             WeixinSqlMapDao wdao = new WeixinSqlMapDao();
                             var wdata = wdao.GetWeixinList().FirstOrDefault(o => o.OpenId == loginnumber);   //查微信表
-                            if (wdata != null)
-                            {
+                            if (wdata != null) {
                                 ufi.NickName = wdata.NickName;
                                 // ufi.NickName =Common.Decode(qqdata.NickName);
                             }
                         }
-                    }
-                    else
-                    {
+                    } else {
                         ufi.NickName = urgdata.NickName;
                         //  ufi.NickName =Common .Decode(urgdata.NickName);
                     }
 
-                    if (string.IsNullOrWhiteSpace(urgdata.Avatar))
-                    {
+                    if (string.IsNullOrWhiteSpace(urgdata.Avatar)) {
                         UserauthsSqlMapDao uadaoo = new UserauthsSqlMapDao();
                         var uadataa = uadaoo.GetUserauthsList().FirstOrDefault(o => o.RegisterId == RegisterId);
-                        if (uadataa != null)
-                        {
+                        if (uadataa != null) {
                             string loginnumber = uadataa.LoginNumber;
 
                             QqSqlMapDao qdao = new QqSqlMapDao();
                             var qqdata = qdao.GetQqList().FirstOrDefault(o => o.OpenId == loginnumber);   //查qq表
-                            if (qqdata != null)
-                            {
+                            if (qqdata != null) {
                                 ufi.Avatar = qqdata.FigureUrl;
                             }
 
                             WeixinSqlMapDao wdao = new WeixinSqlMapDao();
                             var wdata = wdao.GetWeixinList().FirstOrDefault(o => o.OpenId == loginnumber);   //查微信
-                            if (wdata != null)
-                            {
+                            if (wdata != null) {
                                 ufi.Avatar = wdata.HeadImgurl;
                             }
                         }
 
-                    }
-                    else
-                    {
+                    } else {
                         ufi.Avatar = urgdata.Avatar;
                     }
 
@@ -4042,8 +3564,7 @@ namespace Services
 
                 UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();
                 var uadata = uadao.GetUserauthsList().FirstOrDefault(o => o.RegisterId == RegisterId);   //绑定时这样写会找不到
-                if (uadata != null)
-                {
+                if (uadata != null) {
                     ufi.ReguserId = uadata.ReguserId;
                 }
                 r.code = 0;
@@ -4051,9 +3572,7 @@ namespace Services
                 //string s = Common.PushMsgByAliasId("您已成功注册注册智护", reid, DeviceId);
                 r.body = ufi;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "获取信息失败";
                 return r;
@@ -4062,23 +3581,19 @@ namespace Services
         #endregion
 
         #region 获取绑定信息 0
-        public RsModel<ViewUserBindInfo> GetUserBindInfo(string RegisterId)
-        {
+        public RsModel<ViewUserBindInfo> GetUserBindInfo(string RegisterId) {
             RsModel<ViewUserBindInfo> r = new Services.RsModel<ViewUserBindInfo>();
-            if (string.IsNullOrWhiteSpace(RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 ViewUserBindInfo ub = new ViewUserBindInfo();
 
                 UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();
                 var uadata = uadao.GetUserauthsList().Where(o => o.RegisterId == RegisterId);  //获取个人绑定的其他账号信息
-                if (uadata == null)
-                {
+                if (uadata == null) {
                     r.code = 1;
                     r.msg = "该账号暂无绑定信息";
                 }
@@ -4086,16 +3601,14 @@ namespace Services
                 int count;
                 var qqdata = uadata.OrderByDescending(o => o.LoginLastTime).FirstOrDefault(o => o.LoginType == 1);
 
-                if (qqdata != null)
-                {
+                if (qqdata != null) {
                     var qqOpenId = qqdata.LoginNumber;
                     ub.QQOpenId = qqOpenId;
 
                     QqSqlMapDao qdao = new QqSqlMapDao();
 
                     var qdata = qdao.GetQqList().FirstOrDefault(o => o.OpenId == qqOpenId);
-                    if (qdata != null)
-                    {
+                    if (qdata != null) {
                         ub.QQNickName = qdata.NickName;
                         // ub.QQNickName =Common .Decode(qdata.NickName);
                     }
@@ -4103,26 +3616,22 @@ namespace Services
                 }
 
                 var weixindata = uadata.OrderByDescending(o => o.LoginLastTime).FirstOrDefault(o => o.LoginType == 2);   //可优化
-                if (weixindata != null)
-                {
+                if (weixindata != null) {
                     var wOpenId = weixindata.LoginNumber;
                     ub.WeixinOpenId = wOpenId;
                     WeixinSqlMapDao wdao = new WeixinSqlMapDao();
                     var wdata = wdao.GetWeixinList().FirstOrDefault(o => o.OpenId == wOpenId);
-                    if (wdata != null)
-                    {
+                    if (wdata != null) {
                         ub.WeixinNickName = wdata.NickName;
                     }
                 }
                 var weibodata = uadata.OrderByDescending(o => o.LoginLastTime).FirstOrDefault(o => o.LoginType == 3);   //可优化
-                if (weibodata != null)
-                {
+                if (weibodata != null) {
                     var wOpenId = weibodata.LoginNumber;
                     ub.WeiboOpenId = wOpenId;
                     WeiboSqlMapDao wdao = new WeiboSqlMapDao();
                     var wdata = wdao.GetWeiboList().FirstOrDefault(o => o.idstr == wOpenId);
-                    if (wdata != null)
-                    {
+                    if (wdata != null) {
                         ub.WeiboNickName = wdata.name;
                     }
                 }
@@ -4133,22 +3642,19 @@ namespace Services
                 ub.RegisterId = RegisterId;
 
                 var BLSJData = uadata.FirstOrDefault(o => o.LoginType == 4 && o.RegisterId == RegisterId);  //不良事件  4
-                if (BLSJData != null)
-                {
+                if (BLSJData != null) {
                     ub.BLSJOpenId = BLSJData.ReguserId;
                     ub.BLSJId = BLSJData.LoginNumber;
                 }
 
                 var XFData = uadata.FirstOrDefault(o => o.LoginType == 5 && o.RegisterId == RegisterId);  //学分  5
-                if (XFData != null)
-                {
+                if (XFData != null) {
                     ub.XFOpenId = XFData.ReguserId;
                     ub.XFId = XFData.LoginNumber;
                 }
 
                 var PBData = uadata.FirstOrDefault(o => o.LoginType == 6 && o.RegisterId == RegisterId);  //排班  6
-                if (PBData != null)
-                {
+                if (PBData != null) {
                     ub.PBOpenId = PBData.ReguserId;
                     ub.PBId = PBData.LoginNumber;
                 }
@@ -4168,9 +3674,7 @@ namespace Services
                 r.code = 0;
                 r.body = ub;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "获取绑定信息失败";
                 return r;
@@ -4179,23 +3683,19 @@ namespace Services
         #endregion
 
         #region 获取个人资料界面信息 0
-        public RsModel<ViewUserInfo> GetUserInfo(string RegisterId)
-        {
+        public RsModel<ViewUserInfo> GetUserInfo(string RegisterId) {
             RsModel<ViewUserInfo> r = new RsModel<ViewUserInfo>();
-            if (string.IsNullOrWhiteSpace(RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 ViewUserInfo ui = new ViewUserInfo();
                 ui.RegisterId = RegisterId;
                 userregisterSqlMapDao urdao = new userregisterSqlMapDao();
                 var urdata = urdao.GetuserregisterDetail(RegisterId);
-                if (urdata != null)
-                {
+                if (urdata != null) {
                     ui.Avatar = urdata.Avatar;
                     //  ui.NickName =Common.Decode(urdata.NickName); 
                     ui.NickName = urdata.NickName;
@@ -4204,53 +3704,43 @@ namespace Services
 
                     userbasicinfoSqlMapDao ubdao = new userbasicinfoSqlMapDao();
                     var ubdata = ubdao.GetuserbasicinfoDetail(RegisterId);
-                    if (ubdata != null)
-                    {
+                    if (ubdata != null) {
                         ui.Sex = ubdata.Sex;
                         ui.Birthday = ubdata.Birthday;
                     }
                     UserpracticecertificateSqlMapDao upcdao = new UserpracticecertificateSqlMapDao();
                     var upcdata = upcdao.GetuserpracticecertificateDetail(RegisterId);
-                    if (upcdata != null)
-                    {
+                    if (upcdata != null) {
                         ui.PCertificateId = upcdata.CertificateId;
                         ui.FirstJobTime = upcdata.FirstJobTime;
                         // ui.PVerifyStatus = upcdata.VerifyStatus;
 
                         CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
                         var cdata = cdao.GetcertificateverifyList().FirstOrDefault(o => o.RegisterId == RegisterId && o.Type == 1);
-                        if (cdata != null)
-                        {
+                        if (cdata != null) {
                             ui.PVerifyStatus = cdata.VerifyStatus;
-                        }
-                        else
-                        {
+                        } else {
                             ui.PVerifyStatus = 0;
                         }
                     }
                     UserquacertificateSqlMapDao uqcdao = new UserquacertificateSqlMapDao();
                     var uqcdata = uqcdao.GetuserquacertificateDetail(RegisterId);
-                    if (uqcdata != null)
-                    {
+                    if (uqcdata != null) {
                         ui.QCertificateId = uqcdata.CertificateId;
                         // ui.QVerifyStatus = uqcdata.VerifyStatus;
 
                         CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
                         var cdata = cdao.GetcertificateverifyList().FirstOrDefault(o => o.RegisterId == RegisterId && o.Type == 2);
-                        if (cdata != null)
-                        {
+                        if (cdata != null) {
                             ui.QVerifyStatus = cdata.VerifyStatus;
-                        }
-                        else
-                        {
+                        } else {
                             ui.QVerifyStatus = 0;
                         }
 
                     }
                     UserrelrecordSqlMapDao urddao = new UserrelrecordSqlMapDao();
                     var urddata = urddao.GetuserrelrecordDetail(RegisterId);
-                    if (urddata != null)
-                    {
+                    if (urddata != null) {
                         ui.HospitalId = urddata.HospitalId;
                         ui.HospitalName = urddata.HospitalName;
                         ui.DepartmentId = urddata.DepartmentId;
@@ -4262,18 +3752,14 @@ namespace Services
                     r.code = 0;
                     r.body = ui;
                     return r;
-                }
-                else
-                {
+                } else {
                     r.code = 0;
                     r.msg = "此账号不存在";
                     return r;
                 }
 
 
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 return r;
             }
@@ -4282,26 +3768,21 @@ namespace Services
         #endregion
 
         #region  根据关键字搜索用户列表，返回给客户端数据
-        public RsList<userregister> GetFriendsList(string RegisterId, string KeyWord)
-        {
+        public RsList<userregister> GetFriendsList(string RegisterId, string KeyWord) {
             RsList<userregister> r = new Services.RsList<userregister>();
-            if (string.IsNullOrWhiteSpace(KeyWord))
-            {
+            if (string.IsNullOrWhiteSpace(KeyWord)) {
                 r.code = 1;
                 r.msg = "搜索关键字不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 userregisterSqlMapDao udao = new userregisterSqlMapDao();
                 var alllist = udao.GetuserregisterList().Where(o => o.RegisterId != RegisterId);
                 var datalist = alllist.Where(o => (o.NickName != null && o.NickName.Contains(KeyWord)) || (o.Phone != null && o.Phone.Contains(KeyWord))).ToList();
                 r.body = datalist;
                 r.code = 0;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 var ee = e;
                 r.code = 1;
                 r.msg = "查找好友信息失败";
@@ -4309,30 +3790,25 @@ namespace Services
             }
         }
 
-        public string UserLogin1()
-        {
+        public string UserLogin1() {
             return "1";
         }
         #endregion
 
         #region 根据本人Id,好友Id,获取好友信息，并指明是不是好友
-        public RsModel<ViewFriendInfo> GetFriendInfo(string MyId, string FriendId)
-        {
+        public RsModel<ViewFriendInfo> GetFriendInfo(string MyId, string FriendId) {
             RsModel<ViewFriendInfo> r = new Services.RsModel<ViewFriendInfo>();
-            if (string.IsNullOrWhiteSpace(MyId))
-            {
+            if (string.IsNullOrWhiteSpace(MyId)) {
                 r.code = 1;
                 r.msg = "MyId不能是空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(FriendId))
-            {
+            if (string.IsNullOrWhiteSpace(FriendId)) {
                 r.code = 1;
                 r.msg = "FriendId不能是空";
                 return r;
             }
-            try
-            {
+            try {
                 ViewFriendInfo fi = new ViewFriendInfo();
 
                 userregisterSqlMapDao urdao = new userregisterSqlMapDao();
@@ -4351,15 +3827,13 @@ namespace Services
 
                 userbasicinfoSqlMapDao ubdao = new userbasicinfoSqlMapDao();
                 var ubdata = ubdao.GetuserbasicinfoDetail(FriendId);
-                if (ubdata != null)
-                {
+                if (ubdata != null) {
                     fi.Sex = ubdata.Sex;
                 }
 
                 UserrelrecordSqlMapDao urldao = new UserrelrecordSqlMapDao();
                 var urldata = urldao.GetuserrelrecordDetail(FriendId);
-                if (urldata != null)
-                {
+                if (urldata != null) {
                     fi.DepartmentName = urldata.DepartmentName;
                     fi.Role = urldata.Role;
                     fi.HospitalName = urldata.HospitalName;
@@ -4367,15 +3841,13 @@ namespace Services
 
                 EmchatSqlMapDao emdao = new EmchatSqlMapDao();
                 var emdata = emdao.GetEmchatList().FirstOrDefault(o => o.MyId == MyId && o.FriendId == FriendId);  //
-                if (emdata != null)
-                {
+                if (emdata != null) {
                     if (emdata.IsFlag == 1) //是好友
                     {
                         fi.Remark = emdata.Remark;
                         fi.IsFriend = true;
-                    }
-                    else  //不是好友 
-                    {
+                    } else  //不是好友 
+                      {
                         fi.IsFriend = false;
                     }
                 }
@@ -4384,30 +3856,21 @@ namespace Services
                 var uadata = uadao.GetUserauthsList();
                 var mydata = uadata.FirstOrDefault(o => o.RegisterId == MyId && o.LoginType == 4);  //我的是院内不良事件账号
                 var frienddata = uadata.FirstOrDefault(o => o.RegisterId == FriendId && o.LoginType == 4); //朋友的是院内不良事件院内账号
-                if (mydata != null && frienddata != null)
-                {
+                if (mydata != null && frienddata != null) {
                     UserrelrecordSqlMapDao urrdao = new UserrelrecordSqlMapDao();
                     var myhdata = urrdao.GetuserrelrecordDetail(MyId);
                     var frhdata = urrdao.GetuserrelrecordDetail(FriendId);
-                    if (myhdata != null && frhdata != null)
-                    {
-                        if (myhdata.HospitalId == frhdata.HospitalId)
-                        {
+                    if (myhdata != null && frhdata != null) {
+                        if (myhdata.HospitalId == frhdata.HospitalId) {
                             fi.IsInternalHospital = true;
-                        }
-                        else
-                        {
+                        } else {
                             fi.IsInternalHospital = false;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         fi.IsInternalHospital = false;
                     }
 
-                }
-                else
-                {
+                } else {
                     fi.IsInternalHospital = false;
                 }
 
@@ -4418,9 +3881,7 @@ namespace Services
                 r.body = fi;
                 return r;
 
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "获取信息失败";
                 return r;
@@ -4430,34 +3891,28 @@ namespace Services
         #endregion
 
         #region 发送好友邀请
-        public RsModel<string> SendFriendMsg(string MyId, string FriendId)
-        {
+        public RsModel<string> SendFriendMsg(string MyId, string FriendId) {
             RsModel<string> r = new RsModel<string>();
-            if (string.IsNullOrWhiteSpace(MyId))
-            {
+            if (string.IsNullOrWhiteSpace(MyId)) {
                 r.code = 1;
                 r.msg = "MyId不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(FriendId))
-            {
+            if (string.IsNullOrWhiteSpace(FriendId)) {
                 r.code = 1;
                 r.msg = "FriendId";
                 return r;
             }
-            try
-            {
+            try {
                 userregisterSqlMapDao urdao = new userregisterSqlMapDao();
                 var myData = urdao.GetuserregisterDetail(MyId);
-                if (myData == null)
-                {
+                if (myData == null) {
                     r.code = 1;
                     r.msg = "MyId账号不存在";
                     return r;
                 }
                 var FriendData = urdao.GetuserregisterDetail(FriendId);
-                if (FriendData == null)
-                {
+                if (FriendData == null) {
                     r.code = 1;
                     r.msg = "FriendId账号不存在";
                     return r;
@@ -4471,13 +3926,11 @@ namespace Services
                 //Assert.AreEqual(user.StatusCode, HttpStatusCode.OK);
                 //if (user.StatusCode == HttpStatusCode.OK)
                 //{
-                var send = Client.DefaultSyncRequest.MsgSend<MsgText>(new MsgRequest<MsgText>()
-                {
+                var send = Client.DefaultSyncRequest.MsgSend<MsgText>(new MsgRequest<MsgText>() {
                     target_type = "users",
                     from = "admin",
                     //  from = 
-                    msg = new MsgText()
-                    {
+                    msg = new MsgText() {
                         msg = myData.Name + "邀请您加为好友"
                     },
                     target = new string[] { Common.EMRegisterId(FriendId) }
@@ -4486,9 +3939,7 @@ namespace Services
                 // }
                 r.code = 0;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "发送失败";
                 return r;
@@ -4497,18 +3948,15 @@ namespace Services
         #endregion
 
         #region  环信 加好友
-        public RsModel<string> AddEMFriend(string MyId, string FriendId)
-        {
+        public RsModel<string> AddEMFriend(string MyId, string FriendId) {
             RsModel<string> r = new RsModel<string>();
-            if (string.IsNullOrWhiteSpace(MyId))
-            {
+            if (string.IsNullOrWhiteSpace(MyId)) {
                 r.code = 1;
                 r.msg = "MyId不能为空";
 
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(FriendId))
-            {
+            if (string.IsNullOrWhiteSpace(FriendId)) {
                 r.code = 1;
                 r.msg = "FriendId不能为空";
                 return r;
@@ -4516,22 +3964,19 @@ namespace Services
 
             userregisterSqlMapDao urdao = new userregisterSqlMapDao();
             var myData = urdao.GetuserregisterDetail(MyId);
-            if (myData == null)
-            {
+            if (myData == null) {
                 r.code = 1;
                 r.msg = "MyId账号不存在";
                 return r;
             }
             var FriendData = urdao.GetuserregisterDetail(FriendId);
-            if (FriendData == null)
-            {
+            if (FriendData == null) {
                 r.code = 1;
                 r.msg = "FriendId账号不存在";
                 return r;
             }
 
-            try
-            {
+            try {
                 EmchatSqlMapDao edao = new EmchatSqlMapDao();
 
                 var edata = edao.GetEmchatList();
@@ -4547,9 +3992,7 @@ namespace Services
                     ec.IsFlag = 1;  //改为1
                     ec.Remark = eed.Remark;
                     edao.Updateemchat(ec);
-                }
-                else
-                {
+                } else {
                     Emchat ec = new Emchat();
                     ec.EMChatId = new aers_sys_seedSqlMapDao().GetMaxID("Emchat");  //注册表
                     ec.MyId = MyId;
@@ -4562,8 +4005,7 @@ namespace Services
                     edao.Addemchat(ec);
                 }
                 var efd = edata.FirstOrDefault(o => o.MyId == FriendId && o.FriendId == MyId);
-                if (efd != null)
-                {
+                if (efd != null) {
                     Emchat ec = new Emchat();
                     ec.EMChatId = efd.EMChatId;
                     ec.MyId = efd.MyId;
@@ -4573,9 +4015,7 @@ namespace Services
                     ec.IsFlag = 1;  //改为1
                     ec.Remark = efd.Remark;
                     edao.Updateemchat(ec);
-                }
-                else
-                {
+                } else {
                     Emchat ec = new Emchat();
                     ec.EMChatId = new aers_sys_seedSqlMapDao().GetMaxID("Emchat");  //注册表
                     ec.MyId = FriendId;
@@ -4588,9 +4028,7 @@ namespace Services
                 }
                 r.code = 0;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "数据库插入失败";
                 return r;
@@ -4616,30 +4054,24 @@ namespace Services
         /// </summary>
         /// <param name="emchat"></param>
         /// <returns></returns>
-        public RsModel<string> UpdateFriend(Emchat emchat)
-        {
+        public RsModel<string> UpdateFriend(Emchat emchat) {
             RsModel<string> result = new RsModel<string>();
-            if (string.IsNullOrWhiteSpace(emchat.MyId))
-            {
+            if (string.IsNullOrWhiteSpace(emchat.MyId)) {
                 result.code = 1;
                 result.msg = "MyId不能为空";
                 return result;
             }
-            if (string.IsNullOrWhiteSpace(emchat.FriendId))
-            {
+            if (string.IsNullOrWhiteSpace(emchat.FriendId)) {
                 result.code = 1;
                 result.msg = "FriendId不能为空";
                 return result;
             }
-            try
-            {
+            try {
                 EmchatSqlMapDao dao = new EmchatSqlMapDao();
                 Emchat first = dao.GetEmchatList().First(o => o.MyId == emchat.MyId && o.FriendId == emchat.FriendId);
                 first.Remark = emchat.Remark;
                 dao.Updateemchat(first);
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 result.code = 1;
                 result.msg = "设置备注失败";
                 return result;
@@ -4650,24 +4082,20 @@ namespace Services
         #endregion
 
         #region  读好友
-        public RsList<ViewFriendInfo> GetEMFriend(string MyId)
-        {
+        public RsList<ViewFriendInfo> GetEMFriend(string MyId) {
             RsList<ViewFriendInfo> r = new RsList<ViewFriendInfo>();
-            if (string.IsNullOrWhiteSpace(MyId))
-            {
+            if (string.IsNullOrWhiteSpace(MyId)) {
                 r.code = 1;
                 r.msg = "MyId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 EmchatSqlMapDao edao = new EmchatSqlMapDao();
                 var userList = edao.GetEmchatList().Where(o => o.MyId == MyId && o.IsFlag == 1);
                 userregisterSqlMapDao urdao = new userregisterSqlMapDao();
 
                 List<ViewFriendInfo> flist = new List<ViewFriendInfo>();
-                foreach (var item in userList)
-                {
+                foreach (var item in userList) {
                     ViewFriendInfo fi = new ViewFriendInfo();
                     var urdata = urdao.GetuserregisterDetail(item.FriendId);
                     fi.FriendId = item.FriendId;
@@ -4682,9 +4110,7 @@ namespace Services
                 r.code = 0;
                 r.body = flist;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "获取好友失败";
                 // log.Error("error", new Exception(e.Message));
@@ -4694,23 +4120,19 @@ namespace Services
         #endregion
 
         #region 环信 删好友、解除好友关系
-        public RsModel<string> DeleteEMFriend(string MyId, string FriendId)
-        {
+        public RsModel<string> DeleteEMFriend(string MyId, string FriendId) {
             RsModel<string> r = new Services.RsModel<string>();
-            if (string.IsNullOrWhiteSpace(MyId))
-            {
+            if (string.IsNullOrWhiteSpace(MyId)) {
                 r.code = 1;
                 r.msg = "MyId不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(FriendId))
-            {
+            if (string.IsNullOrWhiteSpace(FriendId)) {
                 r.code = 1;
                 r.msg = "FriendId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 EmchatSqlMapDao ecdao = new EmchatSqlMapDao();
                 var data = ecdao.GetEmchatList();
                 Emchat ecm = new Emchat();
@@ -4739,9 +4161,7 @@ namespace Services
                 var delete = Client.DefaultSyncRequest.UserFriendDelete(new UserFriendDeleteRequest() { friend_username = MyId, owner_username = FriendId });
                 Assert.AreEqual(delete.StatusCode, HttpStatusCode.OK);
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "解除好友关系失败";
                 return r;
@@ -4751,8 +4171,7 @@ namespace Services
         #endregion
 
         #region 创建一个群
-        public RsModel<ViewGroupList> CreateGroup(ViewGroupList model)
-        {
+        public RsModel<ViewGroupList> CreateGroup(ViewGroupList model) {
 
             RsModel<ViewGroupList> r = new Services.RsModel<ViewGroupList>();
             if (string.IsNullOrWhiteSpace(model.RegisterId))  //创建人Id
@@ -4761,8 +4180,7 @@ namespace Services
                 r.msg = "创建人Id不能为空";
                 return r;
             }
-            if (model.groupMemberList.Count < 3)
-            {
+            if (model.groupMemberList.Count < 3) {
                 r.code = 1;
                 r.msg = "三个用户以上才可以创建群";
                 return r;
@@ -4775,11 +4193,9 @@ namespace Services
             List<string> memberList = model.groupMemberList.Select(o => o.FriendId).ToList();
             // memberList.Add(model.RegisterId);  //添加第一项
             var memberarr = memberList.ToArray();
-            try
-            {
+            try {
 
-                var response = Easemob.Restfull4Net.Client.DefaultSyncRequest.ChatGroupCreate(new CreateChatGroupRequest()
-                {
+                var response = Easemob.Restfull4Net.Client.DefaultSyncRequest.ChatGroupCreate(new CreateChatGroupRequest() {
                     approval = false,
                     desc = Desc,
                     groupname = GroupNickName,
@@ -4799,8 +4215,7 @@ namespace Services
                 gi.IsFlag = 1;
                 gi.MaxGroupCount = MaxCountGroup;
                 gi.UserCount = model.groupMemberList.Count + 1;
-                if (HXresponse.data == null)
-                {
+                if (HXresponse.data == null) {
                     r.code = 1;
                     r.msg = "环信创建群失败" + response.ErrorMessage.error_description;
                     return r;
@@ -4820,19 +4235,15 @@ namespace Services
 
                 GroupuserSqlMapDao gudao = new GroupuserSqlMapDao();
                 Groupuser gu = new Groupuser();
-                foreach (var item in model.groupMemberList)
-                {
+                foreach (var item in model.groupMemberList) {
                     Groupuser gup = new Groupuser();
                     gup.GroupUserId = new aers_sys_seedSqlMapDao().GetMaxID("groupuser"); //可优化
                     gup.IsFlag = 1;
-                    if (gup.RegisterId == OwnerId)
-                    {
+                    if (gup.RegisterId == OwnerId) {
                         gup.IsMaster = 1;
                         gup.NickName = urdao.GetuserregisterDetail(item.MyId).NickName;
                         gup.RegisterId = item.MyId;
-                    }
-                    else
-                    {
+                    } else {
                         gup.IsMaster = 0;
                         gup.NickName = urdao.GetuserregisterDetail(item.FriendId).NickName;
                         gup.RegisterId = item.FriendId;
@@ -4843,8 +4254,7 @@ namespace Services
 
                     gudao.Addgroupuser(gup);
                 }
-                var response1 = Easemob.Restfull4Net.Client.DefaultSyncRequest.ChatGroupCreate(new CreateChatGroupRequest()
-                {
+                var response1 = Easemob.Restfull4Net.Client.DefaultSyncRequest.ChatGroupCreate(new CreateChatGroupRequest() {
                     approval = false,
                     desc = Desc,
                     groupname = GroupNickName,
@@ -4855,9 +4265,7 @@ namespace Services
                 r.code = 0;
                 r.body = vg;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "创建群失败" + e;
                 return r;
@@ -4969,53 +4377,41 @@ namespace Services
         #endregion
 
         #region 给群组成员发消息
-        public int SendMsgToGroupmember(string msg, string OwnerId, string GroupId)
-        {
-            try
-            {
-                var send = Client.DefaultSyncRequest.MsgSend<MsgText>(new MsgRequest<MsgText>()
-                {
+        public int SendMsgToGroupmember(string msg, string OwnerId, string GroupId) {
+            try {
+                var send = Client.DefaultSyncRequest.MsgSend<MsgText>(new MsgRequest<MsgText>() {
                     target_type = "chatgroups",
                     from = OwnerId,
-                    msg = new MsgText()
-                    {
+                    msg = new MsgText() {
                         msg = msg
                     },
                     target = new string[] { GroupId }
                 });
                 return 1;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 return 0;
             }
         }
         #endregion
 
         #region 从客户端手机通讯录得到数据
-        public RsList<ViewContact> GetContactInfo(List<ViewContact> model)
-        {
+        public RsList<ViewContact> GetContactInfo(List<ViewContact> model) {
             RsList<ViewContact> r = new Services.RsList<ViewContact>();
-            if (model == null)
-            {
+            if (model == null) {
                 r.code = 1;
                 r.msg = "model不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 var mydata = model[0];
                 userregisterSqlMapDao udao = new userregisterSqlMapDao();
                 var data = udao.GetuserregisterList();
                 List<ViewContact> flist = new List<ViewContact>(); ;
                 EmchatSqlMapDao ecdao = new EmchatSqlMapDao();
                 var ecdata = ecdao.GetEmchatList();
-                foreach (var item in model)
-                {
-                    foreach (var d in data)
-                    {
-                        if (item.Phone == d.Phone)
-                        {
+                foreach (var item in model) {
+                    foreach (var d in data) {
+                        if (item.Phone == d.Phone) {
                             item.Avatar = d.Avatar;
                             item.Name = d.Name;
                             item.NickName = d.NickName;
@@ -5036,9 +4432,7 @@ namespace Services
                 flist.RemoveRange(0, 1);
                 r.body = flist;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = e.ToString();
                 return r;
@@ -5048,23 +4442,19 @@ namespace Services
         #endregion
 
         #region 添加一个群成员
-        public RsModel<string> AddGroupOne(string RegisterId, string GroupId)
-        {
+        public RsModel<string> AddGroupOne(string RegisterId, string GroupId) {
             RsModel<string> r = new Services.RsModel<string>();
-            if (string.IsNullOrWhiteSpace(RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(GroupId))
-            {
+            if (string.IsNullOrWhiteSpace(GroupId)) {
                 r.code = 1;
                 r.msg = "GroupId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 GroupinfoSqlMapDao gidao = new GroupinfoSqlMapDao();
                 var gidata = gidao.GetGroupinfoDetail(GroupId);
                 Groupinfo gi = new Groupinfo();
@@ -5097,9 +4487,7 @@ namespace Services
                 r.code = 0;
                 return r;
 
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "添加群成员失败";
                 return r;
@@ -5227,29 +4615,24 @@ namespace Services
         #endregion
 
         #region 获取此人群信息  
-        public RsList<ViewGroupList> GetXHGroupInfoList(string RegisterId)
-        {
+        public RsList<ViewGroupList> GetXHGroupInfoList(string RegisterId) {
             RsList<ViewGroupList> r = new RsList<ViewGroupList>();
-            if (string.IsNullOrWhiteSpace(RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegisterId)) {
                 r.code = 1;
                 r.msg = "用户Id不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 GroupuserSqlMapDao gudao = new GroupuserSqlMapDao();
                 var gudata = gudao.GetGroupuserList();
                 var GroupDataList = gudata.Where(o => o.RegisterId == RegisterId);   //根据群人员表获取信息
-                if (GroupDataList == null)
-                {
+                if (GroupDataList == null) {
                     r.code = 1;
                     r.msg = "暂无此人群信息";
                     return r;
                 }
                 List<string> grouplist = new List<string>();
-                foreach (var item in GroupDataList)
-                {
+                foreach (var item in GroupDataList) {
                     grouplist.Add(item.GroupId);   //此人所在的群list
                 }
                 List<ViewGroupList> vglist = new List<ViewGroupList>();
@@ -5269,8 +4652,7 @@ namespace Services
                 GroupinfoSqlMapDao gidao = new GroupinfoSqlMapDao();
                 var gidata = gidao.GetGroupinfoList();
 
-                foreach (var item in grouplist)
-                {
+                foreach (var item in grouplist) {
                     ViewGroupList vgl = new ViewGroupList();
                     vgl.HXGroupId = gidata.FirstOrDefault(o => o.GroupId == item).HXGroupId;
                     vgl.GroupId = item;
@@ -5280,8 +4662,7 @@ namespace Services
                     vgl.GroupUserCount = gidata.FirstOrDefault(o => o.GroupId == item).UserCount;
                     List<ViewFriendInfo> vclist = new List<ViewFriendInfo>();
                     var groupuserlist = gudata.Where(o => o.GroupId == item);
-                    foreach (var u in groupuserlist)
-                    {
+                    foreach (var u in groupuserlist) {
                         ViewFriendInfo vc = new ViewFriendInfo();
                         vc.NickName = u.NickName;
                         vc.Avatar = urdata.FirstOrDefault(o => o.RegisterId == u.RegisterId).Avatar;
@@ -5292,18 +4673,12 @@ namespace Services
                         vc.FriendId = u.RegisterId;
                         vc.MyId = RegisterId;
                         var isfriend = ecdata.FirstOrDefault(o => o.MyId == RegisterId && o.FriendId == u.RegisterId);
-                        if (isfriend == null)
-                        {
+                        if (isfriend == null) {
                             vc.IsFriend = false;
-                        }
-                        else
-                        {
-                            if (isfriend.IsFlag == 0)
-                            {
+                        } else {
+                            if (isfriend.IsFlag == 0) {
                                 vc.IsFriend = false;
-                            }
-                            else
-                            {
+                            } else {
                                 vc.IsFriend = true;
                             }
                         }
@@ -5315,9 +4690,7 @@ namespace Services
                 r.code = 0;
                 r.body = vglist;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "获取信息失败" + e;
                 return r;
@@ -5326,28 +4699,23 @@ namespace Services
         #endregion
 
         #region 根据群Id获取群信息
-        public RsModel<ViewGroupList> GetXHGroupList(string GroupId, string RegisterId)
-        {
+        public RsModel<ViewGroupList> GetXHGroupList(string GroupId, string RegisterId) {
             RsModel<ViewGroupList> r = new RsModel<ViewGroupList>();
-            if (string.IsNullOrWhiteSpace(GroupId))
-            {
+            if (string.IsNullOrWhiteSpace(GroupId)) {
                 r.code = 1;
                 r.msg = "GroupId不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 ViewGroupList vl = new ViewGroupList();
                 GroupinfoSqlMapDao gidao = new GroupinfoSqlMapDao();
                 var gidata = gidao.GetGroupinfoList().FirstOrDefault(o => o.HXGroupId == GroupId);
-                if (gidata == null)
-                {
+                if (gidata == null) {
                     r.code = 1;
                     r.msg = "GroupId不存在";
                     return r;
@@ -5372,8 +4740,7 @@ namespace Services
                 EmchatSqlMapDao ecdao = new EmchatSqlMapDao();
                 var ecdata = ecdao.GetEmchatList();
 
-                foreach (var item in gudata)
-                {
+                foreach (var item in gudata) {
                     ViewFriendInfo vf = new ViewFriendInfo();
                     var urdata = urdao.GetuserregisterDetail(item.RegisterId);
 
@@ -5386,18 +4753,12 @@ namespace Services
                     vf.FriendId = item.RegisterId;
                     vf.MyId = RegisterId;
                     var isfriendData = ecdata.FirstOrDefault(o => o.MyId == RegisterId && o.FriendId == item.RegisterId);
-                    if (isfriendData == null)
-                    {
+                    if (isfriendData == null) {
                         vf.IsFriend = false;
-                    }
-                    else
-                    {
-                        if (isfriendData.IsFlag == 0)
-                        {
+                    } else {
+                        if (isfriendData.IsFlag == 0) {
                             vf.IsFriend = false;
-                        }
-                        else
-                        {
+                        } else {
                             vf.IsFriend = true;
                         }
                     }
@@ -5408,9 +4769,7 @@ namespace Services
                 r.code = 0;
                 r.body = vl;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "获取群信息失败";
                 return r;
@@ -5436,10 +4795,8 @@ namespace Services
 
 
 
-        public string jPush(string strPush)
-        {
-            try
-            {
+        public string jPush(string strPush) {
+            try {
                 JPushClient client = new JPushClient(Common.JPUSH_APP_KEY, Common.JPUSH_MASTER_SECRET);
 
                 //  PushPayload payload = PushObject_All_All_Alert(strPush);
@@ -5453,17 +4810,14 @@ namespace Services
 
                 var result = client.SendPush(payload);
                 return "0";
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
 
                 return "1" + e;
             }
         }
 
         #region 推送给全部（广播）
-        public static PushPayload PushObject_All_All_Alert(string strPush)
-        {
+        public static PushPayload PushObject_All_All_Alert(string strPush) {
             PushPayload pushPayload = new PushPayload();
             pushPayload.platform = Platform.all();   //推送平台
             pushPayload.audience = Audience.all();
@@ -5473,8 +4827,7 @@ namespace Services
         #endregion
 
         #region 推送给多个标签（只要在任何一个标签范围内都满足）：在深圳、广州、或者北京
-        public static PushPayload PushObject_tag_Alert(string strPush, string[] tag)
-        {
+        public static PushPayload PushObject_tag_Alert(string strPush, string[] tag) {
             PushPayload pushPayload = new PushPayload();
             pushPayload.platform = Platform.all();   //推送平台
             pushPayload.audience = Audience.s_tag(tag);
@@ -5484,8 +4837,7 @@ namespace Services
         #endregion
 
         #region 推送给多个别名：
-        public static PushPayload PushObject_alias_Alert(string strPush, string[] alias)
-        {
+        public static PushPayload PushObject_alias_Alert(string strPush, string[] alias) {
             PushPayload pushPayload = new PushPayload();
             pushPayload.platform = Platform.all();   //推送平台
             pushPayload.audience = Audience.s_tag(alias);
@@ -5495,8 +4847,7 @@ namespace Services
         #endregion
 
         #region 给指定注册Id
-        public static PushPayload PushObject_registration_Alert(string strPush, string[] registrationId)
-        {
+        public static PushPayload PushObject_registration_Alert(string strPush, string[] registrationId) {
             PushPayload pushPayload = new PushPayload();
             pushPayload.platform = Platform.all();   //推送平台
             pushPayload.audience = Audience.s_registrationId(registrationId);
@@ -5508,8 +4859,7 @@ namespace Services
         #endregion
 
         #region 登陆成功之后进行极光推送
-        public string JpushMsg(string RegisterId, string AliasId, string PushType)
-        {
+        public string JpushMsg(string RegisterId, string AliasId, string PushType) {
 
 
             return "1";
@@ -5517,25 +4867,21 @@ namespace Services
         #endregion
 
         #region 添加群成员
-        public RsModel<string> AddGroupMember(ViewGroupList model)
-        {
+        public RsModel<string> AddGroupMember(ViewGroupList model) {
             RsModel<string> r = new RsModel<string>();
-            if (string.IsNullOrWhiteSpace(model.HXGroupId))
-            {
+            if (string.IsNullOrWhiteSpace(model.HXGroupId)) {
                 r.code = 1;
                 r.msg = "群Id不能为空";
                 return r;
             }
             GroupinfoSqlMapDao gidao = new GroupinfoSqlMapDao();
             var gidata = gidao.GetGroupinfoList().FirstOrDefault(o => o.HXGroupId == model.HXGroupId);
-            if (gidata == null)
-            {
+            if (gidata == null) {
                 r.code = 1;
                 r.msg = "群Id不存在";
                 return r;
             }
-            try
-            {
+            try {
                 Groupinfo gi = new Groupinfo();
                 gi.HXGroupId = gidata.HXGroupId;
                 gi.CreaterId = gidata.CreaterId;
@@ -5554,8 +4900,7 @@ namespace Services
                 GroupuserSqlMapDao gudao = new GroupuserSqlMapDao();
 
                 List<string> grouplist = new List<string>();
-                foreach (var item in model.groupMemberList)
-                {
+                foreach (var item in model.groupMemberList) {
                     Groupuser gu = new Groupuser();
                     gu.GroupUserId = new aers_sys_seedSqlMapDao().GetMaxID("groupuser");
                     gu.GroupId = gi.GroupId;
@@ -5573,9 +4918,7 @@ namespace Services
                 var response = Easemob.Restfull4Net.Client.DefaultSyncRequest.ChatGroupMemberAddBatch(gi.HXGroupId, group);
                 r.code = 0;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "添加群成员失败";
                 return r;
@@ -5584,27 +4927,22 @@ namespace Services
         #endregion
 
         #region 修改群昵称
-        public RsModel<string> UpdateGroupNickName(ViewGroupList model)
-        {
+        public RsModel<string> UpdateGroupNickName(ViewGroupList model) {
             RsModel<string> r = new RsModel<string>();
-            if (string.IsNullOrWhiteSpace(model.HXGroupId))
-            {
+            if (string.IsNullOrWhiteSpace(model.HXGroupId)) {
                 r.code = 1;
                 r.msg = "群Id不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(model.HXNickName))
-            {
+            if (string.IsNullOrWhiteSpace(model.HXNickName)) {
                 r.code = 1;
                 r.msg = "群昵称不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 GroupinfoSqlMapDao gidao = new GroupinfoSqlMapDao();
                 var gidata = gidao.GetGroupinfoList().FirstOrDefault(o => o.HXGroupId == model.HXGroupId);
-                if (gidata == null)
-                {
+                if (gidata == null) {
                     r.code = 1;
                     r.msg = "群信息不存在";
                     return r;
@@ -5623,17 +4961,14 @@ namespace Services
                 gidao.Updategroupinfo(gi);
 
 
-                var response = Easemob.Restfull4Net.Client.DefaultSyncRequest.ChatGroupUpdate(model.HXGroupId, new UpdateChatGroupRequest()
-                {
+                var response = Easemob.Restfull4Net.Client.DefaultSyncRequest.ChatGroupUpdate(model.HXGroupId, new UpdateChatGroupRequest() {
                     groupname = gi.HXGroupId,
                     description = gi.Descg
                 });
 
                 r.code = 0;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "修改失败";
                 return r;
@@ -5643,25 +4978,21 @@ namespace Services
         #endregion
 
         #region 退群
-        public RsModel<string> QuitGroup(ViewGroupList model)
-        {
+        public RsModel<string> QuitGroup(ViewGroupList model) {
             RsModel<string> r = new Services.RsModel<string>();
-            if (string.IsNullOrWhiteSpace(model.RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(model.RegisterId)) {
                 r.code = 1;
                 r.msg = "人员ID不能为空";
                 return r;
             }
-            if (string.IsNullOrWhiteSpace(model.HXGroupId))
-            {
+            if (string.IsNullOrWhiteSpace(model.HXGroupId)) {
                 r.code = 1;
                 r.msg = "群Id不能为空";
                 return r;
             }
             GroupuserSqlMapDao gudao = new GroupuserSqlMapDao();
             var gudata = gudao.GetGroupuserList().FirstOrDefault(o => o.HXGroupId == model.HXGroupId);
-            if (gudata == null)
-            {
+            if (gudata == null) {
                 r.code = 1;
                 r.msg = "群Id不存在";
                 return r;
@@ -5674,17 +5005,14 @@ namespace Services
         #endregion
 
         #region emoji测试
-        public RsModel<string> emojiTest(Qq qq)
-        {
+        public RsModel<string> emojiTest(Qq qq) {
             RsModel<string> r = new Services.RsModel<string>();
-            if (string.IsNullOrWhiteSpace(qq.RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(qq.RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 QqSqlMapDao qqdao = new QqSqlMapDao();
                 //Qq q = new Qq();
                 //q.Id = qq.Id;
@@ -5694,35 +5022,28 @@ namespace Services
                 qqdao.Updateqq(qq);
                 r.code = 0;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = e.ToString();
                 return r;
             }
         }
 
-        public RsModel<Qq> GetEmoji(string RegisterId)
-        {
+        public RsModel<Qq> GetEmoji(string RegisterId) {
             RsModel<Qq> r = new Services.RsModel<Qq>();
-            if (string.IsNullOrWhiteSpace(RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegisterId)) {
                 r.code = 0;
                 r.msg = "RegisterId不能为空";
                 return r;
 
             }
-            try
-            {
+            try {
                 QqSqlMapDao qdao = new QqSqlMapDao();
                 var d = qdao.GetQqList().FirstOrDefault(o => o.Id == RegisterId);
                 r.code = 0;
                 r.body = d;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = e.ToString();
                 return r;
@@ -5732,20 +5053,17 @@ namespace Services
         #endregion
 
         #region 登陆表 推送消息
-        public RsModel<string> LoginStatus(string DeviceRegId, string RegisterId, int loginType)
-        {
+        public RsModel<string> LoginStatus(string DeviceRegId, string RegisterId, int loginType) {
             RsModel<string> r = new RsModel<string>();
             UserLoginStatusSqlMapDao usdao = new UserLoginStatusSqlMapDao();
 
-            if (string.IsNullOrWhiteSpace(RegisterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegisterId)) {
                 r.code = 1;
                 r.msg = "RegisterId不能为空";
                 return r;
             }
             var usdata = usdao.GetUserLoginStatusDetail(RegisterId);
-            if (usdata == null)
-            {
+            if (usdata == null) {
                 UserLoginStatus us = new UserLoginStatus();
                 us.RegisterId = RegisterId;
                 us.LoginType = loginType;
@@ -5755,9 +5073,7 @@ namespace Services
                 Common.PushMsg("欢迎使用格格", DeviceRegId, RegisterId);
                 r.code = 0;
                 return r;
-            }
-            else
-            {
+            } else {
                 UserLoginStatus us = new UserLoginStatus();
                 us.RegisterId = RegisterId;
                 us.LoginType = 1;
@@ -5771,28 +5087,21 @@ namespace Services
         #endregion
 
         #region 院内账号登陆时在不良事件用户体系中进行验证  
-        public RsModel<string> ValidateBlsjUser(string LoginName, string Password)
-        {
+        public RsModel<string> ValidateBlsjUser(string LoginName, string Password) {
             RsModel<string> r = new Services.RsModel<string>();
             aers_tbl_registereduserSqlMapDao rdao = new aers_tbl_registereduserSqlMapDao();  //先在不良事件用户库里验证用户
             var rdata = rdao.FindByLoginName(LoginName);
             string pwd = Common.UserMd5(Password);
-            if (rdata == null)
-            {
+            if (rdata == null) {
                 r.code = 1;
                 r.msg = "用户不存在";
                 return r;
-            }
-            else
-            {
-                if (rdata.Password != pwd)
-                {
+            } else {
+                if (rdata.Password != pwd) {
                     r.code = 1;
                     r.msg = "密码错误";
                     return r;
-                }
-                else
-                {
+                } else {
                     r.code = 0;
                     r.msg = rdata.ReguserId;
                     return r;
@@ -5824,8 +5133,7 @@ namespace Services
         #endregion
 
         #region 学分系统在缓存库进行验证  
-        public RsModel<string> ValidateXFUser(string RegusterId, string Password)
-        {
+        public RsModel<string> ValidateXFUser(string RegusterId, string Password) {
             RsModel<string> r = new Services.RsModel<string>();
             r.code = 0;
             r.msg = "学分系统暂无数据";
@@ -5857,8 +5165,7 @@ namespace Services
         #endregion
 
         #region 考试系统在缓存库进行验证  
-        public RsModel<string> ValidateKSUser(string RegusterId, string Password)
-        {
+        public RsModel<string> ValidateKSUser(string RegusterId, string Password) {
             RsModel<string> r = new Services.RsModel<string>();
             r.code = 0;
             r.msg = "考试系统暂无数据";
@@ -5891,8 +5198,7 @@ namespace Services
         #endregion
 
         #region 考试系统在缓存库进行验证  
-        public RsModel<string> ValidatePBUser(string RegusterId, string Password)
-        {
+        public RsModel<string> ValidatePBUser(string RegusterId, string Password) {
             RsModel<string> r = new Services.RsModel<string>();
             r.code = 0;
             r.msg = "排班系统暂无数据";
@@ -5928,21 +5234,18 @@ namespace Services
         private RsModel<string> ImportUserData(string RegusterId)  //不良事件后台加一个用户，则需要导一条数据
         {
             RsModel<string> r = new RsModel<string>();
-            if (string.IsNullOrWhiteSpace(RegusterId))
-            {
+            if (string.IsNullOrWhiteSpace(RegusterId)) {
                 r.code = 1;
                 r.msg = "RegusterId不能为空";
                 return r;
             }
 
-            try
-            {
+            try {
                 UserService userservice = new UserService();
 
                 aers_tbl_registereduserSqlMapDao aurdao = new aers_tbl_registereduserSqlMapDao();  //注册表里面取数据 登录名，密码，regusterId
                 var urdata = aurdao.Find(RegusterId);// 名字起的很shit
-                if (urdata != null)
-                {
+                if (urdata != null) {
                     var registerdata = userservice.GetUserregiserId();
                     UserauthsSqlMapDao urd = new UserauthsSqlMapDao();    //授权表导入数据   登陆名，密码，以前的注册Id
                     Userauths ur = new Userauths();
@@ -5971,16 +5274,11 @@ namespace Services
                     userbasicinfoSqlMapDao ubdao = new userbasicinfoSqlMapDao();  //基本信息表导入性别
                     UserBasicInfo ub = new UserBasicInfo();
                     ub.RegisterId = registerdata;
-                    if (sdata.Sex == "107")
-                    {
+                    if (sdata.Sex == "107") {
                         ub.Sex = "女";
-                    }
-                    else if (sdata.Sex == "108")
-                    {
+                    } else if (sdata.Sex == "108") {
                         ub.Sex = "男";
-                    }
-                    else
-                    {
+                    } else {
                         ub.Sex = "";
                     }
                     ub.Birthday = Common.StrToDateTime();
@@ -6007,17 +5305,13 @@ namespace Services
                     r.msg = registerdata;
                     r.code = 0;
                     return r;
-                }
-                else
-                {
+                } else {
                     r.msg = "数据错误";
                     r.code = 1;
                     return r;
                 }
-               
-            }
-            catch (Exception e)
-            {
+
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = e.ToString();
                 return r;
@@ -6026,11 +5320,9 @@ namespace Services
         #endregion
 
         #region 测试表情
-        public RsModel<string> testEmoji(Qq model)
-        {
+        public RsModel<string> testEmoji(Qq model) {
             RsModel<string> r = new RsModel<string>();
-            try
-            {
+            try {
                 // var emstr = Common.Encode(model .NickName);
                 var emstr = model.NickName;
                 QqSqlMapDao qqdao = new QqSqlMapDao();
@@ -6041,20 +5333,16 @@ namespace Services
                 r.code = 0;
                 return r;
 
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = e.ToString();
                 return r;
             }
         }
 
-        public RsModel<Qq> GetEmojiTest()
-        {
+        public RsModel<Qq> GetEmojiTest() {
             RsModel<Qq> r = new Services.RsModel<Qq>();
-            try
-            {
+            try {
                 Qq q = new Qq();
                 QqSqlMapDao qqdao = new QqSqlMapDao();
                 var d = qqdao.GetQqList().FirstOrDefault(o => o.Id == "0000000119");
@@ -6064,9 +5352,7 @@ namespace Services
                 r.code = 0;
                 r.body = q;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = e.ToString();
                 return r;
@@ -6078,20 +5364,16 @@ namespace Services
 
         #region 医院管理
         #region 获取所有医院
-        public RsList<Hospital> GetHospitalAll(int pageSize, int pageNumber)
-        {
+        public RsList<Hospital> GetHospitalAll(int pageSize, int pageNumber) {
             RsList<Hospital> r = new RsList<Hospital>();
-            try
-            {
+            try {
                 HospitalSqlMapDao hdao = new HospitalSqlMapDao();
                 var data = hdao.GethospitalList().Where(o => o.IsDelete == 0).ToList();  //isdelete为1时是逻辑删除
                 r.code = 0;
                 r.msg = data.Count.ToString();
                 r.body = data.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "获取医院失败";
                 return r;
@@ -6100,20 +5382,16 @@ namespace Services
         #endregion
 
         #region 获取所有医院名字和Id
-        public RsList<Hospital> GetHospitalNameAll()
-        {
+        public RsList<Hospital> GetHospitalNameAll() {
             RsList<Hospital> r = new Services.RsList<Hospital>();
-            try
-            {
+            try {
                 HospitalSqlMapDao hdao = new HospitalSqlMapDao();
                 var hdata = hdao.GethospitalList().Where(o => o.IsDelete == 0).ToList();  //新建类返回空？？？
                 r.code = 0;
                 r.msg = hdata.Count().ToString();
                 r.body = hdata;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "获取医院失败";
                 return r;
@@ -6123,11 +5401,9 @@ namespace Services
         #endregion
 
         #region 添加医院
-        public RsModel<string> AddHospital(Hospital model)
-        {
+        public RsModel<string> AddHospital(Hospital model) {
             RsModel<string> r = new RsModel<string>();
-            try
-            {
+            try {
                 HospitalSqlMapDao hdao = new HospitalSqlMapDao();
                 Hospital h = new Hospital();
                 h.HospitalId = new aers_sys_seedSqlMapDao().GetMaxID("hospital");  //注册表
@@ -6155,9 +5431,7 @@ namespace Services
                 hdao.Addhospital(h);
                 r.code = 0;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "添加医院失败";
                 return r;
@@ -6166,11 +5440,9 @@ namespace Services
         #endregion
 
         #region 医院修改
-        public RsModel<string> UpdateHospital(Hospital model)
-        {
+        public RsModel<string> UpdateHospital(Hospital model) {
             RsModel<string> r = new RsModel<string>();
-            try
-            {
+            try {
                 HospitalSqlMapDao hdao = new HospitalSqlMapDao();
                 Hospital h = new Hospital();
                 h.HospitalId = model.HospitalId;
@@ -6199,9 +5471,7 @@ namespace Services
                 hdao.Updatehospital(h);
                 r.code = 0;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "医院修改失败";
                 return r;
@@ -6210,33 +5480,25 @@ namespace Services
         #endregion
 
         #region 医院逻辑删除
-        public RsModel<string> DeleteHospital(string HospitalId)
-        {
+        public RsModel<string> DeleteHospital(string HospitalId) {
             RsModel<string> r = new RsModel<string>();
-            if (string.IsNullOrWhiteSpace(HospitalId))
-            {
+            if (string.IsNullOrWhiteSpace(HospitalId)) {
                 r.code = 1;
                 r.msg = "医院ID不能为空";
                 return r;
             }
             HospitalSqlMapDao hdao = new HospitalSqlMapDao();
             var hdata = hdao.GethospitalDetail(HospitalId);
-            if (hdata == null)
-            {
+            if (hdata == null) {
                 r.code = 1;
                 r.msg = "医院ID不存在";
                 return r;
-            }
-            else
-            {
-                try
-                {
+            } else {
+                try {
                     hdao.UpdateDelhospital(HospitalId);  //逻辑删除
                     r.code = 0;
                     return r;
-                }
-                catch (Exception)
-                {
+                } catch (Exception) {
                     r.code = 1;
                     r.msg = "删除失败";
                     return r;
@@ -6249,28 +5511,23 @@ namespace Services
 
         #region 科室管理
         #region 获取所有科室
-        public RsList<Department> GetDepartmentAll(int pageSize, int pageNumber)
-        {
+        public RsList<Department> GetDepartmentAll(int pageSize, int pageNumber) {
             RsList<Department> r = new RsList<Department>();
-            try
-            {
+            try {
                 DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
                 var data = ddao.GetdepartmentList().ToList();
 
                 HospitalSqlMapDao hdao = new HospitalSqlMapDao();
                 var hdata = hdao.GethospitalList();
                 Department d = new Department();
-                foreach (var item in data)
-                {
+                foreach (var item in data) {
                     item.HospitalName = hdata.FirstOrDefault(o => o.HospitalId == item.HospitalId).Name;
                 }
                 r.code = 0;
                 r.msg = data.Count.ToString();
                 r.body = data.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "获取科室失败";
                 return r;
@@ -6279,31 +5536,25 @@ namespace Services
         #endregion
 
         #region 根据医院Id查科室
-        public RsList<Department> GetDepartmentByHospitalId(string HospitalId)
-        {
+        public RsList<Department> GetDepartmentByHospitalId(string HospitalId) {
 
             RsList<Department> r = new RsList<Department>();
-            try
-            {
+            try {
                 DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
                 var ddatalist = ddao.GetdepartmentList().ToList();
-                if (!string.IsNullOrWhiteSpace(HospitalId))
-                {
+                if (!string.IsNullOrWhiteSpace(HospitalId)) {
                     ddatalist = ddatalist.Where(o => o.HospitalId == HospitalId).ToList();
                 }
                 HospitalSqlMapDao hdao = new HospitalSqlMapDao();
                 var hdata = hdao.GethospitalList();
-                foreach (var item in ddatalist)
-                {
+                foreach (var item in ddatalist) {
                     item.HospitalName = hdata.FirstOrDefault(o => o.HospitalId == item.HospitalId).Name;
                 }
                 r.code = 0;
                 r.msg = ddatalist.Count.ToString();
                 r.body = ddatalist;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "获取科室失败阿百川";
                 return r;
@@ -6312,11 +5563,9 @@ namespace Services
         #endregion
 
         #region 添加科室
-        public RsModel<string> AddDepartment(Department model)
-        {
+        public RsModel<string> AddDepartment(Department model) {
             RsModel<string> r = new RsModel<string>();
-            try
-            {
+            try {
                 DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
                 Department d = new Department();
                 d.DepartmentId = new aers_sys_seedSqlMapDao().GetMaxID("department");
@@ -6334,9 +5583,7 @@ namespace Services
                 ddao.Updatedepartment(d);
                 r.code = 0;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "添加科室失败";
                 return r;
@@ -6346,24 +5593,19 @@ namespace Services
         #endregion
 
         #region 科室修改
-        public RsModel<string> UpdateDepartment(Department model)
-        {
+        public RsModel<string> UpdateDepartment(Department model) {
             RsModel<string> r = new RsModel<string>();
-            if (string.IsNullOrWhiteSpace(model.DepartmentId))
-            {
+            if (string.IsNullOrWhiteSpace(model.DepartmentId)) {
                 r.code = 1;
                 r.msg = "科室Id不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
                 ddao.Updatedepartment(model);
                 r.code = 0;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "科室修改失败";
                 return r;
@@ -6374,25 +5616,20 @@ namespace Services
         #endregion
 
         #region 删除科室
-        public RsModel<string> DeleteDepartment(string DepartmentId)
-        {
+        public RsModel<string> DeleteDepartment(string DepartmentId) {
             RsModel<string> r = new RsModel<string>();
-            if (string.IsNullOrWhiteSpace(DepartmentId))
-            {
+            if (string.IsNullOrWhiteSpace(DepartmentId)) {
                 r.code = 1;
                 r.msg = "科室Id不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
                 ddao.Deletedepartment(DepartmentId);
                 r.code = 0;
                 return r;
 
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "删除失败";
                 return r;
@@ -6406,11 +5643,9 @@ namespace Services
         #region 护士管理
 
         #region 添加护士
-        public RsModel<string> AddNurse(NurseBaseInfo model)
-        {
+        public RsModel<string> AddNurse(NurseBaseInfo model) {
             RsModel<string> r = new RsModel<string>();
-            try
-            {
+            try {
                 //userregisterSqlMapDao urdao = new userregisterSqlMapDao();  //注册表
                 //userregister ur = new userregister();
                 //ur.RegisterId = new aers_sys_seedSqlMapDao().GetMaxID("userregister");
@@ -6436,9 +5671,7 @@ namespace Services
 
                 r.code = 0;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "添加失败";
                 return r;
@@ -6459,14 +5692,12 @@ namespace Services
         #region 管理员管理
 
         #region 获取管理员
-       
-        public RsList<Administrator> GetAdministrator(int pageSize, int pageNumber)
-        {
+
+        public RsList<Administrator> GetAdministrator(int pageSize, int pageNumber) {
             RsList<Administrator> r = new Services.RsList<Administrator>();
-            try
-            {
+            try {
                 AdministratorSqlMapDao adao = new AdministratorSqlMapDao();
-                var  adatalist = adao.GetAdministratorList().ToList();
+                var adatalist = adao.GetAdministratorList().ToList();
                 List<Administrator> adlist = new List<Administrator>();
 
                 AdmdepartmentSqlMapDao addao = new AdmdepartmentSqlMapDao();
@@ -6480,14 +5711,12 @@ namespace Services
 
                 HospitalSqlMapDao hdao = new HospitalSqlMapDao();
                 var hdata = hdao.GethospitalList();
-                foreach (var item in adatalist)
-                {
-                    item.HospitalName = hdata.FirstOrDefault(o=>o.HospitalId ==item .HospitalId).Name;
+                foreach (var item in adatalist) {
+                    item.HospitalName = hdata.FirstOrDefault(o => o.HospitalId == item.HospitalId).Name;
                     item.Admdepartmentlist = addata.Where(o => o.AdmId == item.AdmId).ToList();
                     item.Admpermissionlist = apdata.Where(o => o.AdmId == item.AdmId).ToList();
-                    foreach (var d in item.Admdepartmentlist)
-                    {
-                        d.DepartmentName = ddata.FirstOrDefault(o=>o.DepartmentId ==d.DepartmentId).Name;
+                    foreach (var d in item.Admdepartmentlist) {
+                        d.DepartmentName = ddata.FirstOrDefault(o => o.DepartmentId == d.DepartmentId).Name;
                     }
                     //foreach (var p in item.Admpermissionlist)
                     //{
@@ -6499,9 +5728,7 @@ namespace Services
                 r.msg = adlist.Count.ToString();
                 r.body = adlist.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
                 return r;
-            }
-            catch (Exception )
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "获取管理员失败";
                 return r;
@@ -6510,11 +5737,9 @@ namespace Services
         #endregion
 
         #region 添加管理员
-        public RsModel<string> AddAdministrator(Administrator model)
-        {
+        public RsModel<string> AddAdministrator(Administrator model) {
             RsModel<string> r = new RsModel<string>();
-            try
-            {
+            try {
                 AdministratorSqlMapDao adao = new AdministratorSqlMapDao();
                 Administrator a = new Administrator();
                 a.AdmId = new aers_sys_seedSqlMapDao().GetMaxID("administrator");
@@ -6530,8 +5755,7 @@ namespace Services
 
                 AdmpermissionSqlMapDao apdao = new AdmpermissionSqlMapDao();
                 Admpermission ap;
-                foreach (var item in model.Admpermissionlist)
-                {
+                foreach (var item in model.Admpermissionlist) {
                     ap = new Admpermission();
                     ap.Id = new aers_sys_seedSqlMapDao().GetMaxID("admpermission");
                     ap.AdmId = a.AdmId;
@@ -6541,8 +5765,7 @@ namespace Services
 
                 AdmdepartmentSqlMapDao addao = new AdmdepartmentSqlMapDao();
                 Admdepartment ad;
-                foreach (var item in model.Admdepartmentlist)
-                {
+                foreach (var item in model.Admdepartmentlist) {
                     ad = new Admdepartment();
                     ad.Id = new aers_sys_seedSqlMapDao().GetMaxID("admdepartment");
                     ad.AdmId = a.AdmId;
@@ -6551,22 +5774,18 @@ namespace Services
                 }
                 r.code = 0;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
-                r.msg = "添加管理员失败" +e;
+                r.msg = "添加管理员失败" + e;
                 return r;
             }
         }
         #endregion
 
         #region 修改管理员
-        public RsModel<string> UpdateAdministrator(Administrator model)
-        {
+        public RsModel<string> UpdateAdministrator(Administrator model) {
             RsModel<string> r = new RsModel<string>();
-            try
-            {
+            try {
                 AdministratorSqlMapDao adao = new AdministratorSqlMapDao();
                 Administrator a = new Administrator();
                 a.AdmId = model.AdmId;
@@ -6582,8 +5801,7 @@ namespace Services
 
                 AdmdepartmentSqlMapDao addao = new AdmdepartmentSqlMapDao();
 
-                foreach (var item in model.Admdepartmentlist)
-                {
+                foreach (var item in model.Admdepartmentlist) {
                     Admdepartment ad = new Admdepartment();
                     ad.AdmId = item.AdmId;
                     ad.DepartmentId = item.DepartmentId;
@@ -6592,17 +5810,14 @@ namespace Services
                 }
 
                 AdmpermissionSqlMapDao apdao = new AdmpermissionSqlMapDao();
-                foreach (var item in model.Admpermissionlist)
-                {
+                foreach (var item in model.Admpermissionlist) {
                     Admpermission ap = new Admpermission();
                     ap.AdmId = item.AdmId;
                     ap.Id = item.Id;
                 }
                 return r;
 
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "修改失败";
                 return r;
@@ -6612,24 +5827,19 @@ namespace Services
         #endregion
 
         #region 管理员逻辑删除
-        public RsModel<string> DeleteAdministrator(string AdmId)
-        {
+        public RsModel<string> DeleteAdministrator(string AdmId) {
             RsModel<string> r = new RsModel<string>();
-            if (string.IsNullOrWhiteSpace(AdmId))
-            {
+            if (string.IsNullOrWhiteSpace(AdmId)) {
                 r.code = 1;
                 r.msg = "管理员Id不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 AdministratorSqlMapDao adao = new AdministratorSqlMapDao();
                 adao.UpdateDelAdministrator(AdmId);
                 r.code = 0;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "删除失败";
                 return r;
@@ -6643,11 +5853,9 @@ namespace Services
         #region banner管理
 
         #region 添加banner
-        public RsModel<string> AddBanner(Banner model)
-        {
+        public RsModel<string> AddBanner(Banner model) {
             RsModel<string> r = new RsModel<string>();
-            try
-            {
+            try {
                 BannerSqlMapDao bdao = new BannerSqlMapDao();
                 Banner b = new Banner();
                 b.BannerId = new aers_sys_seedSqlMapDao().GetMaxID("banner");
@@ -6666,9 +5874,7 @@ namespace Services
                 bdao.Addbanner(b);
                 r.code = 0;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "添加失败";
                 return r;
@@ -6678,18 +5884,14 @@ namespace Services
         #endregion
 
         #region 修改banner
-        public RsModel<string> UpdateBanner(Banner model)
-        {
+        public RsModel<string> UpdateBanner(Banner model) {
             RsModel<string> r = new RsModel<string>();
-            try
-            {
+            try {
                 BannerSqlMapDao bdao = new BannerSqlMapDao();
                 bdao.Updatebanner(model);
                 r.code = 0;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "修改失败" + e;
                 return r;
@@ -6699,24 +5901,19 @@ namespace Services
         #endregion
 
         #region banner逻辑删除
-        public RsModel<string> DeleteBanner(string BannerId)
-        {
+        public RsModel<string> DeleteBanner(string BannerId) {
             RsModel<string> r = new RsModel<string>();
-            if (string.IsNullOrWhiteSpace(BannerId))
-            {
+            if (string.IsNullOrWhiteSpace(BannerId)) {
                 r.code = 1;
                 r.msg = "bannerId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 BannerSqlMapDao bdao = new BannerSqlMapDao();
                 bdao.UpdateDelbanner(BannerId);
                 r.code = 0;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "删除失败";
                 return r;
@@ -6731,11 +5928,9 @@ namespace Services
 
         #region 获取公告
         //后台传每页多少条，页数
-        public RsList<Notice> GetNoticeAll(int pageSize, int pageNumber)
-        {
+        public RsList<Notice> GetNoticeAll(int pageSize, int pageNumber) {
             RsList<Notice> r = new Services.RsList<Notice>();
-            try
-            {
+            try {
                 NoticeSqlMapDao ndao = new NoticeSqlMapDao();
                 var datalist = ndao.GetNoticeList().OrderByDescending(o => o.NoticeTime).Where(o => o.IsDelete == 0).ToList();
 
@@ -6744,14 +5939,11 @@ namespace Services
 
                 DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
                 var ddata = ddao.GetdepartmentList();
-                foreach (var item in datalist)
-                {
-                    if (hdata.Select(o => o.HospitalId).Contains(item.HospitalId))
-                    {
+                foreach (var item in datalist) {
+                    if (hdata.Select(o => o.HospitalId).Contains(item.HospitalId)) {
                         item.HospitalName = hdata.FirstOrDefault(o => o.HospitalId == item.HospitalId).Name;
                     }
-                    if (ddata.Select(o => o.DepartmentId).Contains(item.DepartmentId))
-                    {
+                    if (ddata.Select(o => o.DepartmentId).Contains(item.DepartmentId)) {
                         item.DepartmentName = ddata.FirstOrDefault(o => o.DepartmentId == item.DepartmentId).Name;
                     }
                 }
@@ -6760,9 +5952,7 @@ namespace Services
                 r.msg = datalist.Count.ToString();
                 r.body = datalist.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = e.ToString();
                 r.body = null;
@@ -6774,11 +5964,9 @@ namespace Services
         #region 添加公告
 
 
-        public RsModel<string> AddNotice(Notice model)
-        {
+        public RsModel<string> AddNotice(Notice model) {
             RsModel<string> r = new RsModel<string>();
-            try
-            {
+            try {
                 NoticeSqlMapDao ndao = new NoticeSqlMapDao();
                 Notice n = new Notice();
                 n.NoticeId = new aers_sys_seedSqlMapDao().GetMaxID("notice");
@@ -6798,30 +5986,24 @@ namespace Services
                 ndao.Addnotice(n);
                 r.code = 0;
                 return r;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 r.code = 1;
-                r.msg = "添加失败" +e;
+                r.msg = "添加失败" + e;
                 return r;
             }
         }
         #endregion
 
         #region 修改公告
-        public RsModel<string> UpdateNotice(Notice model)
-        {
+        public RsModel<string> UpdateNotice(Notice model) {
             RsModel<string> r = new RsModel<string>();
-            try
-            {
+            try {
                 Notes n = new Notes();
                 NoticeSqlMapDao ndao = new NoticeSqlMapDao();
                 ndao.Updatenotice(model);
                 r.code = 0;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "更改失败";
                 return r;
@@ -6831,32 +6013,47 @@ namespace Services
         #endregion
 
         #region 公告逻辑删除
-        public RsModel<string> UpdateDelNotice(string NoticeId)
-        {
+        public RsModel<string> UpdateDelNotice(string NoticeId) {
             RsModel<string> r = new RsModel<string>();
-            if (string.IsNullOrWhiteSpace(NoticeId))
-            {
+            if (string.IsNullOrWhiteSpace(NoticeId)) {
                 r.code = 1;
                 r.msg = "NoticeId不能为空";
                 return r;
             }
-            try
-            {
+            try {
                 NoticeSqlMapDao ndao = new NoticeSqlMapDao();
                 ndao.UpdateDelNotice(NoticeId);
                 r.code = 0;
                 return r;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 r.code = 1;
                 r.msg = "删除失败";
                 return r;
             }
         }
+
         #endregion
 
         #endregion
+
+        /// <summary>
+        /// 获取权限列表
+        /// </summary>
+        /// <returns></returns>
+        public RsList<Permission> GetPermissionList() {
+            RsList<Permission> result = new RsList<Permission>();
+            try {
+                PermissionDao dao = new PermissionDao();
+                result.body = dao.GetPermissionList().ToList();
+                result.code = 0;
+            } catch (Exception e) {
+                Console.WriteLine(e.ToString());
+                result.code = 1;
+                result.msg = "获取权限列表失败" + e.ToString();
+                result.body = null;
+            }
+            return result;
+        }
 
         #endregion
     }

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Permission" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Permission" type="Aersysm.Domain.Permission, Aersysm.Domain" />
+  </alias>
+  <resultMaps>
+    <resultMap id="SelectResult" class="Permission">
+      <result property="permissionId" column="PermissionId" />
+      <result property="name" column="Name" />
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="SelectPermission" parameterClass="int" resultMap="SelectResult">
+      Select
+      PermissionId,
+      Name
+      From permission
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          PermissionId=#permissionId#
+        </isParameterPresent>
+      </dynamic>
+    </select>
+
+    <select id="BaseSelectPermission"  resultMap="SelectResult">
+      Select
+      PermissionId,
+      Name
+      From permission
+    </select>   
+
+
+  </statements>
+</sqlMap>

@@ -6,11 +6,9 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 
 
-namespace Services
-{
+namespace Services {
     #region json拼装
-    public class RsList<T> where T : class
-    {
+    public class RsList<T> where T : class {
         [DataMemberAttribute(Order = 0)]
         public int code { get; set; }
 
@@ -21,14 +19,12 @@ namespace Services
         public IList<T> body { get; set; }
     }
 
-    public class Rsslist<T> where T : class
-    {
+    public class Rsslist<T> where T : class {
         [DataMemberAttribute(Order = 0)]
         public string Phone { get; set; }
     }
 
-    public class RsModel<T> where T : class
-    {
+    public class RsModel<T> where T : class {
         [DataMemberAttribute(Order = 0)]
         public int code { get; set; }
 
@@ -42,8 +38,7 @@ namespace Services
 
     // 注意: 使用“重构”菜单上的“重命名”命令，可以同时更改代码和配置文件中的接口名“IUserService”。
     [ServiceContract]
-    public interface IUserService
-    {
+    public interface IUserService {
 
         //获取全部国家编码
         [OperationContract]
@@ -57,8 +52,8 @@ namespace Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "GetUser", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
-        string  GetUser(aers_tbl_registereduser model);
-        
+        string GetUser(aers_tbl_registereduser model);
+
 
         //根据手机号获取验证码
         [OperationContract]
@@ -267,7 +262,7 @@ namespace Services
         [WebInvoke(Method = "POST", UriTemplate = "SetQQBing", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         string SetQQBind(Qq model);
 
-       
+
 
         //qq绑定手机号
         [OperationContract]
@@ -331,7 +326,7 @@ namespace Services
 
         [OperationContract]
         [WebGet(UriTemplate = "AddEMFriend?MyId={MyId}&FriendId={FriendId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
-        RsModel<string > AddEMFriend(string MyId, string FriendId);
+        RsModel<string> AddEMFriend(string MyId, string FriendId);
 
         [OperationContract]
         [WebGet(UriTemplate = "SendFriendMsg?MyId={MyId}&FriendId={FriendId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
@@ -361,7 +356,7 @@ namespace Services
 
         [OperationContract]
         [WebGet(UriTemplate = "GetXHGroupList?GroupId={GroupId}&RegisterId={RegisterId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
-        RsModel<ViewGroupList> GetXHGroupList(string GroupId,string RegisterId);
+        RsModel<ViewGroupList> GetXHGroupList(string GroupId, string RegisterId);
 
         //修改群昵称
         [OperationContract]
@@ -393,7 +388,7 @@ namespace Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "emojiTest", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
-        RsModel<string> emojiTest(Qq  model);
+        RsModel<string> emojiTest(Qq model);
 
         [OperationContract]
         [WebGet(UriTemplate = "GetEmoji?RegisterId={RegisterId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
@@ -420,13 +415,13 @@ namespace Services
         [OperationContract]
         [WebGet(UriTemplate = "GetHospitalNameAll", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
         RsList<Hospital> GetHospitalNameAll();
-        
+
 
         //添加医院
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "AddHospital", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         RsModel<string> AddHospital(Hospital model);
-       // [WebInvoke(Method = "POST", UriTemplate = "UpdateUser", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+        // [WebInvoke(Method = "POST", UriTemplate = "UpdateUser", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         //修改医院
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "UpdateHospital", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
@@ -445,7 +440,7 @@ namespace Services
         //添加科室
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "AddDepartment", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
-        RsModel<string> AddDepartment(Department  model);
+        RsModel<string> AddDepartment(Department model);
 
         //修改科室
         [OperationContract]
@@ -517,5 +512,11 @@ namespace Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "UpdateFriend", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         RsModel<string> UpdateFriend(Emchat model);
+
+        // 后台获取所有权限列表
+        [OperationContract]
+        [WebGet(UriTemplate = "GetPermissionList", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsList<Permission> GetPermissionList();
+
     }
 }

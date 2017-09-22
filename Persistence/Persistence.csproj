@@ -85,6 +85,7 @@
     <Compile Include="MessageSqlMapDao.cs" />
     <Compile Include="NoticeSqlMapDao.cs" />
     <Compile Include="NursingunitidSqlMapDao.cs" />
+    <Compile Include="PermissionDao.cs" />
     <Compile Include="ReleaseversionSqlMapDao.cs" />
     <Compile Include="SMSMessageSqlMapDao.cs" />
     <Compile Include="SMSSqlMapDao.cs" />
@@ -270,6 +271,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Maps\Token.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\permission.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
