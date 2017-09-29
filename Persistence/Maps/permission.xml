@@ -7,6 +7,7 @@
     <resultMap id="SelectResult" class="Permission">
       <result property="permissionId" column="PermissionId" />
       <result property="name" column="Name" />
+      <result property="flag" column="Flag" />
     </resultMap>
   </resultMaps>
 
@@ -14,7 +15,8 @@
     <select id="SelectPermission" parameterClass="int" resultMap="SelectResult">
       Select
       PermissionId,
-      Name
+      Name,
+      Flag
       From permission
       <dynamic prepend="WHERE">
         <isParameterPresent>
@@ -26,9 +28,11 @@
     <select id="BaseSelectPermission"  resultMap="SelectResult">
       Select
       PermissionId,
-      Name
+      Name,
+      Flag
       From permission
-    </select>   
+    </select>  
+    
 
 
   </statements>

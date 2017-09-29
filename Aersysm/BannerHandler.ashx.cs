@@ -11,7 +11,7 @@ namespace Services {
     /// <summary>
     /// AvatarImgHandler 的摘要说明
     /// </summary>
-    public class AvatarImgHandler : IHttpHandler {
+    public class BannerHandler : IHttpHandler {
 
         //  RsModel<SaveFile> r = new Services.RsModel<SaveFile>();
 
@@ -26,7 +26,7 @@ namespace Services {
                 }
 
                 HttpPostedFile f1 = context.Request.Files[0];
-                string pathLocal = ConfigurationManager.AppSettings["UploadAvatar"].ToString();
+                string pathLocal = ConfigurationManager.AppSettings["UploadBanner"].ToString();
                 string rootPath = HttpRuntime.BinDirectory.ToString();
                 string path = rootPath.Remove(rootPath.Length - 4) + pathLocal;
                 if (!Directory.Exists(path)) {

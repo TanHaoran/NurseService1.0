@@ -25,6 +25,19 @@
       </dynamic>
     </select>
 
+    <select id="SelectAdmdepartmentByAdminId" parameterClass="int" resultMap="SelectResult">
+      Select
+      id,
+      admid,
+      departmentid
+      From Admdepartment
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          admid=#AdmId#
+        </isParameterPresent>
+      </dynamic>
+    </select>
+
     <select id="BaseSelectAdmdepartment" parameterClass="int" resultMap="SelectResult">
       Select
       id,
@@ -69,6 +82,18 @@
         </isParameterPresent>
       </dynamic>
     </delete>
+
+    <delete id="DeleteAdmdepartmentByAdminId" parameterClass="int">
+      Delete From Admdepartment
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          admid=#AdmId#
+        </isParameterPresent>
+      </dynamic>
+    </delete>
+
+    
+
   </statements>
 </sqlMap>
 

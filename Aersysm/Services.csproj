@@ -120,6 +120,12 @@
     <Compile Include="APKHandler.ashx.cs">
       <DependentUpon>APKHandler.ashx</DependentUpon>
     </Compile>
+    <Compile Include="BannerHandler.ashx.cs">
+      <DependentUpon>BannerHandler.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="NoticeHandler.ashx.cs">
+      <DependentUpon>NoticeHandler.ashx</DependentUpon>
+    </Compile>
     <Compile Include="AvatarImgHandler.ashx.cs">
       <DependentUpon>AvatarImgHandler.ashx</DependentUpon>
     </Compile>
@@ -208,6 +214,8 @@
     <Content Include="AvatarImgHandler.ashx" />
     <Content Include="Hx.config" />
     <Content Include="APKHandler.ashx" />
+    <Content Include="NoticeHandler.ashx" />
+    <Content Include="BannerHandler.ashx" />
     <None Include="Properties\PublishProfiles\AersPush.pubxml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

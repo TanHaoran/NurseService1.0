@@ -14,7 +14,7 @@
       <result property="HospitalId" column="hospitalid" />
       <result property="Role" column="role" />
       <result property="RegisterId" column="registerid" />
-      <result property="IsDelete" column="isdelete" />
+      <result property="Status" column="status" />
     </resultMap>
   </resultMaps>
 
@@ -30,11 +30,11 @@
       hospitalid,
       role,
       registerid,
-      isdelete
+      status
       From Administrator
       <dynamic prepend="WHERE">
         <isParameterPresent>
-          admin=#AdmId#
+          admid=#AdmId#
         </isParameterPresent>
       </dynamic>
     </select>
@@ -50,8 +50,28 @@
       hospitalid,
       role,
       registerid,
-      isdelete
+      status
       From Administrator
+    </select>
+
+    <select id="SelectAdministratorByUserId" parameterClass="int" resultMap="SelectResult">
+      Select
+      admid,
+      userid,
+      password,
+      name,
+      operatortime,
+      operatorid,
+      hospitalid,
+      role,
+      registerid,
+      status
+      From Administrator
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          userid=#UserId#
+        </isParameterPresent>
+      </dynamic>
     </select>
 
     <select id="ChildSelectAdministrator" parameterClass="int" resultMap="SelectResult" extends="BaseSelectAdministrator">
@@ -69,7 +89,7 @@
       hospitalid,
       role,
       registerid,
-      isdelete
+      status
       )Values(
       #AdmId#,
       #UserId#,
@@ -80,7 +100,7 @@
       #HospitalId#,
       #Role#,
       #RegisterId#,
-      #IsDelete#
+      #Status#
       )
     </insert>
 
@@ -95,7 +115,7 @@
       hospitalid=#HospitalId#,
       role=#Role#,
       registerid=#RegisterId#,
-      isdelete=#IsDelete#
+      status=#Status#
       <dynamic prepend="WHERE">
         <isParameterPresent>
           admid=#AdmId#

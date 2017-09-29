@@ -473,8 +473,8 @@ namespace Services {
 
         //获取管理员
         [OperationContract]
-        [WebGet(UriTemplate = "GetAdministrator?pageSize={pageSize}&pageNumber={pageNumber}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
-        RsList<Administrator> GetAdministrator(int pageSize, int pageNumber);
+        [WebGet(UriTemplate = "GetAdministrator?adminId={adminId}&pageSize={pageSize}&pageNumber={pageNumber}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsList<Administrator> GetAdministrator(string adminId,int pageSize, int pageNumber);
 
 
 
@@ -513,10 +513,96 @@ namespace Services {
         [WebInvoke(Method = "POST", UriTemplate = "UpdateFriend", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         RsModel<string> UpdateFriend(Emchat model);
 
-        // 后台获取所有权限列表
+
+        /***********************************************************************************************************/
+        /***********************************************************************************************************/
+        /************************************************** 交接后 **************************************************/
+        /***********************************************************************************************************/
+        /***********************************************************************************************************/
+
+        /// <summary>
+        /// 获取所有权限
+        /// </summary>
+        /// <returns></returns>
         [OperationContract]
         [WebGet(UriTemplate = "GetPermissionList", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
         RsList<Permission> GetPermissionList();
+
+        /// <summary>
+        /// 管理后台登录
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ManagementLogin", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+        RsModel<Administrator> ManagementLogin(Administrator model);
+
+        /// <summary>
+        /// 获取管理员权限
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        [WebGet(UriTemplate = "GetAdminPermission?AdminId={adminId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsList<Admpermission> GetAdminPermission(string adminId);
+
+        /// <summary>
+        /// 获取管理员管理科室
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        [WebGet(UriTemplate = "GetAdminDepartment?AdminId={adminId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsList<Admdepartment> GetAdminDepartment(string adminId);
+
+        /// <summary>
+        /// 管理员重置密码
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ResetAdminPassword", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+        RsModel<Administrator> ResetAdminPassword(Administrator model);
+
+        /// <summary>
+        /// 获取所有权限
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        [WebGet(UriTemplate = "GetAllNurseInfo?adminId={adminId}&hospitalId={hospitalId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsList<Nurse> GetAllNurseInfo(string adminId, string hospitalId);
+
+        /// <summary>
+        /// 添加一个护士
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "AddNurse", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+        RsModel<string> AddNurse(Nurse model);
+
+        /// <summary>
+        /// 修改护士信息
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        ///   [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "UpdateNurse", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+        RsModel<string> UpdateNurse(Nurse model);
+
+        /// <summary>
+        /// 删除一个护士
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        ///   [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "DeleteNurse", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+        RsModel<string> DeleteNurse(Nurse model);
+
+        
+
+
+
+
+
 
     }
 }

@@ -18,5 +18,12 @@ namespace Aersysm.Persistence {
             return ExecuteQueryForList<Permission>("BaseSelectPermission", null);
         }
 
+        /// <summary>
+        /// 得到权限列表
+        /// </summary>
+        public Permission GetPermissionById(string permissionId) {
+            return ExecuteQueryForObject<Permission>("SelectPermission", permissionId);
+        }
+
     }
 }

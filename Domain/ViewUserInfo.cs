@@ -66,6 +66,6 @@ namespace Aersysm.Domain
 
         //9.7所在科室人数
         [DataMember]
-        public int DepartmentUserCount { get; set; }
+        public int DepartmentUserCount { get; set; }        
     }
 }

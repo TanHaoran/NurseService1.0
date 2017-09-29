@@ -39,9 +39,6 @@ namespace Aersysm.Domain
         public string  RegisterId { get; set; }
 
         [DataMember]
-        public int IsDelete { get; set; }
-
-        [DataMember]
         public List<Admdepartment> Admdepartmentlist { get; set; }
 
         [DataMember]
@@ -50,5 +47,8 @@ namespace Aersysm.Domain
 
         [DataMember]
         public string  HospitalName { get; set; }
+
+        [DataMember] 
+        public int Status { get; set; }
     }
 }

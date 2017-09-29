@@ -20,8 +20,12 @@ namespace Aersysm.Persistence
         /// 得到列表
         /// </summary>
         public IList<Admpermission> GetAdmpermissionList()
-        {
+        {            
             return ExecuteQueryForList<Admpermission>("SelectAdmpermission", null);
+        }
+
+        public IList<Admpermission> GetPermissionByAdminId(string adminId) {
+            return ExecuteQueryForList<Admpermission>("SelectPermissionByAdmId", adminId);
         }
 
         /// <summary>
@@ -61,6 +65,14 @@ namespace Aersysm.Persistence
         public void DeleteAdmpermission(System.String Id)
         {
             ExecuteDelete("DeleteAdmpermission", Id);
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="id"></param>
+        public void DeleteAdmpermissionByAdminId(System.String adminId) {
+            ExecuteDelete("DeleteAdmpermissionByAdmId", adminId);
         }
     }
 }

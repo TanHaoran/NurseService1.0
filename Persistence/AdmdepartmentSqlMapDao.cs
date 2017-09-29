@@ -20,8 +20,12 @@ namespace Aersysm.Persistence
         /// 得到列表
         /// </summary>
         public IList<Admdepartment> GetAdmdepartmentList()
-        {
+        {            
             return ExecuteQueryForList<Admdepartment>("SelectAdmdepartment", null);
+        }
+
+        public IList<Admdepartment> GetAdmDepartmentListByAdminId(string adminId) {
+            return ExecuteQueryForList<Admdepartment>("SelectAdmdepartmentByAdminId", adminId);
         }
 
         /// <summary>
@@ -61,6 +65,14 @@ namespace Aersysm.Persistence
         public void DeleteAdmdepartment(System.String Id)
         {
             ExecuteDelete("DeleteAdmdepartment", Id);
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="id"></param>
+        public void DeleteAdmdepartmentByAdminId(System.String adminId) {
+            ExecuteDelete("DeleteAdmdepartmentByAdminId", adminId);
         }
     }
 }

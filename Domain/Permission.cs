@@ -15,5 +15,8 @@ namespace Aersysm.Domain
         [DataMember]
         public String name { get; set; }
 
+        [DataMember]
+        public int flag { get; set; }
+
     }
 }
