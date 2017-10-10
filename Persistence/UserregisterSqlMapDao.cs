@@ -86,11 +86,6 @@ namespace Aersysm.Persistence
 			ExecuteDelete("Deleteuserregister",RegisterId);
 		}
 
-
-
-
-
-
         public int   DeleteAll()
         {
                                         //sms           注册                   执业证                          资格证                              基本信息                   组织关系                    授权                  qq

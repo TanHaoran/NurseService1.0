@@ -1237,18 +1237,10 @@ namespace Services {
         public string UpdateAuditStatus(Certificateverify model) {
             try {
                 CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
-                Certificateverify c = new Certificateverify();
                 var data = cdao.GetcertificateverifyList().FirstOrDefault(o => o.CertificateId == model.CertificateId && o.RegisterId == model.RegisterId);
-                c.VerifyId = data.VerifyId;
-                c.VerifyStatus = model.VerifyStatus;
-                c.VerifyView = model.VerifyView;
-                c.Type = data.Type;
-                c.SubmitTime = data.SubmitTime;
-                c.ServiceId = model.ServiceId;
-                c.RegisterId = data.RegisterId;
-                c.DealTime = DateTime.Now;
-                c.CertificateId = data.CertificateId;
-                cdao.Updatecertificateverify(c);
+                data.VerifyStatus = model.VerifyStatus;
+                data.VerifyView = model.VerifyView;
+                cdao.Updatecertificateverify(data);
                 return "0";
             } catch (Exception e) {
                 return "1";
@@ -3464,6 +3456,7 @@ namespace Services {
                     ufi.DepartmentUserCount = urdao.GetUserrelrecordList().Where(o => o.DepartmentId == urdata.DepartmentId && o.HospitalId == urdata.HospitalId).Count();
                 }
                 UserquacertificateSqlMapDao uqdao = new UserquacertificateSqlMapDao();
+
                 var uqdata = uqdao.GetuserquacertificateDetail(RegisterId);
                 if (uqdata != null) {
                     CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
@@ -3481,14 +3474,21 @@ namespace Services {
                         ufi.PStatus = cdata.VerifyStatus;
                     }
                 }
+
                 userregisterSqlMapDao urgdao = new userregisterSqlMapDao();
                 var urgdata = urgdao.GetuserregisterDetail(RegisterId);
                 if (urgdata != null)     //头像和昵称如果注册表里面没有数据，则从qq表里面取数据  //qq表绑定时
                 {
                     //ufi.NickName = urgdata.NickName;
                     //ufi.Avatar = urgdata.Avatar;
-                    ufi.Name = urgdata.Name;
+
+                    if (ufi.PStatus == 3 && ufi.PStatus == 3) {
+                        ufi.Name = updata.Name;
+                    } else {
+                        ufi.Name = urgdata.Name;
+                    }
                     ufi.RegisterId = RegisterId;
+
 
                     if (string.IsNullOrWhiteSpace(urgdata.NickName)) {
 
@@ -5513,13 +5513,7 @@ namespace Services {
             try {
                 DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
                 var data = ddao.GetdepartmentList().ToList();
-
-                HospitalSqlMapDao hdao = new HospitalSqlMapDao();
-                var hdata = hdao.GethospitalList();
-                Department d = new Department();
-                foreach (var item in data) {
-                    item.HospitalName = hdata.FirstOrDefault(o => o.HospitalId == item.HospitalId).Name;
-                }
+                
                 r.code = 0;
                 r.msg = data.Count.ToString();
                 r.body = data.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
@@ -5572,20 +5566,8 @@ namespace Services {
             RsModel<string> r = new RsModel<string>();
             try {
                 DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
-                Department d = new Department();
-                d.DepartmentId = new aers_sys_seedSqlMapDao().GetMaxID("department");
-                d.Address = model.Address;
-                d.Contact = model.Contact;
-                d.DisplayOrder = model.DisplayOrder;
-                d.HospitalId = model.HospitalId;
-                d.Introduction = model.Introduction;
-                d.IsFlag = model.IsFlag;
-                d.Logo = model.Logo;
-                d.Name = model.Name;
-                d.ParentId = model.ParentId;
-                d.Phone = model.Phone;
-                d.SpellCode = model.SpellCode;
-                ddao.Updatedepartment(d);
+                model.DepartmentId = new aers_sys_seedSqlMapDao().GetMaxID("department");
+                ddao.Updatedepartment(model);
                 r.code = 0;
                 return r;
             } catch (Exception) {
@@ -6246,9 +6228,9 @@ namespace Services {
 
                 List<Nurse> nurses = new List<Nurse>();
 
-                // 两个参数都是空，则查询所有用户
                 UserrelrecordSqlMapDao recordDao = new UserrelrecordSqlMapDao();
                 IList<Userrelrecord> userRecords = new List<Userrelrecord>();
+                // 如果医院Id是空，则查询所有用户
                 if (string.IsNullOrWhiteSpace(hospitalId)) {
                     userRecords = recordDao.GetUserrelrecordList();
                 } else if (!string.IsNullOrWhiteSpace(hospitalId)) {
@@ -6266,6 +6248,16 @@ namespace Services {
                     // 获取绑定信息
                     nurse.bindInfo = GetUserBindInfo(userRecord.RegisterId).body;
                     nurses.Add(nurse);
+                    // 获取性别
+                    var ub = new userbasicinfoSqlMapDao().GetuserbasicinfoDetail(userRecord.RegisterId);
+                    nurse.sex = ub.Sex;
+                    // 获取医院信息
+                    UserrelrecordSqlMapDao urrDao = new UserrelrecordSqlMapDao();
+                    var urr = urrDao.GetuserrelrecordDetail(userRecord.RegisterId);
+                    nurse.hospitalId = urr.HospitalId;
+                    nurse.hospitalName = urr.HospitalName;
+                    nurse.departmentId = urr.DepartmentId;
+                    nurse.departmentName = urr.DepartmentName;                    
                 }
 
                 result.body = nurses;
@@ -6325,7 +6317,7 @@ namespace Services {
                     result.msg = "手机号已存在";
                     return result;
                 }
-                string registerId = Sign(model.cellphone, "PC").body.RegisterId;
+                string registerId = Sign(model.cellphone, "PC后台").body.RegisterId;
 
                 // 更新护士信息
                 model.registerId = registerId;
@@ -6366,9 +6358,19 @@ namespace Services {
             UserrelrecordSqlMapDao recordDao = new UserrelrecordSqlMapDao();
             var record = recordDao.GetuserrelrecordDetail(registerId);
             record.HospitalId = model.hospitalId;
-            record.HospitalName = model.hospitalName;
+
+            HospitalSqlMapDao hDao = new HospitalSqlMapDao();
+            var h = hDao.GethospitalDetail(model.hospitalId);
+            if (h != null) {
+                record.HospitalName = h.Name;
+            }
+
             record.DepartmentId = model.departmentId;
-            record.DepartmentName = model.departmentName;
+            DepartmentSqlMapDao dDao = new DepartmentSqlMapDao();
+            var d = dDao.GetdepartmentDetail(model.departmentId);
+            if (d != null) {
+                record.DepartmentName = d.Name;
+            }
             recordDao.Updateuserrelrecord(record);
         }
 
@@ -6406,22 +6408,33 @@ namespace Services {
 
             try {
                 userregisterSqlMapDao registerDao = new userregisterSqlMapDao();
-                registerDao.Deleteuserregister(model.registerId);
 
-                UserrelrecordSqlMapDao recordDao = new UserrelrecordSqlMapDao();
-                recordDao.Deleteuserrelrecord(model.registerId);
+                if (string.IsNullOrWhiteSpace(model.registerId)) {
+                    result.code = 1;
+                    result.msg = "用户不存在";
+                } else {
+                    if (registerDao.GetuserregisterDetail(model.registerId) != null) {
 
-                userbasicinfoSqlMapDao basicDao = new userbasicinfoSqlMapDao();
-                basicDao.Deleteuserbasicinfo(model.registerId);
+                        registerDao.Deleteuserregister(model.registerId);
 
-                UserpracticecertificateSqlMapDao upDao = new UserpracticecertificateSqlMapDao();
-                upDao.Deleteuserpracticecertificate(model.registerId);
+                        UserrelrecordSqlMapDao recordDao = new UserrelrecordSqlMapDao();
+                        recordDao.Deleteuserrelrecord(model.registerId);
 
-                UserquacertificateSqlMapDao uqDao = new UserquacertificateSqlMapDao();
-                uqDao.Deleteuserquacertificate(model.registerId);
+                        userbasicinfoSqlMapDao basicDao = new userbasicinfoSqlMapDao();
+                        basicDao.Deleteuserbasicinfo(model.registerId);
 
-                result.code = 0;
+                        UserpracticecertificateSqlMapDao upDao = new UserpracticecertificateSqlMapDao();
+                        upDao.Deleteuserpracticecertificate(model.registerId);
 
+                        UserquacertificateSqlMapDao uqDao = new UserquacertificateSqlMapDao();
+                        uqDao.Deleteuserquacertificate(model.registerId);
+
+                        result.code = 0;
+                    } else {
+                        result.code = 1;
+                        result.msg = "用户不存在";
+                    }
+                }
             } catch (Exception e) {
                 result.code = 1;
                 result.msg = "删除失败";
