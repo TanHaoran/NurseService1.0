@@ -245,12 +245,12 @@ namespace Services {
         string UpdateAuditStatus(Certificateverify model);
 
         [OperationContract]
-        [WebGet(UriTemplate = "GetQCInfo?pageSize={pageSize}&pageNumber={pageNumber}&CertificateId={CertificateId}&Name={Name}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
-        RsList<Userquacertificate> GetQCInfo(int pageSize, int pageNumber, string CertificateId, string Name);
+        [WebGet(UriTemplate = "GetQCInfo?operatorId={operatorId}&pageSize={pageSize}&pageNumber={pageNumber}&CertificateId={CertificateId}&Name={Name}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsList<Userquacertificate> GetQCInfo(string operatorId, int pageSize, int pageNumber, string CertificateId, string Name);
 
         [OperationContract]
-        [WebGet(UriTemplate = "GetPCInfo?pageSize={pageSize}&pageNumber={pageNumber}&CertificateId={CertificateId}&Name={Name}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
-        RsList<Userpracticecertificate> GetPCInfo(int pageSize, int pageNumber, string CertificateId, string Name);
+        [WebGet(UriTemplate = "GetPCInfo?operatorId={operatorId}&pageSize={pageSize}&pageNumber={pageNumber}&CertificateId={CertificateId}&Name={Name}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsList<Userpracticecertificate> GetPCInfo(string operatorId, int pageSize, int pageNumber, string CertificateId, string Name);
 
         //获得qq昵称
         [OperationContract]
@@ -409,8 +409,8 @@ namespace Services {
 
         //获取所有医院信息
         [OperationContract]
-        [WebGet(UriTemplate = "GetHospitalAll?pageSize={pageSize}&pageNumber={pageNumber}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
-        RsList<Hospital> GetHospitalAll(int pageSize, int pageNumber);
+        [WebGet(UriTemplate = "GetHospitalAll?operatorId={operatorId}&pageSize={pageSize}&pageNumber={pageNumber}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsList<Hospital> GetHospitalAll(string operatorId, int pageSize, int pageNumber);
 
         [OperationContract]
         [WebGet(UriTemplate = "GetHospitalNameAll", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
@@ -429,8 +429,8 @@ namespace Services {
 
         //获取所有科室
         [OperationContract]
-        [WebGet(UriTemplate = "GetDepartmentAll?pageSize={pageSize}&pageNumber={pageNumber}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
-        RsList<Department> GetDepartmentAll(int pageSize, int pageNumber);
+        [WebGet(UriTemplate = "GetDepartmentAll?operatorId={operatorId}&pageSize={pageSize}&pageNumber={pageNumber}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsList<Department> GetDepartmentAll(string operatorId, int pageSize, int pageNumber);
 
         //根据医院Id获取科室
         [OperationContract]
@@ -449,13 +449,13 @@ namespace Services {
 
         //删除医院
         [OperationContract]
-        [WebGet(UriTemplate = "DeleteHospital?HospitalId={HospitalId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
-        RsModel<string> DeleteHospital(string HospitalId);
+        [WebGet(UriTemplate = "DeleteHospital?operatorId={operatorId}&HospitalId={HospitalId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsModel<string> DeleteHospital(string operatorId, string HospitalId);
 
         //删除科室
         [OperationContract]
-        [WebGet(UriTemplate = "DeleteDepartment?DepartmentId={DepartmentId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
-        RsModel<string> DeleteDepartment(string DepartmentId);
+        [WebGet(UriTemplate = "DeleteDepartment?operatorId={operatorId}&DepartmentId={DepartmentId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsModel<string> DeleteDepartment(string operatorId, string DepartmentId);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "AddAdministrator", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
@@ -468,13 +468,13 @@ namespace Services {
 
         //删除科室
         [OperationContract]
-        [WebGet(UriTemplate = "DeleteAdministrator?AdmId={AdmId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
-        RsModel<string> DeleteAdministrator(string AdmId);
+        [WebGet(UriTemplate = "DeleteAdministrator?operatorId={operatorId}&AdmId={AdmId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsModel<string> DeleteAdministrator(string operatorId, string AdmId);
 
         //获取管理员
         [OperationContract]
-        [WebGet(UriTemplate = "GetAdministrator?adminId={adminId}&pageSize={pageSize}&pageNumber={pageNumber}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
-        RsList<Administrator> GetAdministrator(string adminId,int pageSize, int pageNumber);
+        [WebGet(UriTemplate = "GetAdministrator?operatorId={operatorId}&pageSize={pageSize}&pageNumber={pageNumber}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsList<Administrator> GetAdministrator(string operatorId, int pageSize, int pageNumber);
 
 
 
@@ -485,8 +485,8 @@ namespace Services {
 
         //banner删除
         [OperationContract]
-        [WebGet(UriTemplate = "DeleteBanner?BannerId={BannerId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
-        RsModel<string> DeleteBanner(string BannerId);
+        [WebGet(UriTemplate = "DeleteBanner?operatorId={operatorId}&BannerId={BannerId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsModel<string> DeleteBanner(string operatorId, string BannerId);
 
         //添加公告
         [OperationContract]
@@ -505,8 +505,8 @@ namespace Services {
 
         //后端获取公告
         [OperationContract]
-        [WebGet(UriTemplate = "GetNoticeAll?pageSize={pageSize}&pageNumber={pageNumber}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
-        RsList<Notice> GetNoticeAll(int pageSize, int pageNumber);
+        [WebGet(UriTemplate = "GetNoticeAll?operatorId={operatorId}&pageSize={pageSize}&pageNumber={pageNumber}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsList<Notice> GetNoticeAll(string operatorId, int pageSize, int pageNumber);
 
         // 设置好友备注
         [OperationContract]
@@ -597,12 +597,21 @@ namespace Services {
         [WebInvoke(Method = "POST", UriTemplate = "DeleteNurse", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         RsModel<string> DeleteNurse(Nurse model);
 
-        
+        /// <summary>
+        /// 获取公告科室
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        [WebGet(UriTemplate = "GetNoticeDepartmentByNoticeId?operatorId={operatorId}&noticeId={noticeId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsList<NoticeDepartment> GetNoticeDepartmentByNoticeId(string operatorId, string noticeId);
 
-
-
-
-
-
+        /// <summary>
+        /// 管理后台获取Banner
+        /// </summary>
+        /// <param name="operatorId"></param>
+        /// <returns></returns>
+        ///  [OperationContract]
+        [WebGet(UriTemplate = "GetAdminBanner?operatorId={operatorId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsList<Banner> GetAdminBanner(string operatorId);
     }
 }

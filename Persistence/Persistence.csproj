@@ -83,6 +83,8 @@
     <Compile Include="GroupuserSqlMapDao.cs" />
     <Compile Include="HospitalSqlMapDao.cs" />
     <Compile Include="MessageSqlMapDao.cs" />
+    <Compile Include="NoticeDepartmentDao.cs" />
+    <Compile Include="NoticeNurseDao.cs" />
     <Compile Include="NoticeSqlMapDao.cs" />
     <Compile Include="NursingunitidSqlMapDao.cs" />
     <Compile Include="PermissionDao.cs" />
@@ -274,6 +276,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Maps\permission.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\notice_department.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\notice_nurse.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -365,7 +365,21 @@ namespace Services {
                         return r;
                     }
                     userregisterSqlMapDao udao = new userregisterSqlMapDao();
-                    var data = udao.GetuserregisterDetail(model.RegisterId); //从库里面查出以前的数据
+
+                    // 从库里面查出以前的数据
+                    var data = udao.GetuserregisterDetail(model.RegisterId);
+                    // 如果是换绑手机，那么检测换绑的手机号是否已存在
+                    if (model.Phone != null) {
+                        var change = udao.GetuserregisterDetailByPhone(model.Phone);
+                        if (change != null) {
+                            if (data.Phone != change.Phone) {
+                                r.code = 1;
+                                r.msg = "该手机号已存在";
+                                return r;
+                            }
+                        }
+                    }
+
                     userregister u = new userregister();
                     u.RegisterId = model.RegisterId;
                     if (!string.IsNullOrWhiteSpace(model.Avatar)) {
@@ -435,10 +449,9 @@ namespace Services {
                 if (string.IsNullOrWhiteSpace(model.Age.ToString())) {
                     model.Age = data.Age;
                 }
-                //if (model.Birthday != data.Birthday)   //生日不等于数据库中的数据
-                //{
-                //    model.Birthday = model.Birthday;
-                //}
+                if (model.Birthday.ToString().StartsWith("0")) {
+                    model.Birthday = data.Birthday;
+                }
                 if (string.IsNullOrWhiteSpace(model.City)) {
                     model.City = data.City;
                 }
@@ -1085,8 +1098,13 @@ namespace Services {
         #endregion
 
         #region 查资格证后台  2假分页 0
-        public RsList<Userpracticecertificate> GetPCInfo(int pageSize, int pageNumber, string CertificateId, string Name) {
+        public RsList<Userpracticecertificate> GetPCInfo(string operatorId, int pageSize, int pageNumber, string CertificateId, string Name) {
             RsList<Userpracticecertificate> r = new Services.RsList<Userpracticecertificate>();
+            if (!CheckNursePermission(operatorId, CERTIFICATE_VERIFY_PERMISSION)) {
+                r.code = 0;
+                r.msg = "没有权限";
+                return r;
+            }
             UserpracticecertificateSqlMapDao pdao = new UserpracticecertificateSqlMapDao();
             var datalist = pdao.GetuserpracticecertificateList();
             if (!string.IsNullOrEmpty(CertificateId)) {
@@ -1199,8 +1217,13 @@ namespace Services {
         //    datalist = datalist.Where(o => o.VerifyStatus != 0).ToList();
         //    return datalist.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
         //}
-        public RsList<Userquacertificate> GetQCInfo(int pageSize, int pageNumber, string CertificateId, string Name) {
+        public RsList<Userquacertificate> GetQCInfo(string operatorId, int pageSize, int pageNumber, string CertificateId, string Name) {
             RsList<Userquacertificate> r = new Services.RsList<Userquacertificate>();
+            if (!CheckNursePermission(operatorId, CERTIFICATE_VERIFY_PERMISSION)) {
+                r.code = 0;
+                r.msg = "没有权限";
+                return r;
+            }
             UserquacertificateSqlMapDao qdao = new UserquacertificateSqlMapDao();
             var datalist = qdao.GetuserquacertificateList();
             if (!string.IsNullOrEmpty(CertificateId)) {
@@ -1235,11 +1258,15 @@ namespace Services {
 
         #region 证书审核认证  0 后台审核，盛
         public string UpdateAuditStatus(Certificateverify model) {
+            if (!CheckNursePermission(model.operatorId, CERTIFICATE_VERIFY_PERMISSION)) {
+                return "0:" + "没有权限";
+            }
             try {
                 CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
                 var data = cdao.GetcertificateverifyList().FirstOrDefault(o => o.CertificateId == model.CertificateId && o.RegisterId == model.RegisterId);
                 data.VerifyStatus = model.VerifyStatus;
                 data.VerifyView = model.VerifyView;
+                data.DealTime = model.DealTime;
                 cdao.Updatecertificateverify(data);
                 return "0";
             } catch (Exception e) {
@@ -1411,7 +1438,7 @@ namespace Services {
                 }
                 r.code = 0;
                 return r;
-            } catch (Exception) {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "数据操作失败";
                 return r;
@@ -2109,7 +2136,8 @@ namespace Services {
                 var data = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginNumber == model.OpenId && o.LoginType == 2); //微信是2  QQ是1
                 if (data != null) //授权表里面有数据，以前登陆过
                 {
-                    return GetUserFirstInfoById(data.RegisterId);
+                    r = GetUserFirstInfoById(data.RegisterId);
+                    return r;
                 } else //授权表里面没数据，以前没用微信登陆过  创建新用户账号
                   {
                     Userauths ua = new Userauths();
@@ -3166,14 +3194,15 @@ namespace Services {
                             return r;
                         } else {
                             try {
-                                aers_tbl_registereduserSqlMapDao ardao = new aers_tbl_registereduserSqlMapDao(); //根据用户名密码查出用户注册id
+                                //根据用户名密码查出用户注册id
+                                aers_tbl_registereduserSqlMapDao ardao = new aers_tbl_registereduserSqlMapDao();
                                 var ardataRegusterId = ardao.FindByLoginName(model.LoginName).ReguserId;
                                 Userauths ua = new Userauths();
                                 ua.AuthsId = new aers_sys_seedSqlMapDao().GetMaxID("userauths");
                                 ua.LoginLastTime = DateTime.Now;
                                 ua.LoginNumber = model.LoginName;
                                 ua.LoginType = 4; //不良事件类型4
-                                ua.Password = model.Password;
+                                ua.Password = Common.UserMd5(model.Password);
                                 ua.RegisterId = model.RegisterId;
                                 ua.ReguserId = ardataRegusterId;
                                 ua.Verified = 1;  //绑定时，可用状态为1
@@ -3181,6 +3210,9 @@ namespace Services {
                                 // 更新userrelrecord表中的数据
                                 UpdateRecordInfo(model.RegisterId, ardataRegusterId);
 
+                                aers_tbl_staffSqlMapDao sDao = new aers_tbl_staffSqlMapDao();
+                                var name = sDao.FindNameByRid(ardataRegusterId);
+                                UFI.Name = name;
                                 r.code = 0;
                                 UFI.ReguserId = ardataRegusterId;
                                 r.body = UFI;
@@ -3256,43 +3288,17 @@ namespace Services {
         public RsList<Notice> GetNotice(int pageNumber, string HospitalId, string DepartmentId) {
             RsList<Notice> r = new Services.RsList<Notice>();
             try {
-                NoticeSqlMapDao ndao = new NoticeSqlMapDao();
-
-                var datalist = ndao.GetNoticeList().OrderByDescending(o => o.NoticeTime); //根据时间排序获取所有的
-                //var list1 = datalist.Where(o => o.Type == 0 && o.IsFlag == 1).ToList();  //获取系统公告
-                var list1 = datalist.Where(o => o.IsDelete == 0).ToList();  //获取系统公告
-                IList<Notice> noticelist;
-                IList<Notice> list2;
-                if (!string.IsNullOrWhiteSpace(HospitalId)) {
-                    if (datalist.Where(o => o.HospitalId == HospitalId) != null) {
-                        list2 = datalist.Where(o => o.Type == 1 && o.HospitalId == HospitalId && o.IsFlag == 1).ToList();
-                        noticelist = list1.Union(list2).ToList();
-                    } else {
-                        noticelist = list1;
-                    }
-                } else {
-                    noticelist = list1;
-                }
-                IList<Notice> list3;
+                NoticeSqlMapDao nDao = new NoticeSqlMapDao();
+                IList<Notice> noticelist = new List<Notice>();
+                // 科室公告
                 if (!string.IsNullOrWhiteSpace(HospitalId) && !string.IsNullOrWhiteSpace(DepartmentId)) {
-                    if (datalist.Where(o => o.DepartmentId == DepartmentId && o.HospitalId == HospitalId) != null) {
-                        list3 = datalist.Where(o => o.Type == 2 && o.HospitalId == HospitalId && o.DepartmentId == DepartmentId && o.IsFlag == 1).ToList();
-                        noticelist = noticelist.Union(list3).ToList();
-                    }
-
+                    noticelist = nDao.GetNoticeList().Where(o => o.IsDelete == 0 && ((o.HospitalId == HospitalId && o.DepartmentId == DepartmentId) || o.Type == 0)).ToList();
                 }
-                DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
-                if (!string.IsNullOrEmpty(HospitalId) && !string.IsNullOrEmpty(DepartmentId)) {
-                    var depdata = ddao.GetdepartmentList().Where(o => o.DepartmentId == DepartmentId && o.HospitalId == HospitalId);
-                    if (depdata != null) {
-                        foreach (var item in noticelist) {
-                            if (depdata.FirstOrDefault(o => o.HospitalId == item.HospitalId && o.DepartmentId == item.DepartmentId) != null) {
-                                item.Agency = depdata.FirstOrDefault(o => o.HospitalId == item.HospitalId && o.DepartmentId == item.DepartmentId).Name;
-                            }
-
-                        }
-                    }
+                // 平台公告
+                else {
+                    noticelist = nDao.GetNoticeList().Where(o => o.IsDelete == 0 && o.Type == 0).ToList();
                 }
+
                 noticelist = noticelist.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
                 r.code = 0;
                 // r.msg = noticelist.Count.ToString();
@@ -3312,43 +3318,9 @@ namespace Services {
             RsList<Banner> r = new Services.RsList<Banner>();
             try {
                 BannerSqlMapDao bdao = new BannerSqlMapDao();
-                var datalist = bdao.GetBannerList().OrderByDescending(o => o.BannerTime).ToList();
-                // var list1 = datalist.Where(o => o.Type == 0 && o.IsFlag == 1).ToList();  //获取系统公告测试用
-                var list1 = datalist.ToList();  //获取系统公告
-                IList<Banner> bannerlist;
-                IList<Banner> list2;
-                if (!string.IsNullOrWhiteSpace(HospitalId)) {
-                    if (datalist.Where(o => o.HospitalId == HospitalId) != null) {
-                        list2 = datalist.Where(o => o.Type == 1 && o.HospitalId == HospitalId && o.IsFlag == 1).ToList();
-                        bannerlist = list1.Union(list2).ToList();
-                    } else {
-                        bannerlist = list1;
-                    }
-                } else {
-                    bannerlist = list1;
-                }
-                IList<Banner> list3;
-                if (!string.IsNullOrWhiteSpace(HospitalId) && !string.IsNullOrWhiteSpace(DepartmentId)) {
-                    if (datalist.Where(o => o.DepartmentId == DepartmentId && o.HospitalId == HospitalId) != null) {
-                        list3 = datalist.Where(o => o.Type == 2 && o.HospitalId == HospitalId && o.DepartmentId == DepartmentId && o.IsFlag == 1).ToList();
-                        bannerlist = bannerlist.Union(list3).ToList();
-                    }
-
-                }
-                DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
-                if (!string.IsNullOrEmpty(HospitalId) && !string.IsNullOrEmpty(DepartmentId)) {
-                    var depdata = ddao.GetdepartmentList().Where(o => o.DepartmentId == DepartmentId && o.HospitalId == HospitalId);
-                    if (depdata != null) {
-                        foreach (var item in bannerlist) {
-                            if (depdata.FirstOrDefault(o => o.HospitalId == item.HospitalId && o.DepartmentId == item.DepartmentId) != null) {
-                                item.Agency = depdata.FirstOrDefault(o => o.HospitalId == item.HospitalId && o.DepartmentId == item.DepartmentId).Name;
-                            }
-
-                        }
-                    }
-                }
+                var datalist = bdao.GetBannerList().OrderByDescending(o => o.DisplayOrder).Where(o=> o.IsDelete == 0).ToList();
                 r.code = 0;
-                r.body = bannerlist.Take(5).ToList(); //banner取前5条数据
+                r.body = datalist; //banner取前5条数据
             } catch (Exception e) {
                 r.code = 1;
                 r.msg = e.ToString();
@@ -3455,6 +3427,7 @@ namespace Services {
                     ufi.DepartmentName = urdata.DepartmentName;
                     ufi.DepartmentUserCount = urdao.GetUserrelrecordList().Where(o => o.DepartmentId == urdata.DepartmentId && o.HospitalId == urdata.HospitalId).Count();
                 }
+
                 UserquacertificateSqlMapDao uqdao = new UserquacertificateSqlMapDao();
 
                 var uqdata = uqdao.GetuserquacertificateDetail(RegisterId);
@@ -3542,7 +3515,7 @@ namespace Services {
                 }
 
                 UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();
-                var uadata = uadao.GetUserauthsList().FirstOrDefault(o => o.RegisterId == RegisterId);   //绑定时这样写会找不到
+                var uadata = uadao.GetUserauthsList().FirstOrDefault(o => o.RegisterId == RegisterId && o.LoginType == 4);   //绑定时这样写会找不到
                 if (uadata != null) {
                     ufi.ReguserId = uadata.ReguserId;
                 }
@@ -5359,10 +5332,50 @@ namespace Services {
 
         #region 后台服务
 
+        /// <summary>
+        /// 管理员权限
+        /// </summary>
+        private static string ADMIN_PERMISSION = "0000000001";
+
+        /// <summary>
+        /// 护士信息维护权限
+        /// </summary>
+        private static string NURSE_PERMISSION = "0000000002";
+
+        /// <summary>
+        /// 医院信息维护权限
+        /// </summary>
+        private static string HOSPITAL_PERMISSION = "0000000003";
+
+        /// <summary>
+        /// 科室信息维护权限
+        /// </summary>
+        private static string DEPARTMENT_PERMISSION = "0000000004";
+
+        /// <summary>
+        /// Banner管理权限
+        /// </summary>
+        private static string BANNER_PERMISSION = "0000000005";
+
+        /// <summary>
+        /// 公告管理权限
+        /// </summary>
+        private static string NOTICE_PERMISSION = "0000000006";
+
+        /// <summary>
+        /// 两证审核权限
+        /// </summary>
+        private static string CERTIFICATE_VERIFY_PERMISSION = "0000000009";
+
         #region 医院管理
         #region 获取所有医院
-        public RsList<Hospital> GetHospitalAll(int pageSize, int pageNumber) {
+        public RsList<Hospital> GetHospitalAll(string operatorId, int pageSize, int pageNumber) {
             RsList<Hospital> r = new RsList<Hospital>();
+            if (!CheckNursePermission(operatorId, HOSPITAL_PERMISSION)) {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
             try {
                 HospitalSqlMapDao hdao = new HospitalSqlMapDao();
                 var data = hdao.GethospitalList().Where(o => o.IsDelete == 0).ToList();  //isdelete为1时是逻辑删除
@@ -5400,31 +5413,16 @@ namespace Services {
         #region 添加医院
         public RsModel<string> AddHospital(Hospital model) {
             RsModel<string> r = new RsModel<string>();
+            if (!CheckNursePermission(model.OperatorId, HOSPITAL_PERMISSION)) {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
             try {
                 HospitalSqlMapDao hdao = new HospitalSqlMapDao();
                 Hospital h = new Hospital();
-                h.HospitalId = new aers_sys_seedSqlMapDao().GetMaxID("hospital");  //注册表
-                h.AreaCode = model.AreaCode;
-                h.Province = model.Province;
-                h.City = model.City;
-                h.Region = model.Region;
-                h.Name = model.Name;
-                h.Grade = model.Grade;
-                h.Contact = model.Contact;
-                h.Phone = model.Phone;
-                h.SpellCode = model.SpellCode;
-                h.Logo = model.Logo;
-                h.IsFlag = 1; // 数据库以前数据需要改，启用1，停用0
-                h.Introduction = model.Introduction;
-                h.DisplayOrder = model.DisplayOrder;
-                h.Address = model.Address;
-                h.OperatorId = model.OperatorId;
+                model.HospitalId = new aers_sys_seedSqlMapDao().GetMaxID("hospital");  //注册表
                 h.OperatorTime = DateTime.Now;
-                h.IsOpenBLSJ = model.IsOpenBLSJ;
-                h.IsOpenPB = model.IsOpenPB;
-                h.IsOpenXF = model.IsOpenXF;
-                h.Latitude = model.Latitude;
-                h.Longitude = model.Longitude;
                 hdao.Addhospital(h);
                 r.code = 0;
                 return r;
@@ -5439,33 +5437,15 @@ namespace Services {
         #region 医院修改
         public RsModel<string> UpdateHospital(Hospital model) {
             RsModel<string> r = new RsModel<string>();
+            if (!CheckNursePermission(model.OperatorId, HOSPITAL_PERMISSION)) {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
             try {
                 HospitalSqlMapDao hdao = new HospitalSqlMapDao();
-                Hospital h = new Hospital();
-                h.HospitalId = model.HospitalId;
-                h.AreaCode = model.AreaCode;
-                h.Province = model.Province;
-                h.City = model.City;
-                h.Region = model.Region;
-                h.Name = model.Name;
-                h.Grade = model.Grade;
-                h.Contact = model.Contact;
-                h.Phone = model.Phone;
-                h.SpellCode = model.SpellCode;
-                h.Logo = model.Logo;
-                h.IsFlag = model.IsFlag; // 数据库以前数据需要改，启用1，停用0
-                h.Introduction = model.Introduction;
-                h.DisplayOrder = model.DisplayOrder;
-                h.Address = model.Address;
-                h.OperatorId = model.OperatorId;
-                h.OperatorTime = DateTime.Now;
-                h.IsOpenBLSJ = model.IsOpenBLSJ;
-                h.IsOpenPB = model.IsOpenPB;
-                h.IsOpenXF = model.IsOpenXF;
-                h.Latitude = model.Latitude;
-                h.Longitude = model.Longitude;
-                h.IsDelete = 0;
-                hdao.Updatehospital(h);
+                model.OperatorTime = DateTime.Now;
+                hdao.Updatehospital(model);
                 r.code = 0;
                 return r;
             } catch (Exception) {
@@ -5477,8 +5457,13 @@ namespace Services {
         #endregion
 
         #region 医院逻辑删除
-        public RsModel<string> DeleteHospital(string HospitalId) {
+        public RsModel<string> DeleteHospital(string operatorId, string HospitalId) {
             RsModel<string> r = new RsModel<string>();
+            if (!CheckNursePermission(operatorId, HOSPITAL_PERMISSION)) {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
             if (string.IsNullOrWhiteSpace(HospitalId)) {
                 r.code = 1;
                 r.msg = "医院ID不能为空";
@@ -5508,15 +5493,39 @@ namespace Services {
 
         #region 科室管理
         #region 获取所有科室
-        public RsList<Department> GetDepartmentAll(int pageSize, int pageNumber) {
+        public RsList<Department> GetDepartmentAll(string operatorId, int pageSize, int pageNumber) {
             RsList<Department> r = new RsList<Department>();
+            if (!CheckNursePermission(operatorId, DEPARTMENT_PERMISSION)) {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
+
             try {
-                DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
-                var data = ddao.GetdepartmentList().ToList();
-                
+                DepartmentSqlMapDao dDao = new DepartmentSqlMapDao();
+                List<Department> ds = new List<Department>();
+                if (operatorId == "0000000001") {
+                    ds = dDao.GetdepartmentList().ToList();
+                } else {
+                    AdmdepartmentSqlMapDao adDao = new AdmdepartmentSqlMapDao();
+                    List<Admdepartment> ads = adDao.GetAdmDepartmentListByAdminId(operatorId).ToList();
+
+                    foreach (var ad in ads) {
+                        Department d = dDao.GetdepartmentDetail(ad.DepartmentId);
+                        if (d != null) {
+                            HospitalSqlMapDao hDao = new HospitalSqlMapDao();
+                            Hospital h = hDao.GethospitalDetail(d.HospitalId);
+                            if (h != null) {
+                                d.HospitalName = h.Name;
+                            }
+                            ds.Add(d);
+                        }
+                    }
+                }
+                r.body = ds;
                 r.code = 0;
-                r.msg = data.Count.ToString();
-                r.body = data.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
+                r.msg = ds.Count.ToString();
+                r.body = ds.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
                 return r;
             } catch (Exception e) {
                 r.code = 1;
@@ -5564,6 +5573,11 @@ namespace Services {
         #region 添加科室
         public RsModel<string> AddDepartment(Department model) {
             RsModel<string> r = new RsModel<string>();
+            if (!CheckNursePermission(model.OperatorId, DEPARTMENT_PERMISSION)) {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
             try {
                 DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
                 model.DepartmentId = new aers_sys_seedSqlMapDao().GetMaxID("department");
@@ -5582,6 +5596,11 @@ namespace Services {
         #region 科室修改
         public RsModel<string> UpdateDepartment(Department model) {
             RsModel<string> r = new RsModel<string>();
+            if (!CheckNursePermission(model.OperatorId, DEPARTMENT_PERMISSION)) {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
             if (string.IsNullOrWhiteSpace(model.DepartmentId)) {
                 r.code = 1;
                 r.msg = "科室Id不能为空";
@@ -5603,8 +5622,13 @@ namespace Services {
         #endregion
 
         #region 删除科室
-        public RsModel<string> DeleteDepartment(string DepartmentId) {
+        public RsModel<string> DeleteDepartment(string operatorId, string DepartmentId) {
             RsModel<string> r = new RsModel<string>();
+            if (!CheckNursePermission(operatorId, DEPARTMENT_PERMISSION)) {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
             if (string.IsNullOrWhiteSpace(DepartmentId)) {
                 r.code = 1;
                 r.msg = "科室Id不能为空";
@@ -5622,10 +5646,9 @@ namespace Services {
                 return r;
             }
         }
-
-        #endregion
         #endregion
 
+        #endregion
 
         #region 护士管理
 
@@ -5666,10 +5689,6 @@ namespace Services {
         }
         #endregion
 
-        #region 修改护士
-
-        #endregion
-
         #region 护士逻辑删除
 
         #endregion
@@ -5680,11 +5699,17 @@ namespace Services {
 
         #region 获取管理员
 
-        public RsList<Administrator> GetAdministrator(string adminId, int pageSize, int pageNumber) {
+        public RsList<Administrator> GetAdministrator(string operatorId, int pageSize, int pageNumber) {
             RsList<Administrator> r = new Services.RsList<Administrator>();
+            if (!CheckNursePermission(operatorId, ADMIN_PERMISSION)) {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
             try {
+
                 AdministratorSqlMapDao adao = new AdministratorSqlMapDao();
-                var adatalist = adao.GetAdministratorList().Where(o => o.OperatorId == adminId).ToList();
+                var adatalist = adao.GetAdministratorList().Where(o => o.OperatorId == operatorId).ToList();
 
                 List<Administrator> adlist = new List<Administrator>();
 
@@ -5713,7 +5738,10 @@ namespace Services {
                         item.Admpermissionlist = aps.ToList();
                     }
                     foreach (var d in item.Admdepartmentlist) {
-                        d.DepartmentName = ddata.FirstOrDefault(o => o.DepartmentId == d.DepartmentId).Name;
+                        var dpmt = ddata.FirstOrDefault(o => o.DepartmentId == d.DepartmentId);
+                        if (dpmt != null) {
+                            d.DepartmentName = dpmt.Name;
+                        }
                     }
                     //foreach (var p in item.Admpermissionlist)
                     //{
@@ -5723,7 +5751,7 @@ namespace Services {
                 }
                 r.code = 0;
                 r.msg = adlist.Count.ToString();
-                r.body = adlist.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
+                r.body = adlist.Where(o => o.Status != 1).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
                 return r;
             } catch (Exception e) {
                 r.code = 1;
@@ -5741,6 +5769,11 @@ namespace Services {
         /// <returns></returns>
         public RsModel<string> AddAdministrator(Administrator model) {
             RsModel<string> result = new RsModel<string>();
+            if (!CheckNursePermission(model.OperatorId, ADMIN_PERMISSION)) {
+                result.code = 1;
+                result.msg = "没有权限";
+                return result;
+            }
             try {
                 // 创建管理员
                 AdministratorSqlMapDao adao = new AdministratorSqlMapDao();
@@ -5783,6 +5816,16 @@ namespace Services {
         #region 修改管理员
         public RsModel<string> UpdateAdministrator(Administrator model) {
             RsModel<string> r = new RsModel<string>();
+            if (!CheckNursePermission(model.OperatorId, ADMIN_PERMISSION)) {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
+            if (model.AdmId == "0000000001") {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
             try {
                 AdministratorSqlMapDao adao = new AdministratorSqlMapDao();
 
@@ -5807,9 +5850,9 @@ namespace Services {
 
                 foreach (var item in model.Admpermissionlist) {
                     Admpermission ap = new Admpermission();
-                    ap.Id = new aers_sys_seedSqlMapDao().GetMaxID("admpermission");
                     ap.AdmId = item.AdmId;
-                    ap.PermissionId = item.Id;
+                    ap.PermissionId = item.PermissionId;
+                    ap.Id = item.Id;
                     apDao.AddAdmpermission(ap);
                 }
                 return r;
@@ -5824,8 +5867,18 @@ namespace Services {
         #endregion
 
         #region 管理员逻辑删除
-        public RsModel<string> DeleteAdministrator(string AdmId) {
+        public RsModel<string> DeleteAdministrator(string operatorId, string AdmId) {
             RsModel<string> r = new RsModel<string>();
+            if (!CheckNursePermission(operatorId, ADMIN_PERMISSION)) {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
+            if (AdmId == "0000000001") {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
             if (string.IsNullOrWhiteSpace(AdmId)) {
                 r.code = 1;
                 r.msg = "管理员Id不能为空";
@@ -5851,9 +5904,32 @@ namespace Services {
 
         #region banner管理
 
+        #region 获取管理员Banner
+        public RsList<Banner> GetAdminBanner(string operatorId) {
+            RsList<Banner> result = new Services.RsList<Banner>();
+            if (!CheckNursePermission(operatorId, BANNER_PERMISSION)) {
+                result.code = 1;
+                result.msg = "没有权限";
+                return result;
+            }
+
+            BannerSqlMapDao dao = new BannerSqlMapDao();
+            result.body = dao.GetBannerList();
+            result.code = 0;
+
+            return result;
+        }
+
+        #endregion
+
         #region 添加banner
         public RsModel<string> AddBanner(Banner model) {
             RsModel<string> r = new RsModel<string>();
+            if (!CheckNursePermission(model.operatorId, BANNER_PERMISSION)) {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
             try {
                 BannerSqlMapDao bdao = new BannerSqlMapDao();
                 Banner b = new Banner();
@@ -5885,9 +5961,28 @@ namespace Services {
         #region 修改banner
         public RsModel<string> UpdateBanner(Banner model) {
             RsModel<string> r = new RsModel<string>();
+            if (!CheckNursePermission(model.operatorId, BANNER_PERMISSION)) {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
             try {
                 BannerSqlMapDao bdao = new BannerSqlMapDao();
-                bdao.Updatebanner(model);
+                // 原始数据
+                var old = bdao.GetBannerDetail(model.BannerId);
+
+                // 新排序数据
+                var exist = bdao.GetBannerByDisplayOrder(model.DisplayOrder);
+
+                if (old != exist) {
+                    var temp = old.DisplayOrder;
+                    old.DisplayOrder = exist.DisplayOrder;
+                    exist.DisplayOrder = temp;
+                    bdao.Updatebanner(old);
+                    bdao.Updatebanner(exist);
+                } else {
+                    bdao.Updatebanner(old);
+                }
                 r.code = 0;
                 return r;
             } catch (Exception e) {
@@ -5900,8 +5995,13 @@ namespace Services {
         #endregion
 
         #region banner逻辑删除
-        public RsModel<string> DeleteBanner(string BannerId) {
+        public RsModel<string> DeleteBanner(string operatorId, string BannerId) {
             RsModel<string> r = new RsModel<string>();
+            if (!CheckNursePermission(operatorId, BANNER_PERMISSION)) {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
             if (string.IsNullOrWhiteSpace(BannerId)) {
                 r.code = 1;
                 r.msg = "bannerId不能为空";
@@ -5927,24 +6027,27 @@ namespace Services {
 
         #region 获取公告
         //后台传每页多少条，页数
-        public RsList<Notice> GetNoticeAll(int pageSize, int pageNumber) {
+        public RsList<Notice> GetNoticeAll(string operatorId, int pageSize, int pageNumber) {
             RsList<Notice> r = new Services.RsList<Notice>();
+            RsList<NoticeDepartment> result = new RsList<NoticeDepartment>();
+            if (!CheckNursePermission(operatorId, NOTICE_PERMISSION)) {
+                r.code = 1;
+                r.msg = "没有权限";
+                return r;
+            }
+
             try {
+                // 先获取管理员
+                AdministratorSqlMapDao aDao = new AdministratorSqlMapDao();
+                var admin = aDao.GetAdministratorDetail(operatorId);
+
+                // 根据管理员的类型进行 
                 NoticeSqlMapDao ndao = new NoticeSqlMapDao();
-                var datalist = ndao.GetNoticeList().OrderByDescending(o => o.NoticeTime).Where(o => o.IsDelete == 0).ToList();
-
-                HospitalSqlMapDao hdao = new HospitalSqlMapDao();
-                var hdata = hdao.GethospitalList();
-
-                DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
-                var ddata = ddao.GetdepartmentList();
-                foreach (var item in datalist) {
-                    if (hdata.Select(o => o.HospitalId).Contains(item.HospitalId)) {
-                        item.HospitalName = hdata.FirstOrDefault(o => o.HospitalId == item.HospitalId).Name;
-                    }
-                    if (ddata.Select(o => o.DepartmentId).Contains(item.DepartmentId)) {
-                        item.DepartmentName = ddata.FirstOrDefault(o => o.DepartmentId == item.DepartmentId).Name;
-                    }
+                var datalist = new List<Notice>();
+                if (admin.Role != 2) {
+                    datalist = ndao.GetNoticeList().OrderByDescending(o => o.NoticeTime).Where(o => o.IsDelete == 0 && o.Type == 0).ToList();
+                } else {
+                    datalist = ndao.GetNoticeList().OrderByDescending(o => o.NoticeTime).Where(o => o.IsDelete == 0 && o.Type != 0).ToList();
                 }
 
                 r.code = 0;
@@ -5960,29 +6063,66 @@ namespace Services {
         }
         #endregion
 
-        #region 添加公告
+        #region 获取公告科室
+        public RsList<NoticeDepartment> GetNoticeDepartmentByNoticeId(string operatorId, string noticeId) {
+            RsList<NoticeDepartment> result = new RsList<NoticeDepartment>();
+            if (!CheckNursePermission(operatorId, NOTICE_PERMISSION)) {
+                result.code = 1;
+                result.msg = "没有权限";
+                return result;
+            }
+            try {
+                NoticeDepartmentDao dao = new NoticeDepartmentDao();
+                result.body = dao.GetNoticeDepartmentByNoticeId(noticeId);
+                result.code = 0;
+            } catch (Exception e) {
+                result.code = 1;
+                result.msg = "读取失败";
+                throw;
+            }
 
+            return result;
+        }
+
+        #endregion
+
+        #region 添加公告
 
         public RsModel<string> AddNotice(Notice model) {
             RsModel<string> r = new RsModel<string>();
             try {
                 NoticeSqlMapDao ndao = new NoticeSqlMapDao();
-                Notice n = new Notice();
-                n.NoticeId = new aers_sys_seedSqlMapDao().GetMaxID("notice");
-                n.Agency = model.Agency;
-                n.Content = model.Content;
-                n.DepartmentId = model.DepartmentId;
-                n.DisplayOrder = model.DisplayOrder;
-                n.HospitalId = model.HospitalId;
-                n.IsFlag = 1;  //可用
-                n.Issuer = model.Issuer;
-                n.IsVital = model.IsVital;
-                n.NoticeTime = DateTime.Now;    //发布时间/定时发布
-                n.Title = model.Title;
-                n.Type = model.Type;
-                n.OperatorId = model.OperatorId;
-                n.OperatorTime = DateTime.Now;
-                ndao.Addnotice(n);
+
+                model.NoticeId = new aers_sys_seedSqlMapDao().GetMaxID("notice");
+                model.IsFlag = 1;  //可用
+                model.NoticeTime = DateTime.Now;    //发布时间/定时发布
+                model.OperatorTime = DateTime.Now;
+
+
+                ndao.Addnotice(model);
+                //// 平台公告
+                //if (model.Type == 0) {
+                //    ndao.Addnotice(model);
+                //}
+                //// 院内公告
+                //else if (model.Type == 1) {
+                //    if (model.departmentlist != null) {
+                //        // 将所有数据插入公告科室对应表
+                //        foreach (var dep in model.departmentlist) {
+                //            NoticeDepartmentDao ndDao = new NoticeDepartmentDao();
+                //            NoticeDepartment nd = new NoticeDepartment();
+                //            nd.id = new aers_sys_seedSqlMapDao().GetMaxID("noticedepartment");
+                //            nd.noticeId = model.NoticeId;
+                //            nd.departmentId = dep.DepartmentId;
+                //            ndDao.AddNoticeDepartment(nd);
+                //        }
+                //    } else {
+                //        r.code = 1;
+                //        r.msg = "科室列表为空";
+                //        return r;
+                //    }
+                //}
+
                 r.code = 0;
                 return r;
             } catch (Exception e) {
@@ -6034,12 +6174,6 @@ namespace Services {
         #endregion
 
         #endregion
-
-        /***********************************************************************************************************/
-        /***********************************************************************************************************/
-        /************************************************** 交接后 **************************************************/
-        /***********************************************************************************************************/
-        /***********************************************************************************************************/
 
         /// <summary>
         /// 获取所有Token
@@ -6098,7 +6232,7 @@ namespace Services {
                     result.code = 1;
                     result.msg = "用户名或密码错误";
                 }
-                if (admin.Password != Common.UserMd5(model.Password)) {
+                if (admin.Password != Common.UserMd5(model.Password) || (admin.Status == 1)) {
                     result.code = 1;
                     result.msg = "用户名或密码错误";
                 } else {
@@ -6116,6 +6250,15 @@ namespace Services {
                     // 获取管理员管理的科室
                     AdmdepartmentSqlMapDao depDao = new AdmdepartmentSqlMapDao();
                     admin.Admdepartmentlist = depDao.GetAdmDepartmentListByAdminId(admin.AdmId).ToList();
+                    if (admin.Admdepartmentlist != null) {
+                        DepartmentSqlMapDao dDao = new DepartmentSqlMapDao();
+                        foreach (var d in admin.Admdepartmentlist) {
+                            var info = dDao.GetdepartmentDetail(d.DepartmentId);
+                            if (info != null) {
+                                d.DepartmentName = info.Name;
+                            }
+                        }
+                    }
                 }
 
             } catch (Exception) {
@@ -6201,10 +6344,6 @@ namespace Services {
             return result;
         }
 
-        /// <summary>
-        /// 护士信息维护权限
-        /// </summary>
-        private static string NURSE_PERMISSION = "0000000011";
 
         /// <summary>
         /// 获取所有护士信息
@@ -6220,7 +6359,7 @@ namespace Services {
             }
 
             try {
-                if (!CheckNursePermission(adminId)) {
+                if (!CheckNursePermission(adminId, NURSE_PERMISSION)) {
                     result.code = 1;
                     result.msg = "该用户不具备护士管理权限";
                     return result;
@@ -6257,7 +6396,7 @@ namespace Services {
                     nurse.hospitalId = urr.HospitalId;
                     nurse.hospitalName = urr.HospitalName;
                     nurse.departmentId = urr.DepartmentId;
-                    nurse.departmentName = urr.DepartmentName;                    
+                    nurse.departmentName = urr.DepartmentName;
                 }
 
                 result.body = nurses;
@@ -6272,22 +6411,23 @@ namespace Services {
         }
 
         /// <summary>
-        ///  判断该管理员是否有管理护士的权限
+        /// 判断该管理员是否有某项权限
         /// </summary>
         /// <param name="adminId"></param>
+        /// <param name="permission"></param>
         /// <returns></returns>
-        private bool CheckNursePermission(string adminId) {
-            var permission = false;
+        private bool CheckNursePermission(string adminId, string permission) {
+            var has = false;
             // 首先判断该用户是否有护士信息管理权限 
             AdmpermissionSqlMapDao apDao = new AdmpermissionSqlMapDao();
             var aps = apDao.GetPermissionByAdminId(adminId).ToList();
             foreach (var ap in aps) {
-                if (NURSE_PERMISSION == ap.PermissionId) {
-                    permission = true;
-                    return permission;
+                if (permission == ap.PermissionId) {
+                    has = true;
+                    return has;
                 }
             }
-            return permission;
+            return has;
         }
 
         /// <summary>
@@ -6297,7 +6437,7 @@ namespace Services {
         /// <returns></returns>
         public RsModel<string> AddNurse(Nurse model) {
             RsModel<string> result = new RsModel<string>();
-            if (CheckNursePermission(model.adminId) == false) {
+            if (!CheckNursePermission(model.adminId, NURSE_PERMISSION)) {
                 result.code = 1;
                 result.msg = "该管理员不具备该权限";
                 return result;
@@ -6311,7 +6451,7 @@ namespace Services {
 
             try {
                 userregisterSqlMapDao uDao = new userregisterSqlMapDao();
-                var user  = uDao.GetuserregisterDetailByPhone(model.cellphone);
+                var user = uDao.GetuserregisterDetailByPhone(model.cellphone);
                 if (user != null) {
                     result.code = 1;
                     result.msg = "手机号已存在";
@@ -6331,7 +6471,7 @@ namespace Services {
                 result.msg = "添加护士失败";
                 throw;
             }
-            
+
             return result;
         }
 
@@ -6381,7 +6521,7 @@ namespace Services {
         /// <returns></returns>
         public RsModel<string> UpdateNurse(Nurse model) {
             RsModel<string> result = new RsModel<string>();
-            if (CheckNursePermission(model.adminId) == false) {
+            if (!CheckNursePermission(model.adminId, NURSE_PERMISSION)) {
                 result.code = 1;
                 result.msg = "该管理员不具备该权限";
                 return result;
@@ -6440,7 +6580,7 @@ namespace Services {
                 result.msg = "删除失败";
                 throw;
             }
-            
+
 
             return result;
         }

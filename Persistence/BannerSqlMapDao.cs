@@ -75,6 +75,15 @@ namespace Aersysm.Persistence
 			return ExecuteQueryForObject<Banner>("SelectBanner",BannerId);
 		}
 
+        /// <summary>
+        /// 根据排序获取Banner
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        public Banner GetBannerByDisplayOrder(int Displayorder) {
+            return ExecuteQueryForObject<Banner>("SelectBannerByOrder", Displayorder);
+        }
+
 		/// <summary>
 		/// 删除
 		/// </summary>

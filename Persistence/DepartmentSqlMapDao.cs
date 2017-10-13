@@ -36,7 +36,7 @@ namespace Aersysm.Persistence
 		/// </summary>
 		public IList<Department> GetdepartmentList()
 		{
-			return ExecuteQueryForList<Department>("Selectdepartment",null);
+            return ExecuteQueryForList<Department>("Selectdepartment", null);
 		}
 
 		/// <summary>

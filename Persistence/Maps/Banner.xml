@@ -18,50 +18,78 @@
       <result property="Agency" column="agency" />
       <result property="Title" column="title" />
       <result property="IsDelete" column="isdelete" />
+      <result property="operatorId" column="OperatorId" />
 		</resultMap>
 	</resultMaps>
 	
 	<statements>
 		<select id="SelectBanner" parameterClass="int" resultMap="SelectResult">
-			Select 
-				  bannerid,
-				  bannerurl,
-				  displayorder,
-				  isflag,
-				  type,
-				  bannertime,
-				  issuer,
-				  bannertourl,
-				  hospitalid,
-				  departmentid,
-          agency,
-          title,
-          isdelete
-			From Banner
-			<dynamic prepend="WHERE">
+      Select
+      bannerid,
+      bannerurl,
+      displayorder,
+      isflag,
+      type,
+      bannertime,
+      issuer,
+      bannertourl,
+      hospitalid,
+      departmentid,
+      agency,
+      title,
+      isdelete,
+      OperatorId
+      From Banner
+      <dynamic prepend="WHERE">
 				<isParameterPresent>
 					bannerid=#BannerId# 
 				</isParameterPresent>
 			</dynamic>
-		</select>
+      ORDER BY displayorder
+    </select>
+
+    <select id="SelectBannerByOrder" parameterClass="int" resultMap="SelectResult">
+      Select
+      bannerid,
+      bannerurl,
+      displayorder,
+      isflag,
+      type,
+      bannertime,
+      issuer,
+      bannertourl,
+      hospitalid,
+      departmentid,
+      agency,
+      title,
+      isdelete,
+      OperatorId
+      From Banner
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          displayorder=#Displayorder#
+        </isParameterPresent>
+      </dynamic>
+    </select>
 		
 		<select id="BaseSelectBanner" parameterClass="int" resultMap="SelectResult">
-			Select 
-				  bannerid,
-				  bannerurl,
-				  displayorder,
-				  isflag,
-				  type,
-				  bannertime,
-				  issuer,
-				  bannertourl,
-				  hospitalid,
-				  departmentid,
-          agency,
-          title,
-          isdelete
-			From Banner
-		</select>
+      Select
+      bannerid,
+      bannerurl,
+      displayorder,
+      isflag,
+      type,
+      bannertime,
+      issuer,
+      bannertourl,
+      hospitalid,
+      departmentid,
+      agency,
+      title,
+      isdelete,
+      OperatorId
+      From Banner
+    </select>
 		
 		<select id="ChildSelectBanner" parameterClass="int" resultMap="SelectResult" extends="BaseSelectBanner">
 			
@@ -81,7 +109,8 @@
       departmentid,
       agency,
       title,
-      isdelete
+      isdelete,
+      OperatorId
       )Values(
       #BannerId#,
       #BannerUrl#,
@@ -95,7 +124,8 @@
       #DepartmentId#,
       #Agency#,
       #Title#,
-      #IsDelete#
+      #IsDelete#,
+      #operatorId#
       )
     </insert>
 		
@@ -113,7 +143,8 @@
       departmentid=#DepartmentId#,
       agency=#Agency#,
       title=#Title#,
-      isdelete=#IsDelete#
+      isdelete=#IsDelete#,
+      OperatorId=#operatorId#
       <dynamic prepend="WHERE">
 				<isParameterPresent>
 					bannerid=#BannerId#

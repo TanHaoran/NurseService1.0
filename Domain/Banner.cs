@@ -157,5 +157,9 @@ namespace Aersysm.Domain
             get { return _isdelete; }
             set { _isdelete = value; }
         }
+
+        [DataMember]
+        public string operatorId { get; set; }
+
     }
 }

@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="NoticeDepartment" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="NoticeDepartment" type="Aersysm.Domain.NoticeDepartment, Aersysm.Domain" />
+  </alias>
+  <resultMaps>
+    <resultMap id="SelectResult" class="NoticeDepartment">
+      <result property="id" column="Id" />
+      <result property="noticeId" column="NoticeId" />
+      <result property="departmentId" column="DepartmentId" />
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="SelectNoticeDepartment" parameterClass="int" resultMap="SelectResult">
+      Select
+      Id,
+      NoticeId,
+      DepartmentId
+      From NoticeDepartment
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          Id=#id#
+        </isParameterPresent>
+      </dynamic>
+    </select>
+
+    <select id="BaseSelectNoticeDepartment" parameterClass="int" resultMap="SelectResult">
+      Select
+      Id,
+      NoticeId,
+      DepartmentId
+      From NoticeDepartment
+    </select>
+
+    <select id="SelectNoticeDepartmentByNoticeId" parameterClass="int" resultMap="SelectResult">
+      Select
+      Id,
+      NoticeId,
+      DepartmentId
+      From NoticeDepartment
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          NoticeId=#noticeId#
+        </isParameterPresent>
+      </dynamic>
+    </select>
+
+    <insert id="InsertNoticeDepartment" parameterClass="NoticeDepartment">
+      Insert Into NoticeDepartment(
+      Id,
+      NoticeId,
+      DepartmentId
+      )Values(
+      #id#,
+      #noticeId#,
+      #departmentId#
+      )
+    </insert>
+   
+
+  </statements>
+</sqlMap>

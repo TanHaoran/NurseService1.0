@@ -158,5 +158,9 @@ namespace Aersysm.Domain
             get { return _hospitalname; }
             set { _hospitalname = value; }
         }
+
+
+        [DataMember]
+        public string OperatorId { get; set; }
     }
 }

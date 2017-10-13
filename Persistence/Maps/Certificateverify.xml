@@ -14,6 +14,7 @@
 			<result property="DealTime" column="dealtime" />
 			<result property="VerifyStatus" column="verifystatus" />
       <result property="VerifyView" column="verifyview" />
+      <result property="operatorId" column="OperatorId" />
 		</resultMap>
 	</resultMaps>
 	
@@ -28,7 +29,8 @@
       serviceid,
       dealtime,
       verifystatus,
-      verifyview
+      verifyview,
+      OperatorId
       From certificateverify
       <dynamic prepend="WHERE">
 				<isParameterPresent>
@@ -47,7 +49,8 @@
       serviceid,
       dealtime,
       verifystatus,
-      verifyview
+      verifyview,
+      OperatorId
       From certificateverify
     </select>
 		
@@ -65,7 +68,8 @@
       serviceid,
       dealtime,
       verifystatus,
-      verifyview
+      verifyview,
+      OperatorId
       )Values(
       #VerifyId#,
       #RegisterId#,
@@ -75,7 +79,8 @@
       #ServiceId#,
       #DealTime#,
       #VerifyStatus#,
-      #VerifyView#
+      #VerifyView#,
+      #operatorId#
       )
     </insert>
 		
@@ -89,7 +94,8 @@
       serviceid=#ServiceId#,
       dealtime=#DealTime#,
       verifystatus=#VerifyStatus#,
-      verifyview=#VerifyView#
+      verifyview=#VerifyView#,
+      OperatorId=#operatorId#
       <dynamic prepend="WHERE">
 				<isParameterPresent>
 					verifyid=#VerifyId#

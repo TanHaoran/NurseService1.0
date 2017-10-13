@@ -13,6 +13,8 @@ using System;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.Collections.Generic;
+
 namespace Aersysm.Domain
 {
 	/// <summary>
@@ -214,5 +216,9 @@ namespace Aersysm.Domain
             get { return _departmentname; }
             set { _departmentname = value; }
         }
+
+
+        [DataMember]
+        public List<Department> departmentlist { get; set; }
     }
 }

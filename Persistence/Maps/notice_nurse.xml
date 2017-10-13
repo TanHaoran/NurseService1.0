@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="NoticeNurse" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="NoticeNurse" type="Aersysm.Domain.NoticeNurse, Aersysm.Domain" />
+  </alias>
+  <resultMaps>
+    <resultMap id="SelectResult" class="NoticeNurse">
+      <result property="id" column="Id" />
+      <result property="noticeId" column="NoticeId" />
+      <result property="nurseId" column="NurseId" />
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="SelectNoticeNurse" parameterClass="int" resultMap="SelectResult">
+      Select
+      Id,
+      NoticeId,
+      NurseId
+      From NoticeNurse
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          Id=#id#
+        </isParameterPresent>
+      </dynamic>
+    </select>
+
+    <select id="BaseSelectNoticeNurse" parameterClass="int" resultMap="SelectResult">
+      Select
+      Id,
+      NoticeId,
+      NurseId
+      From NoticeNurse
+    </select>
+
+    <select id="SelectNoticeNurseByNoticeId" parameterClass="int" resultMap="SelectResult">
+      Select
+      Id,
+      NoticeId,
+      NurseId
+      From NoticeNurse
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          NoticeId=#noticeId#
+        </isParameterPresent>
+      </dynamic>
+    </select>
+
+    <insert id="InsertNoticeNurse" parameterClass="NoticeNurse">
+      Insert Into NoticeNurse(
+      Id,
+      NoticeId,
+      NurseId
+      )Values(
+      #id#,
+      #noticeId#,
+      #nurseId#
+      )
+    </insert>
+
+    <delete id="DeleteNoticeNurse" parameterClass="int">
+      Delete From NoticeNurse
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          Id=#id#
+        </isParameterPresent>
+      </dynamic>
+    </delete>
+
+
+  </statements>
+</sqlMap>
