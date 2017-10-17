@@ -36,6 +36,20 @@
 				</isParameterPresent>
 			</dynamic>
 		</select>
+
+    <select id="SelectuserrelrecordPage" parameterClass="int" resultMap="SelectResult">
+      Select
+      registerid,
+      hospitalid,
+      hospitalname,
+      departmentid,
+      departmentname,
+      nursingunitid,
+      nursingunitname,
+      employeeid,
+      role
+      From Userrelrecord limit #skip#,#count#
+    </select>
 		
 		<select id="BaseSelectuserrelrecord" parameterClass="int" resultMap="SelectResult">
 			Select 
@@ -50,7 +64,7 @@
 				  role
 			From Userrelrecord
 		</select>
-		
+    
 		<select id="ChildSelectuserrelrecord" parameterClass="int" resultMap="SelectResult" extends="BaseSelectuserrelrecord">
 			
 		</select>

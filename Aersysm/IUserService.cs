@@ -567,8 +567,8 @@ namespace Services {
         /// </summary>
         /// <returns></returns>
         [OperationContract]
-        [WebGet(UriTemplate = "GetAllNurseInfo?adminId={adminId}&hospitalId={hospitalId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
-        RsList<Nurse> GetAllNurseInfo(string adminId, string hospitalId);
+        [WebGet(UriTemplate = "GetAllNurseInfo?operatorId={operatorId}&hospitalId={hospitalId}&pageSize={pageSize}&pageNumber={pageNumber}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsList<Nurse> GetAllNurseInfo(string operatorId, string hospitalId, int pageSize, int pageNumber);
 
         /// <summary>
         /// 添加一个护士
