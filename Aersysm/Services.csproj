@@ -240,9 +240,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Domain\Domain.csproj">
-      <Project>{1c13eb91-f0b2-413b-b724-601236804c06}</Project>
-      <Name>Domain</Name>
+    <ProjectReference Include="..\Aersysm.Domain\Aersysm.Domain.csproj">
+      <Project>{e2e56f35-8521-40ec-a9a1-be3b36d3d341}</Project>
+      <Name>Aersysm.Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\Easemob.Restfull4Net\Easemob.Restfull4Net.csproj">
       <Project>{2F757799-E6C0-429B-B810-2CF97D047FA3}</Project>

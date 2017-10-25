@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="CreditStaff" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="CreditStaff" type="Aersysm.Domain.CreditStaff, Aersysm.Domain" />
+  </alias>
+  <resultMaps>
+    <resultMap id="SelectResult" class="CreditStaff">
+      <result property="staffId" column="NurseId" />
+      <result property="loginName" column="LoginName" />
+      <result property="password" column="Password" />
+      <result property="name" column="Name" />
+      <result property="inpatientAreaId" column="InpatientAreaId" />
+      <result property="inpatientAreaName" column="InpatientAreaName" />
+      <result property="hospitalId" column="HospitalId" />
+      <result property="hospitalName" column="HospitalName" />
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="SelectCreditStaff" parameterClass="int" resultMap="SelectResult">
+      Select
+      NurseId,
+      LoginName,
+      Password,
+      Name,
+      InpatientAreaId,
+      InpatientAreaName,
+      HospitalId,
+      HospitalName
+      From credit_staff
+      <dynamic prepend="WHERE">
+        <isParameterPresent>
+          HospitalId=#hospitalId# and LoginName=#loginName# and Password=#password#
+        </isParameterPresent>
+      </dynamic>
+    </select>
+
+    <select id="BaseSelectCreditStaff"  resultMap="SelectResult">
+      Select
+      NurseId,
+      LoginName,
+      Password,
+      Name,
+      HospitalName,
+      DepartmentName
+      From credit_staff
+    </select>
+  </statements>
+</sqlMap>

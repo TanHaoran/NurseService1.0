@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Aersysm.Domain
+{
+    [Serializable]
+    [DataContract]
+    public partial  class Admdepartment
+    {
+        [DataMember]
+        public string Id { get; set; }
+
+        [DataMember]
+        public string  AdmId { get; set; }
+
+        [DataMember]
+        public string  DepartmentId { get; set; }
+
+        //后端返回名字
+        [DataMember]
+        public string  DepartmentName { get; set; }
+    }
+}

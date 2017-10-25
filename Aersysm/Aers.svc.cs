@@ -2612,7 +2612,7 @@ namespace Aersysm
                         break;
                     case "156":
                         aers_tbl_events_zyblSqlMapDao zybldao = new aers_tbl_events_zyblSqlMapDao();
-                        zybldao.UpdateState(fadeBack, "1", eud);
+                        zybldao.UpdateState(fadeBack, "2", eud);
                         break;
                     default:
                         break;
@@ -9877,22 +9877,22 @@ namespace Aersysm
 
             //DH  2017-6-7  判断该课程是否完成计划
             CreditRecordSqlMapDao crdao = new CreditRecordSqlMapDao();
-            IList<CreditRecord> crlist = crdao.CreditRecordFindByUserID("ru00000513");
+            IList<CreditScore> crlist = crdao.CreditRecordFindByUserID("ru00000513");
 
             foreach (plancontents item in list)
             {
                 item.Course = listCourse.FirstOrDefault(o => o.CourseID == item.CourseID);
 
 
-                CreditRecord cr = crlist.FirstOrDefault(o => o.TrainingID == item.CourseID);
-                if (cr != null)
-                {
-                    item.Status = 1;
-                }
-                else
-                {
-                    item.Status = 0;
-                }
+                //CreditScore cr = crlist.FirstOrDefault(o => o.TrainingID == item.CourseID);
+                //if (cr != null)
+                //{
+                //    item.Status = 1;
+                //}
+                //else
+                //{
+                //    item.Status = 0;
+                //}
 
             }
             //DH  2017-6-7  判断该课程是否完成计划
@@ -10350,14 +10350,14 @@ namespace Aersysm
         #endregion
 
         #region DH  查询学分明细
-        public IList<CreditRecord> CreditRecordFindByUserID(string UserID)
+        public IList<CreditScore> CreditRecordFindByUserID(string UserID)
         {
             string res = "104";
             try
             {
 
                 CreditRecordSqlMapDao dao = new CreditRecordSqlMapDao();
-                IList<CreditRecord> list = dao.CreditRecordFindByUserID(UserID);
+                IList<CreditScore> list = dao.CreditRecordFindByUserID(UserID);
 
                 return list;
             }
@@ -10375,11 +10375,11 @@ namespace Aersysm
         {
             CreditRecordSqlMapDao crdao = new CreditRecordSqlMapDao();
 
-            IList<CreditRecord> crlist = crdao.CreditRecordFindByUserID(UserID);
+            IList<CreditScore> crlist = crdao.CreditRecordFindByUserID(UserID);
 
 
             decimal xf = 0;
-            foreach (CreditRecord xfitem in crlist)
+            foreach (CreditScore xfitem in crlist)
             {
                 xf += Convert.ToDecimal(xfitem.Grade);
             }

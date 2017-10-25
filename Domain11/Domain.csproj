@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1C13EB91-F0B2-413B-B724-601236804C06}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Domain</RootNamespace>
+    <AssemblyName>Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.0.8.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Admdepartment.cs" />
+    <Compile Include="Administrator.cs" />
+    <Compile Include="Admpermission.cs" />
+    <Compile Include="aers_sys_generalcode.cs" />
+    <Compile Include="aers_sys_seed.cs" />
+    <Compile Include="aers_sys_staffresources.cs" />
+    <Compile Include="aers_sys_statecode.cs" />
+    <Compile Include="aers_tbl_basicsdep.cs" />
+    <Compile Include="aers_tbl_eventsresume.cs" />
+    <Compile Include="aers_tbl_events_ddzc.cs" />
+    <Compile Include="aers_tbl_events_gl.cs" />
+    <Compile Include="aers_tbl_events_gy.cs" />
+    <Compile Include="aers_tbl_events_qt.cs" />
+    <Compile Include="aers_tbl_events_yc_parts.cs" />
+    <Compile Include="aers_tbl_events_yh.cs" />
+    <Compile Include="aers_tbl_events_zybl.cs" />
+    <Compile Include="aers_tbl_hospdep.cs" />
+    <Compile Include="aers_tbl_hospital.cs" />
+    <Compile Include="aers_tbl_LoginKey.cs" />
+    <Compile Include="aers_tbl_registereduser.cs" />
+    <Compile Include="aers_tbl_staff.cs" />
+    <Compile Include="Answer.cs" />
+    <Compile Include="Banner.cs" />
+    <Compile Include="CertificateAudit.cs" />
+    <Compile Include="Certificateverify.cs" />
+    <Compile Include="Country.cs" />
+    <Compile Include="Course.cs" />
+    <Compile Include="CourseCatalog.cs" />
+    <Compile Include="CourseDistribute.cs" />
+    <Compile Include="CourseOffice.cs" />
+    <Compile Include="CourseRecord.cs" />
+    <Compile Include="CourseSection.cs" />
+    <Compile Include="CourseType.cs" />
+    <Compile Include="CourseUser.cs" />
+    <Compile Include="CreditRecord.cs" />
+    <Compile Include="CreditScore.cs" />
+    <Compile Include="CreditStaff.cs" />
+    <Compile Include="Department.cs" />
+    <Compile Include="Depnurunit.cs" />
+    <Compile Include="Emchat.cs" />
+    <Compile Include="Emuser.cs" />
+    <Compile Include="Favour.cs" />
+    <Compile Include="Feedback.cs" />
+    <Compile Include="GenericDictionary.cs" />
+    <Compile Include="Groupinfo.cs" />
+    <Compile Include="Groupuser.cs" />
+    <Compile Include="Hospital.cs" />
+    <Compile Include="HospitalName.cs" />
+    <Compile Include="Integral.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="MsgReadStatus.cs" />
+    <Compile Include="Notes.cs" />
+    <Compile Include="Notice.cs" />
+    <Compile Include="NoticeDepartment.cs" />
+    <Compile Include="NoticeNurse.cs" />
+    <Compile Include="Nurse.cs" />
+    <Compile Include="NurseBaseInfo.cs" />
+    <Compile Include="Nursingunitid.cs" />
+    <Compile Include="Permission.cs" />
+    <Compile Include="plancontents.cs" />
+    <Compile Include="Problem.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Qq.cs" />
+    <Compile Include="Questions.cs" />
+    <Compile Include="Recharge.cs" />
+    <Compile Include="RegSMS.cs" />
+    <Compile Include="Releaseversion.cs" />
+    <Compile Include="ResultInfo.cs" />
+    <Compile Include="SaveFile.cs" />
+    <Compile Include="Sms.cs" />
+    <Compile Include="SMSMessage.cs" />
+    <Compile Include="StaffEducation.cs" />
+    <Compile Include="StudySchedule.cs" />
+    <Compile Include="ThirdPartData.cs" />
+    <Compile Include="Token.cs" />
+    <Compile Include="TrainDetailRecord.cs" />
+    <Compile Include="TrainingInfo.cs" />
+    <Compile Include="TrainRecord.cs" />
+    <Compile Include="Userauths.cs" />
+    <Compile Include="UserBasicInfo.cs" />
+    <Compile Include="UserLoginStatus.cs" />
+    <Compile Include="ViewBind.cs" />
+    <Compile Include="ViewContact.cs" />
+    <Compile Include="ViewFriendInfo.cs" />
+    <Compile Include="ViewGroupCreate.cs" />
+    <Compile Include="ViewGroupList.cs" />
+    <Compile Include="ViewHospitalUser.cs" />
+    <Compile Include="ViewJsonCommon.cs" />
+    <Compile Include="ViewRegisterId.cs" />
+    <Compile Include="ViewUserBindInfo.cs" />
+    <Compile Include="UserFirstInfo.cs" />
+    <Compile Include="Userpracticecertificate.cs" />
+    <Compile Include="Userquacertificate.cs" />
+    <Compile Include="Userregister.cs" />
+    <Compile Include="Userrelrecord.cs" />
+    <Compile Include="ViewNiceName.cs" />
+    <Compile Include="ViewRegister.cs" />
+    <Compile Include="ViewResetPassword.cs" />
+    <Compile Include="ViewSMS.cs" />
+    <Compile Include="ViewUserInfo.cs" />
+    <Compile Include="view_tabl_onekey.cs" />
+    <Compile Include="view_tbl_eventsresume.cs" />
+    <Compile Include="aers_tbl_events_yc.cs" />
+    <Compile Include="view_Login.cs" />
+    <Compile Include="view_tbl_registereduser.cs" />
+    <Compile Include="Weibo.cs" />
+    <Compile Include="Weixin.cs" />
+    <Compile Include="WydTest.cs" />
+    <Compile Include="XMLDatatable.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

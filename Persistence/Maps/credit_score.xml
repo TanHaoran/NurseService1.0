@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="CreditScore" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="CreditScore" type="Aersysm.Domain.CreditScore, Aersysm.Domain" />
+  </alias>
+  <resultMaps>
+    <resultMap id="SelectResult" class="CreditScore">
+      <result property="RecordID" column="CreditId" />
+      <result property="UserID" column="UserID" />
+      <result property="TrainingID" column="TrainingID" />
+      <result property="Grade" column="Grade" />
+      <result property="RealGrade" column="RealGrade" />
+    </resultMap>
+  </resultMaps>
+  
+  <statements>
+    <select id="BaseSelectCreditScore"  resultMap="SelectResult">
+      Select
+      CreditId,
+      UserID,
+      TrainingID,
+      Grade,
+      RealGrade
+      From creditrecord
+    </select>
+
+    <select id="SelectCreditScore"  resultMap="SelectResult">
+      Select
+      CreditId,
+      UserID,
+      TrainingID,
+      Grade,
+      RealGrade
+      From creditrecord where UserID=#staffId#
+    </select>
+
+  </statements>
+</sqlMap>

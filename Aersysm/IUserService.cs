@@ -1,4 +1,5 @@
 ﻿using Aersysm.Domain;
+using Domain;
 using System.Collections.Generic;
 using System.Data;
 using System.Runtime.Serialization;
@@ -613,5 +614,13 @@ namespace Services {
         ///  [OperationContract]
         [WebGet(UriTemplate = "GetAdminBanner?operatorId={operatorId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
         RsList<Banner> GetAdminBanner(string operatorId);
+
+        /// <summary>
+        /// 读取某人详细学分
+        /// </summary>
+        /// <param name="staffId"></param>
+        /// <returns></returns>
+        [WebGet(UriTemplate = "GetCreditScore?staffId={staffId}&year={year}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsList<CreditScoreDetail> GetCreditScore(string staffId, int year);
     }
 }

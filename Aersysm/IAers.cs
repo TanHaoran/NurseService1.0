@@ -943,7 +943,7 @@ namespace Aersysm
 
         [OperationContract]
         [WebGet(UriTemplate = "CreditRecordFindByUserID?UserId={UserId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
-        IList<CreditRecord> CreditRecordFindByUserID(string UserID);
+        IList<CreditScore> CreditRecordFindByUserID(string UserID);
 
         [OperationContract]
         [WebGet(UriTemplate = "CreditRecordTotalByUserID?UserId={UserId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]

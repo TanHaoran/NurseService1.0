@@ -32,6 +32,24 @@
 				</isParameterPresent>
 			</dynamic>
 		</select>
+    
+    <select id="SelectEmchatRemark" parameterClass="int" resultMap="SelectResult">
+			Select 
+				  emchatid,
+				  myid,
+				  emmyid,
+				  friendid,
+				  emfriendid,
+				  remark,
+				  isflag
+			From Emchat
+			<dynamic prepend="WHERE">
+				<isParameterPresent>
+          emmyid=#EMMyId# and 
+					emfriendid=#EMFriendId# 
+				</isParameterPresent>
+			</dynamic>
+		</select>
 		
 		<select id="BaseSelectEmchat" parameterClass="int" resultMap="SelectResult">
 			Select 

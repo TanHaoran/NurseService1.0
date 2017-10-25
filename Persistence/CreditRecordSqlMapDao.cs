@@ -41,14 +41,14 @@ namespace Aersysm.Persistence
         }
 
 
-        public void IntegralUpdate(CreditRecord integral)
+        public void IntegralUpdate(CreditScore integral)
         {
             String stmtId = "CreditRecord_Update";
             ExecuteUpdate(stmtId, integral);
 
         }
 
-        public CreditRecord CreditRecordFind(string UserID, string TrainingID)
+        public CreditScore CreditRecordFind(string UserID, string TrainingID)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace Aersysm.Persistence
                 Hashtable ht = new Hashtable();
                 ht.Add("UserID", UserID);
                 ht.Add("TrainingID", TrainingID);
-                CreditRecord result = ExecuteQueryForObject<CreditRecord>(stmtId, ht);
+                CreditScore result = ExecuteQueryForObject<CreditScore>(stmtId, ht);
                 return result;
             }
             catch (Exception ex)
@@ -70,13 +70,13 @@ namespace Aersysm.Persistence
         }
 
 
-        public IList<CreditRecord> CreditRecordFindByUserID(string UserID)
+        public IList<CreditScore> CreditRecordFindByUserID(string UserID)
         {
             String stmtId = "CreditRecord_FindByUserID";
 
             Hashtable ht = new Hashtable();
             ht.Add("UserID", UserID);
-            IList<CreditRecord> result = ExecuteQueryForList<CreditRecord>(stmtId, ht);
+            IList<CreditScore> result = ExecuteQueryForList<CreditScore>(stmtId, ht);
             return result;
         }
 

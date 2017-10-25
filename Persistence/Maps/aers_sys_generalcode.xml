@@ -9,81 +9,81 @@
 
   <resultMaps>
     <resultMap id="FullResultMap" class="aers_sys_generalcode">
-            <result property="DictionaryID" column="DictionaryID" dbType="String"/>
-            <result property="Content" column="Content" dbType="String"/>
-            <result property="DisplayOrder" column="DisplayOrder" dbType="Int32"/>
-            <result property="Code" column="Code" dbType="String"/>
-            <result property="SpellNo" column="SpellNo" dbType="String"/>
-            <result property="ClassType" column="ClassType" dbType="String"/>
-            <result property="Remark" column="Remark" dbType="String"/>
-            <result property="IsFlag" column="IsFlag" dbType="Int32"/>
-            <result property="OperatorDate" column="OperatorDate" dbType="DateTime"/>
-            <result property="OperatorID" column="OperatorID" dbType="String"/>
+      <result property="DictionaryID" column="DictionaryID" dbType="String"/>
+      <result property="Content" column="Content" dbType="String"/>
+      <result property="DisplayOrder" column="DisplayOrder" dbType="Int32"/>
+      <result property="Code" column="Code" dbType="String"/>
+      <result property="SpellNo" column="SpellNo" dbType="String"/>
+      <result property="ClassType" column="ClassType" dbType="String"/>
+      <result property="Remark" column="Remark" dbType="String"/>
+      <result property="IsFlag" column="IsFlag" dbType="Int32"/>
+      <result property="OperatorDate" column="OperatorDate" dbType="DateTime"/>
+      <result property="OperatorID" column="OperatorID" dbType="String"/>
     </resultMap>
   </resultMaps>
 
   <statements>
     <select id="aers_sys_generalcode_GetCount" resultClass="System.Int32">
-        SELECT count(*) FROM aers_sys_generalcode
+      SELECT count(*) FROM aers_sys_generalcode
     </select>
-    
+
     <select id="aers_sys_generalcode_FindAll" resultMap="FullResultMap">
-	    SELECT * FROM aers_sys_generalcode
-	</select>
-    
+      SELECT * FROM aers_sys_generalcode
+    </select>
+
     <select id="aers_sys_generalcode_Find" parameterClass="String" resultMap="FullResultMap" extends="aers_sys_generalcode_FindAll">
-	    WHERE
-            (DictionaryID = #DictionaryID#)
-	</select>
-    
+      WHERE
+      (DictionaryID = #DictionaryID#)
+    </select>
+
     <insert id="aers_sys_generalcode_Insert" parameterClass="aers_sys_generalcode">
-	    INSERT INTO aers_sys_generalcode (
-                    DictionaryID,
-                    Content,
-                    DisplayOrder,
-                    Code,
-                    SpellNo,
-                    ClassType,
-                    Remark,
-                    IsFlag,
-                    OperatorDate,
-                    OperatorID
-		    
-		) VALUES (
-                    #DictionaryID#,
-                    #Content#,
-                    #DisplayOrder#,
-                    #Code#,
-                    #SpellNo#,
-                    #ClassType#,
-                    #Remark#,
-                    #IsFlag#,
-                    #OperatorDate#,
-                    #OperatorID#
-		)
-	</insert>
-    
+      INSERT INTO aers_sys_generalcode (
+      DictionaryID,
+      Content,
+      DisplayOrder,
+      Code,
+      SpellNo,
+      ClassType,
+      Remark,
+      IsFlag,
+      OperatorDate,
+      OperatorID
+
+      ) VALUES (
+      #DictionaryID#,
+      #Content#,
+      #DisplayOrder#,
+      #Code#,
+      #SpellNo#,
+      #ClassType#,
+      #Remark#,
+      #IsFlag#,
+      #OperatorDate#,
+      #OperatorID#
+      )
+    </insert>
+
     <update id="aers_sys_generalcode_Update" parameterClass="aers_sys_generalcode">
-	    UPDATE area SET
-                    DictionaryID = #DictionaryID#,
-                    Content = #Content#,
-                    DisplayOrder = #DisplayOrder#,
-                    Code = #Code#,
-                    SpellNo = #SpellNo#,
-                    ClassType = #ClassType#,
-                    Remark = #Remark#,
-                    IsFlag = #IsFlag#,
-                    OperatorDate = #OperatorDate#,
-                    OperatorID = #OperatorID#
-		WHERE
-		    (DictionaryID = #DictionaryID#)
-	</update>
-    
+      UPDATE area SET
+      DictionaryID = #DictionaryID#,
+      Content = #Content#,
+      DisplayOrder = #DisplayOrder#,
+      Code = #Code#,
+      SpellNo = #SpellNo#,
+      ClassType = #ClassType#,
+      Remark = #Remark#,
+      IsFlag = #IsFlag#,
+      OperatorDate = #OperatorDate#,
+      OperatorID = #OperatorID#
+      WHERE
+      (DictionaryID = #DictionaryID#)
+    </update>
+
     <delete id="aers_sys_generalcode_Delete" parameterClass="aers_sys_generalcode">
-	    Delete From  aers_sys_generalcode 
-	        WHERE
-			(DictionaryID = #DictionaryID#)
-	</delete>
-    
+      Delete From  aers_sys_generalcode
+      WHERE
+      (DictionaryID = #DictionaryID#)
+    </delete>
+
   </statements>
 </sqlMap>

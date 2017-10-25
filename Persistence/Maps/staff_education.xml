@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="StaffEducation" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="StaffEducation" type="Aersysm.Domain.StaffEducation, Aersysm.Domain" />
+  </alias>
+  <resultMaps>
+    <resultMap id="SelectResult" class="StaffEducation">
+      <result property="UserID" column="StaffId" />
+      <result property="StaTime" column="StaTime" />
+      <result property="School" column="School" />
+      <result property="Journal" column="Journal" />
+      <result property="TypeID" column="TypeID" />
+      <result property="Education" column="Education" />
+      <result property="Grade" column="Grade" />
+      <result property="Fraction" column="Fraction" />
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="BaseSelectStaffEducation"  resultMap="SelectResult">
+      Select
+      StaffId,
+      StaTime,
+      School,
+      Journal,
+      TypeID,
+      Education,
+      Grade,
+      Fraction
+      From staffeducation
+    </select>
+
+    <select id="SelectStaffEducation"  resultMap="SelectResult">
+      Select
+      StaffId,
+      StaTime,
+      School,
+      Journal,
+      TypeID,
+      Education,
+      Grade,
+      Fraction
+      From staffeducation where StaffId=#staffId#
+    </select>
+
+  </statements>
+</sqlMap>

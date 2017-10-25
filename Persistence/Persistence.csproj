@@ -73,6 +73,8 @@
     <Compile Include="CourseDistributeSqlMapDao.cs" />
     <Compile Include="CourseRecordSqlMapDao.cs" />
     <Compile Include="CourseUserSqlMapDao.cs" />
+    <Compile Include="CreditScoreDao.cs" />
+    <Compile Include="CreditStaffDao.cs" />
     <Compile Include="DepartmentSqlMapDao.cs" />
     <Compile Include="DepnurunitSqlMapDao.cs" />
     <Compile Include="EmchatSqlMapDao.cs" />
@@ -91,6 +93,7 @@
     <Compile Include="ReleaseversionSqlMapDao.cs" />
     <Compile Include="SMSMessageSqlMapDao.cs" />
     <Compile Include="SMSSqlMapDao.cs" />
+    <Compile Include="StaffEducationDao.cs" />
     <Compile Include="StudyScheduleSqlMapDao.cs" />
     <Compile Include="TokenSqlMapDao.cs" />
     <Compile Include="TrainDAL.cs" />
@@ -124,6 +127,7 @@
     <Compile Include="QuestionsSqlmapDao.cs" />
     <Compile Include="RechargeSqlMapDao.cs" />
     <Compile Include="TrainDetailRecordSqlMapDao.cs" />
+    <Compile Include="TrainingInfoDao.cs" />
     <Compile Include="TrainRecordSqlMapDao.cs" />
     <Compile Include="UserauthsSqlMapDao.cs" />
     <Compile Include="userbasicinfoSqlMapDao.cs" />
@@ -152,9 +156,9 @@
     <Compile Include="QqSqlMapDao.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Domain\Domain.csproj">
-      <Project>{1c13eb91-f0b2-413b-b724-601236804c06}</Project>
-      <Name>Domain</Name>
+    <ProjectReference Include="..\Aersysm.Domain\Aersysm.Domain.csproj">
+      <Project>{e2e56f35-8521-40ec-a9a1-be3b36d3d341}</Project>
+      <Name>Aersysm.Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\Untility\Untility.csproj">
       <Project>{20671026-f754-45db-b783-4cf19a3d0f32}</Project>
@@ -282,6 +286,20 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Maps\notice_nurse.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\credit_score.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\credit_staff.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\training_info.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\staff_education.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

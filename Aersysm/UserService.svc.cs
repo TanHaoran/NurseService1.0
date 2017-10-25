@@ -2,6 +2,7 @@
 using Aersysm.Persistence;
 using cn.jpush.api;
 using cn.jpush.api.push.mode;
+using Domain;
 using Easemob.Restfull4Net;
 using Easemob.Restfull4Net.Entity.Request;
 using IBatisNet.Common.Logging;
@@ -1264,10 +1265,10 @@ namespace Services {
             }
             try {
                 CertificateverifySqlMapDao cdao = new CertificateverifySqlMapDao();
-                var data = cdao.GetcertificateverifyList().FirstOrDefault(o => o.CertificateId == model.CertificateId && o.RegisterId == model.RegisterId);
+                var data = cdao.GetcertificateverifyList().FirstOrDefault(o => o.CertificateId == model.CertificateId && o.Type == model.Type && o.RegisterId == model.RegisterId);
                 data.VerifyStatus = model.VerifyStatus;
                 data.VerifyView = model.VerifyView;
-                data.DealTime = model.DealTime;
+                data.DealTime = DateTime.Now;
                 cdao.Updatecertificateverify(data);
                 return "0";
             } catch (Exception e) {
@@ -1666,7 +1667,13 @@ namespace Services {
                     dt.Rows.Add(dr);
                 }
                 r.code = 0;
-                r.body = ModelConvertHelper<XMLDatatable>.ConvertToModel(dt);
+                List<XMLDatatable> hoss = new List<XMLDatatable>();
+                XMLDatatable hos = new XMLDatatable();
+                hos.Name = "西安交通大学医学院第一附属医院";
+                hos.HospitalId = "hp00000002";
+                hoss.Add(hos);
+                //r.body = ModelConvertHelper<XMLDatatable>.ConvertToModel(dt);
+                r.body = hoss;
                 return r;
                 //  return ModelConvertHelper<XMLDatatable>.ConvertToModel(dt);
             } catch (Exception) {
@@ -1727,7 +1734,7 @@ namespace Services {
                 return r;
             } catch (Exception e) {
                 r.code = 1;
-                r.msg = "反馈失败";
+                r.msg = "不允许有特殊字符";
                 return r;
             }
         }
@@ -1915,7 +1922,7 @@ namespace Services {
         }
         #endregion
 
-        #region 第三方登陆 院内账号  
+        #region 第三方登陆 院内登录
         public RsModel<UserFirstInfo> ThirdPartLoginHospital(userregister model) {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
             if (string.IsNullOrWhiteSpace(model.LoginType.ToString())) //院内账号登陆时，4不良事件 5学分 6排班
@@ -1959,6 +1966,7 @@ namespace Services {
                 return r;
             }
         }
+
         /// <summary>
         /// 不良事件系统第三方登陆
         /// </summary>
@@ -2002,24 +2010,133 @@ namespace Services {
         /// <returns></returns>
         public RsModel<UserFirstInfo> ThirdPartLoginHospitalXF(userregister model) {
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
-            string pwd = Common.UserMd5(model.Password);
-            var vaUser = ValidateXFUser(model.Phone, pwd);  //在学分库进行用户名密码验证
-            if (vaUser.code == 1)  //验证不通过时进行返回提醒
+
+            UserFirstInfo ufi = new UserFirstInfo();
+
+            if (model.HospitalId != "hp00000002") {
+                r.code = 1;
+                r.msg = "该医院学分功能尚未开放";
+                return r;
+            }
+
+            //在学分库进行用户名密码验证
+            var xfStaff = ValidateXFUser(model.HospitalId, model.Phone, model.Password);
+
+            if (xfStaff.code != 0)  //验证不通过时进行返回提醒
             {
                 r.code = 1;
                 r.msg = "用户名或密码错误";
                 return r;
             } else {
-                try {
-                    r.msg = "学分系统暂无数据";
-                    r.code = 0;
-                    return r;
-                } catch (Exception) {
-                    r.code = 1;
-                    r.msg = "登陆失败";
-                    return r;
+                // 先检测授权表是否存在这个用户
+                UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();
+
+                var auths = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginType == 5 && o.XFuserId == xfStaff.body.staffId);
+
+
+                // 不为空就表示要登录
+                if (auths != null) {
+                    userregisterSqlMapDao urDao = new userregisterSqlMapDao();
+                    var ur = urDao.GetuserregisterDetail(auths.RegisterId);
+                    ufi.NickName = ur.NickName;
+                    ufi.Avatar = ur.Avatar;
+                    ufi.RegisterId = auths.RegisterId;
+                    ufi.XFId = xfStaff.body.staffId;
+                    ufi.Name = xfStaff.body.name;
+                    ufi.HospitalId = xfStaff.body.hospitalId;
+                    ufi.HospitalName = xfStaff.body.hospitalName;
+                    ufi.DepartmentId = xfStaff.body.inpatientAreaId;
+                    ufi.DepartmentName = xfStaff.body.inpatientAreaName;
+                    UserrelrecordSqlMapDao uDao = new UserrelrecordSqlMapDao();
+                    ufi.DepartmentUserCount = uDao.GetUserrelrecordList().Where(o => o.DepartmentId == ufi.DepartmentId && o.HospitalId == ufi.HospitalId).Count();
                 }
+                // 否则就是第一次注册
+                else {
+
+
+                    // 创建注册表
+                    userregisterSqlMapDao urDao = new userregisterSqlMapDao();
+                    userregister ur = new userregister();
+                    ur.RegisterId = new aers_sys_seedSqlMapDao().GetMaxID("userregister");
+                    ur.Name = xfStaff.body.name;
+                    urDao.Adduserregister(ur);
+
+                    // 环信单个创建
+                    var syncRequest = Client.DefaultSyncRequest;
+
+                    var userr = syncRequest.UserCreate(new UserCreateReqeust() {
+                        nickname = string.Concat(ur.RegisterId, this._userName),
+                        password = "WAJB357",
+                        username = string.Concat(ur.RegisterId, this._userName),
+                    });
+
+                    // 创建授权表
+                    UserauthsSqlMapDao uaDao = new UserauthsSqlMapDao();
+                    Userauths ua = new Userauths();
+                    ua.AuthsId = new aers_sys_seedSqlMapDao().GetMaxID("userauths");
+                    ua.RegisterId = ur.RegisterId;
+                    ua.LoginType = 5;
+                    ua.LoginNumber = model.Phone;
+                    ua.LoginLastTime = DateTime.Now;
+                    ua.XFuserId = xfStaff.body.staffId;
+                    uaDao.Adduserauths(ua);
+
+                    // 基本信息表
+                    userbasicinfoSqlMapDao ubDao = new userbasicinfoSqlMapDao();
+                    UserBasicInfo ubi = new UserBasicInfo();
+                    ubi.RegisterId = ur.RegisterId;
+                    ubi.Birthday = DateTime.Now;
+                    ubDao.Adduserbasicinfo(ubi);
+
+                    // 两证
+                    UserpracticecertificateSqlMapDao upcDao = new UserpracticecertificateSqlMapDao();
+                    Userpracticecertificate upc = new Userpracticecertificate();
+                    upc.RegisterId = ur.RegisterId;
+                    upc.BirthDate = DateTime.Now;
+                    upc.FirstJobTime = DateTime.Now;
+                    upc.CertificateDate = DateTime.Now;
+                    upc.FirstRegisterDate = DateTime.Now;
+                    upc.LastRegisterDate = DateTime.Now;
+                    upc.RegisterToDate = DateTime.Now;
+                    upcDao.Adduserpracticecertificate(upc);
+
+                    UserquacertificateSqlMapDao uqcDao = new UserquacertificateSqlMapDao();
+                    Userquacertificate uqc = new Userquacertificate();
+                    uqc.RegisterId = ur.RegisterId;
+                    uqc.ApproveDate = DateTime.Now;
+                    uqc.DateBirth = DateTime.Now;
+                    uqc.IssuingDate = DateTime.Now;
+                    uqcDao.Adduserquacertificate(uqc);
+
+                    // 组织关系表
+                    UserrelrecordSqlMapDao urrDao = new UserrelrecordSqlMapDao();
+                    Userrelrecord urr = new Userrelrecord();
+                    urr.RegisterId = ur.RegisterId;
+                    urr.HospitalId = xfStaff.body.hospitalId;
+                    urr.HospitalName = xfStaff.body.hospitalName;
+                    urr.DepartmentName = xfStaff.body.inpatientAreaName;
+                    urr.DepartmentId = xfStaff.body.inpatientAreaId;
+                    urrDao.Adduserrelrecord(urr);
+
+
+                    ufi.RegisterId = ur.RegisterId;
+                    ufi.XFId = xfStaff.body.staffId;
+                    ufi.Name = xfStaff.body.name;
+                    ufi.HospitalId = xfStaff.body.hospitalId;
+                    ufi.HospitalName = xfStaff.body.hospitalName;
+                    ufi.DepartmentId = xfStaff.body.inpatientAreaId;
+                    ufi.DepartmentName = xfStaff.body.inpatientAreaName;
+
+                    UserrelrecordSqlMapDao uDao = new UserrelrecordSqlMapDao();
+                    ufi.DepartmentUserCount = uDao.GetUserrelrecordList().Where(o => o.DepartmentId == ufi.DepartmentId && o.HospitalId == ufi.HospitalId).Count();
+
+
+                    LoginStatus(model.DeviceRegId, ur.RegisterId, 5);  //院内账号第一次登陆时 登陆表添加数据，并进行消息推送
+
+                }
+                r.body = ufi;
             }
+            return r;
         }
 
         /// <summary>
@@ -2038,8 +2155,8 @@ namespace Services {
                 return r;
             } else {
                 try {
-                    r.msg = "学分系统暂无数据";
-                    r.code = 0;
+                    r.msg = "排班系统暂无数据";
+                    r.code = 1;
                     return r;
                 } catch (Exception) {
                     r.code = 1;
@@ -2739,12 +2856,21 @@ namespace Services {
                         return r;
                     }
                 } else if (model.LoginType == 4) //不良事件  解绑时改状态，目前直接删除
-                  {
+                    {
 
                     UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();
                     var data = uadao.GetUserauthsList().FirstOrDefault(o => o.RegisterId == model.RegisterId && o.LoginType == 4 && o.LoginNumber == model.LoginName);  //phone传的是不良事件的登陆账号
                     if (data != null) {
                         uadao.Deleteuserauths(data.AuthsId); //目前先直接删除，以后需要进行改状态处理
+
+                        // 删掉组织关系表中的医院部分的数据
+                        UserrelrecordSqlMapDao rDao = new UserrelrecordSqlMapDao();
+                        var record = rDao.GetuserrelrecordDetail(model.RegisterId);
+                        record.DepartmentId = "";
+                        record.DepartmentName = "";
+                        record.HospitalId = "";
+                        record.HospitalName = "";
+                        rDao.Updateuserrelrecord(record);
 
                         r.code = 0;
                         return r;
@@ -2756,9 +2882,27 @@ namespace Services {
 
                 } else if (model.LoginType == 5) //学分
                   {
-                    r.code = 1;
-                    r.msg = "学分系统暂不可用";
-                    return r;
+                    UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();
+                    var data = uadao.GetUserauthsList().FirstOrDefault(o => o.RegisterId == model.RegisterId && o.LoginType == 5 && o.LoginNumber == model.LoginName);  //phone传的是不良事件的登陆账号
+                    if (data != null) {
+                        uadao.Deleteuserauths(data.AuthsId); //目前先直接删除，以后需要进行改状态处理
+
+                        // 删掉组织关系表中的医院部分的数据
+                        UserrelrecordSqlMapDao rDao = new UserrelrecordSqlMapDao();
+                        var record = rDao.GetuserrelrecordDetail(model.RegisterId);
+                        record.DepartmentId = "";
+                        record.DepartmentName = "";
+                        record.HospitalId = "";
+                        record.HospitalName = "";
+                        rDao.Updateuserrelrecord(record);
+
+                        r.code = 0;
+                        return r;
+                    } else {
+                        r.code = 1;
+                        r.msg = "该学分账号不存在";
+                        return r;
+                    }
 
                 } else if (model.LoginType == 6) //排班
                   {
@@ -3225,19 +3369,24 @@ namespace Services {
                                     UFI.DepartmentName = hd.HospdepName;
                                 } else {
                                     UFI.DepartmentName = "";
-                                }                               
+                                }
 
                                 // 医院Id
                                 UFI.HospitalId = hd.HospId;
                                 // 医院名称 
                                 aers_tbl_events_ycSqlMapDao hdao = new aers_tbl_events_ycSqlMapDao();
                                 var hdat = hdao.hospitalFindByHospId(hd.HospId);
-                                UFI.HospitalName = hdat.HospName;   
+                                UFI.HospitalName = hdat.HospName;
+
+                                // 统计科室人数
+                                UserrelrecordSqlMapDao uDao = new UserrelrecordSqlMapDao();
+                                UFI.DepartmentUserCount = uDao.GetUserrelrecordList().Where(o => o.DepartmentId == UFI.DepartmentId && o.HospitalId == UFI.HospitalId).Count();
 
                                 var name = sDao.FindNameByRid(ardataRegusterId);
                                 UFI.Name = name;
                                 r.code = 0;
                                 UFI.ReguserId = ardataRegusterId;
+                                UFI.RegisterId = model.RegisterId;
                                 r.body = UFI;
                                 return r;
                             } catch (Exception e) {
@@ -3250,9 +3399,82 @@ namespace Services {
                     }
                 } else if (model.LoginType == 5) //学分
                   {
-                    r.code = 0;
-                    r.msg = "学分系统暂未开通";
-                    return r;
+                    if (string.IsNullOrWhiteSpace(model.LoginName)) {
+                        r.code = 1;
+                        r.msg = "学分登陆账号不能为空";
+                        return r;
+                    }
+                    var vacode = ValidateXFUser(model.HospitalId, model.LoginName, model.Password);  //不良时间用户体系进行合法性验证
+
+                    if (vacode.code != 0) {
+                        r.code = 1;
+                        r.msg = vacode.msg;
+                        return r;
+                    } else {
+                        UserauthsSqlMapDao uadao = new UserauthsSqlMapDao(); //建立对应关系，授权表里面插入一条数据,先判断是否已经绑定
+                        var audata = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginType == 5 && !string.IsNullOrWhiteSpace(o.XFuserId) && o.XFuserId == vacode.body.staffId);
+                        if (audata != null) {
+                            r.code = 1;
+                            r.msg = "该学分账号已被绑定";
+                            return r;
+                        } else {
+                            try {
+                                //根据用户名密码查出用户注册id
+                                CreditStaffDao csDao = new CreditStaffDao();
+                                var cs = csDao.GetCreditStaffDetail(model.HospitalId, model.LoginName, Common.UserMd5(model.Password));
+
+                                // 更新注册表中的姓名
+                                userregisterSqlMapDao urDao = new userregisterSqlMapDao();
+                                var ur = urDao.GetuserregisterDetail(model.RegisterId);
+                                ur.Name = cs.name;
+                                urDao.Updateuserregister(ur);
+
+                                // 学分唯一id                              
+                                var xfId = cs.staffId;
+
+                                Userauths ua = new Userauths();
+                                ua.AuthsId = new aers_sys_seedSqlMapDao().GetMaxID("userauths");
+                                ua.LoginLastTime = DateTime.Now;
+                                ua.LoginNumber = model.LoginName;
+                                ua.LoginType = 5; //学分账号5
+                                ua.Password = Common.UserMd5(model.Password);
+                                ua.RegisterId = model.RegisterId;
+                                ua.XFuserId = xfId;
+                                ua.Verified = 1;  //绑定时，可用状态为1
+                                uadao.Adduserauths(ua);
+
+                                // 更新userrelrecord表中的数据
+                                UserrelrecordSqlMapDao recordDao = new UserrelrecordSqlMapDao();
+                                Userrelrecord record = recordDao.GetuserrelrecordDetail(model.RegisterId);
+                                record.DepartmentId = cs.inpatientAreaId;
+                                record.DepartmentName = cs.inpatientAreaName;
+                                record.HospitalId = cs.hospitalId;
+                                record.HospitalName = cs.hospitalName;
+                                recordDao.Updateuserrelrecord(record);
+
+                                UFI.DepartmentId = cs.inpatientAreaId;
+                                UFI.DepartmentName = cs.inpatientAreaName;
+                                UFI.HospitalId = cs.hospitalId;
+                                UFI.HospitalName = cs.hospitalName;
+
+                                // 统计科室人数
+                                UserrelrecordSqlMapDao uDao = new UserrelrecordSqlMapDao();
+                                UFI.DepartmentUserCount = uDao.GetUserrelrecordList().Where(o => o.DepartmentId == UFI.DepartmentId && o.HospitalId == UFI.HospitalId).Count();
+
+                                UFI.Name = cs.name;
+                                r.code = 0;
+                                UFI.XFId = cs.staffId;
+                                UFI.RegisterId = model.RegisterId;
+                                r.body = UFI;
+                                return r;
+                            } catch (Exception e) {
+                                r.code = 1;
+                                r.msg = "院内账号绑定失败";
+                                return r;
+                            }
+                        }
+
+                    }
                 } else if (model.LoginType == 6) //排班
                   {
                     r.code = 0;
@@ -3341,7 +3563,7 @@ namespace Services {
             RsList<Banner> r = new Services.RsList<Banner>();
             try {
                 BannerSqlMapDao bdao = new BannerSqlMapDao();
-                var datalist = bdao.GetBannerList().OrderByDescending(o => o.DisplayOrder).Where(o=> o.IsDelete == 0).ToList();
+                var datalist = bdao.GetBannerList().OrderByDescending(o => o.DisplayOrder).Where(o => o.IsDelete == 0).ToList();
                 r.code = 0;
                 r.body = datalist; //banner取前5条数据
             } catch (Exception e) {
@@ -3425,8 +3647,6 @@ namespace Services {
                 return r;
             }
 
-
-
             return GetUserFirstInfoById(rdata.RegisterId);
         }
         #endregion
@@ -3448,7 +3668,9 @@ namespace Services {
                     ufi.HospitalName = urdata.HospitalName;
                     ufi.DepartmentId = urdata.DepartmentId;
                     ufi.DepartmentName = urdata.DepartmentName;
-                    ufi.DepartmentUserCount = urdao.GetUserrelrecordList().Where(o => o.DepartmentId == urdata.DepartmentId && o.HospitalId == urdata.HospitalId).Count();
+                    if (!string.IsNullOrWhiteSpace(urdata.DepartmentId) && !string.IsNullOrWhiteSpace(urdata.HospitalId)) {
+                        ufi.DepartmentUserCount = urdao.GetUserrelrecordList().Where(o => o.DepartmentId == urdata.DepartmentId && o.HospitalId == urdata.HospitalId).Count();
+                    }
                 }
 
                 UserquacertificateSqlMapDao uqdao = new UserquacertificateSqlMapDao();
@@ -3542,6 +3764,10 @@ namespace Services {
                 if (uadata != null) {
                     ufi.ReguserId = uadata.ReguserId;
                 }
+                var xfData = uadao.GetUserauthsList().FirstOrDefault(o => o.RegisterId == RegisterId && o.LoginType == 5);
+                if (xfData != null) {
+                    ufi.XFId = xfData.XFuserId;
+                }
                 r.code = 0;
                 //string[] reid = { ufi.RegisterId };
                 //string s = Common.PushMsgByAliasId("您已成功注册注册智护", reid, DeviceId);
@@ -3573,7 +3799,6 @@ namespace Services {
                     r.msg = "该账号暂无绑定信息";
                 }
 
-                int count;
                 var qqdata = uadata.OrderByDescending(o => o.LoginLastTime).FirstOrDefault(o => o.LoginType == 1);
 
                 if (qqdata != null) {
@@ -3624,7 +3849,7 @@ namespace Services {
 
                 var XFData = uadata.FirstOrDefault(o => o.LoginType == 5 && o.RegisterId == RegisterId);  //学分  5
                 if (XFData != null) {
-                    ub.XFOpenId = XFData.ReguserId;
+                    ub.XFOpenId = XFData.XFuserId;
                     ub.XFId = XFData.LoginNumber;
                 }
 
@@ -3676,7 +3901,6 @@ namespace Services {
                     ui.NickName = urdata.NickName;
                     ui.Name = urdata.Name;
 
-
                     userbasicinfoSqlMapDao ubdao = new userbasicinfoSqlMapDao();
                     var ubdata = ubdao.GetuserbasicinfoDetail(RegisterId);
                     if (ubdata != null) {
@@ -3713,6 +3937,11 @@ namespace Services {
                         }
 
                     }
+
+                    if (ui.PVerifyStatus == 3 && ui.QVerifyStatus == 3) {
+                        ui.Name = upcdata.Name;
+                    }
+
                     UserrelrecordSqlMapDao urddao = new UserrelrecordSqlMapDao();
                     var urddata = urddao.GetuserrelrecordDetail(RegisterId);
                     if (urddata != null) {
@@ -3721,7 +3950,6 @@ namespace Services {
                         ui.DepartmentId = urddata.DepartmentId;
                         ui.DepartmentName = urddata.DepartmentName;
                         ui.EmployeeId = urddata.EmployeeId;
-
                         ui.DepartmentUserCount = urddao.GetUserrelrecordList().Where(o => o.HospitalId == urddata.HospitalId && o.DepartmentId == urddata.DepartmentId).Count();
                     }
                     r.code = 0;
@@ -3734,7 +3962,7 @@ namespace Services {
                 }
 
 
-            } catch (Exception) {
+            } catch (Exception e) {
                 r.code = 1;
                 return r;
             }
@@ -4080,6 +4308,11 @@ namespace Services {
                     fi.Avatar = urdata.Avatar;
                     fi.Phone = urdata.Phone;
                     fi.IsFriend = true;
+
+                    EmchatSqlMapDao eDao = new EmchatSqlMapDao();
+                    var emchat = eDao.GetEmchatDetailRemark(MyId, fi.FriendId);
+                    fi.Remark = emchat.Remark;
+
                     flist.Add(fi);
                 }
                 r.code = 0;
@@ -4643,7 +4876,7 @@ namespace Services {
                 var ubdata = ubdao.GetuserbasicinfoList();
 
                 GroupinfoSqlMapDao gidao = new GroupinfoSqlMapDao();
-                var gidata = gidao.GetGroupinfoList();
+                var gidata = gidao.GetGroupinfoList().OrderByDescending(o => o.CreateTime).ToList();
 
                 foreach (var item in grouplist) {
                     ViewGroupList vgl = new ViewGroupList();
@@ -4657,11 +4890,12 @@ namespace Services {
                     var groupuserlist = gudata.Where(o => o.GroupId == item);
                     foreach (var u in groupuserlist) {
                         ViewFriendInfo vc = new ViewFriendInfo();
-                        vc.NickName = u.NickName;
+                        userregisterSqlMapDao uDao = new userregisterSqlMapDao();
+                        vc.NickName = uDao.GetuserregisterDetail(u.RegisterId).NickName;
                         vc.Avatar = urdata.FirstOrDefault(o => o.RegisterId == u.RegisterId).Avatar;
                         vc.Name = urdata.FirstOrDefault(o => o.RegisterId == u.RegisterId).Name;
                         vc.Phone = urdata.FirstOrDefault(o => o.RegisterId == u.RegisterId).Phone;
-                        vc.Role = urldata.FirstOrDefault(o => o.RegisterId == u.RegisterId).Role;
+                        //vc.Role = urldata.FirstOrDefault(o => o.RegisterId == u.RegisterId).Role;
                         vc.Sex = ubdata.FirstOrDefault(o => o.RegisterId == u.RegisterId).Sex;
                         vc.FriendId = u.RegisterId;
                         vc.MyId = RegisterId;
@@ -4681,7 +4915,7 @@ namespace Services {
                     vglist.Add(vgl);
                 }
                 r.code = 0;
-                r.body = vglist;
+                r.body = vglist.OrderByDescending(o => o.CreateTime).ToList();
                 return r;
             } catch (Exception e) {
                 r.code = 1;
@@ -4734,17 +4968,27 @@ namespace Services {
                 var ecdata = ecdao.GetEmchatList();
 
                 foreach (var item in gudata) {
+
                     ViewFriendInfo vf = new ViewFriendInfo();
                     var urdata = urdao.GetuserregisterDetail(item.RegisterId);
 
                     vf.Avatar = urdata.Avatar;  //注册表里面取
-                    vf.NickName = gudata.FirstOrDefault(o => o.RegisterId == item.RegisterId).NickName;  //群信息表里面取
+                    userregisterSqlMapDao uDao = new userregisterSqlMapDao();
+                    vf.NickName = uDao.GetuserregisterDetail(item.RegisterId).NickName;
+                    //   vf.NickName = gudata.FirstOrDefault(o => o.RegisterId == item.RegisterId).NickName;  //群信息表里面取
                     vf.Name = urdata.Name;
                     vf.Phone = urdata.Phone;
                     vf.Role = urrdao.GetuserrelrecordDetail(item.RegisterId).Role;
                     vf.Sex = ubdao.GetuserbasicinfoDetail(item.RegisterId).Sex;
                     vf.FriendId = item.RegisterId;
                     vf.MyId = RegisterId;
+
+                    EmchatSqlMapDao eDao = new EmchatSqlMapDao();
+                    var eChat = eDao.GetEmchatDetailRemark(RegisterId, item.RegisterId);
+                    if (eChat != null) {
+                        vf.Remark = eChat.Remark;
+                    }
+
                     var isfriendData = ecdata.FirstOrDefault(o => o.MyId == RegisterId && o.FriendId == item.RegisterId);
                     if (isfriendData == null) {
                         vf.IsFriend = false;
@@ -4905,7 +5149,8 @@ namespace Services {
                     // gu.NickName = Common.Decode(urdata.FirstOrDefault(o => o.RegisterId == item.FriendId).NickName);
                     gu.RegisterId = item.FriendId;
                     gudao.Addgroupuser(gu);     //可优化
-                    grouplist.Add(gu.HXGroupId);
+
+                    grouplist.Add(item.FriendId);
                 }
                 string[] group = grouplist.ToArray();
                 var response = Easemob.Restfull4Net.Client.DefaultSyncRequest.ChatGroupMemberAddBatch(gi.HXGroupId, group);
@@ -4984,7 +5229,12 @@ namespace Services {
                 return r;
             }
             GroupuserSqlMapDao gudao = new GroupuserSqlMapDao();
-            var gudata = gudao.GetGroupuserList().FirstOrDefault(o => o.HXGroupId == model.HXGroupId);
+            var gudata = gudao.GetGroupuserList().FirstOrDefault(o => o.HXGroupId == model.HXGroupId && o.RegisterId == model.RegisterId);
+            if (gudata.IsMaster == 1) {
+                r.code = 1;
+                r.msg = "群主无法退群";
+                return r;
+            }
             if (gudata == null) {
                 r.code = 1;
                 r.msg = "群Id不存在";
@@ -5126,34 +5376,20 @@ namespace Services {
         #endregion
 
         #region 学分系统在缓存库进行验证  
-        public RsModel<string> ValidateXFUser(string RegusterId, string Password) {
-            RsModel<string> r = new Services.RsModel<string>();
-            r.code = 0;
-            r.msg = "学分系统暂无数据";
+        public RsModel<CreditStaff> ValidateXFUser(string hospitalId, string loginName, string password) {
+            RsModel<CreditStaff> r = new RsModel<CreditStaff>();
+
+            CreditStaffDao csiDao = new CreditStaffDao();
+            password = Common.UserMd5(password);
+            var csi = csiDao.GetCreditStaffDetail(hospitalId, loginName, password);
+            if (csi != null) {
+                r.body = csi;
+                r.code = 0;
+            } else {
+                r.code = 1;
+                r.msg = "用户名或密码错误";
+            }
             return r;
-            //aers_tbl_registereduserSqlMapDao rdao = new aers_tbl_registereduserSqlMapDao();  //先在学分缓存库中进行验证
-            //var rdata = rdao.FindByLoginName(RegusterId);
-            //if (rdata == null)
-            //{
-            //    r.code = 1;
-            //    r.msg = "该用户不存在";
-            //    return r;
-            //}
-            //else
-            //{
-            //    if (rdata.Password != Password) //和不良事件库进行对比
-            //    {
-            //        r.code = 1;
-            //        r.msg = "密码错误";
-            //        return r;
-            //    }
-            //    else
-            //    {
-            //        r.code = 0;
-            //        r.msg = rdata.ReguserId;   //把注册Id带回去
-            //        return r;
-            //    }
-            //}
         }
         #endregion
 
@@ -6641,6 +6877,257 @@ namespace Services {
             return result;
         }
 
+
+        /// <summary>
+        /// 获取学分详情
+        /// </summary>
+        /// <param name="staffId"></param>
+        /// <returns></returns>
+        public RsList<CreditScoreDetail> GetCreditScore(string staffId, int year) {
+            RsList<CreditScoreDetail> result = new RsList<CreditScoreDetail>();
+            List<CreditScoreDetail> csds = new List<CreditScoreDetail>();
+
+            CreditScoreDao csDao = new CreditScoreDao();
+            TrainingInfoDao tiDao = new TrainingInfoDao();
+            StaffEducationDao seDao = new StaffEducationDao();
+            var css = csDao.GetCreditScoreDetail(staffId);
+            var ses = seDao.GetTrainingInfoDetail(staffId);
+
+            try {
+                foreach (var cs in css) {
+                    var ti = tiDao.GetTrainingInfoDetail(cs.TrainingID);
+
+                    // 1. 国家级学分 Grade
+                    // select * from Train_TrainingInfo where TrainType = '院外培训' and Level = '国家级' and CourseID = '学习班'
+                    if (ti.TrainType == "院外培训" && ti.Level == "国家级" && ti.CourseID == "学习班") {
+                        CreditScoreDetail csd = new CreditScoreDetail();
+                        csd.Type = "国家级学分";
+                        csd.Time = ti.StartTime;
+                        csd.Name = ti.TrainingName;
+                        csd.score = cs.Grade;
+                        csds.Add(csd);
+                    }
+
+                    // 2. 省级学分 Grade
+                    // select * from Train_TrainingInfo where TrainType = '院外培训' and Level = '省级' and CourseID = '学习班' and LinkPhone = '一类'
+                    if (ti.TrainType == "院外培训" && ti.Level == "省级" && ti.CourseID == "学习班" && ti.LinkPhone == "一类") {
+                        CreditScoreDetail csd = new CreditScoreDetail();
+                        csd.Type = "省级学分";
+                        csd.Time = ti.StartTime;
+                        csd.Name = ti.TrainingName;
+                        csd.score = cs.Grade;
+                        csds.Add(csd);
+                    }
+
+                    // 3. 一类学术会学分  Grade
+                    // select* from Train_TrainingInfo where TrainType = '院外培训' and CourseID = '学术会' and LinkPhone like '%一类%'
+                    if (ti.TrainType == "院外培训" && ti.CourseID == "学术会" && ti.LinkPhone.Contains("一类")) {
+                        CreditScoreDetail csd = new CreditScoreDetail();
+                        csd.Type = "一类学术会学分";
+                        csd.Time = ti.StartTime;
+                        csd.Name = ti.TrainingName;
+                        csd.score = cs.Grade;
+                        csds.Add(csd);
+                    }
+
+                    // 6. 二类学术会学分 Grade
+                    // select * from Train_TrainingInfo where TrainType = '院外培训' and CourseID = '学术会' and LinkPhone not like '%一类%'
+                    if (ti.TrainType == "院外培训" && ti.CourseID == "学术会" && !ti.LinkPhone.Contains("一类")) {
+                        CreditScoreDetail csd = new CreditScoreDetail();
+                        csd.Type = "二类学术会学分";
+                        csd.Time = ti.StartTime;
+                        csd.Name = ti.TrainingName;
+                        csd.score = cs.Grade;
+                        csds.Add(csd);
+                    }
+
+                    // 7. 院级培训班 RealGrade
+                    // select * from Train_TrainingInfo where TrainType = '培训班'
+                    if (ti.TrainType == "培训班") {
+                        CreditScoreDetail csd = new CreditScoreDetail();
+                        csd.Type = "院级培训班";
+                        csd.Time = ti.StartTime;
+                        csd.Name = ti.TrainingName;
+                        csd.score = cs.RealGrade;
+                        csds.Add(csd);
+                    }
+
+                    // 8. 院级专题讲座 Grade
+                    // select * from Train_TrainingInfo where TrainType = '院级专题讲座'
+                    if (ti.TrainType == "院级专题讲座") {
+                        CreditScoreDetail csd = new CreditScoreDetail();
+                        csd.Type = "院级专题讲座";
+                        csd.Time = ti.StartTime;
+                        csd.Name = ti.TrainingName;
+                        csd.score = cs.Grade;
+                        csds.Add(csd);
+                    }
+
+                    // 9. 院级操作培训  Grade
+                    // select * from Train_TrainingInfo where TrainType = '操作培训'
+                    if (ti.TrainType == "操作培训") {
+                        CreditScoreDetail csd = new CreditScoreDetail();
+                        csd.Type = "院级操作培训";
+                        csd.Time = ti.StartTime;
+                        csd.Name = ti.TrainingName;
+                        csd.score = cs.Grade;
+                        csds.Add(csd);
+                    }
+
+                    // 10. 院级护理查房  Grade
+                    // select * from Train_TrainingInfo where TrainType = '护理查房'
+                    if (ti.TrainType == "护理查房") {
+                        CreditScoreDetail csd = new CreditScoreDetail();
+                        csd.Type = "院级护理查房";
+                        csd.Time = ti.StartTime;
+                        csd.Name = ti.TrainingName;
+                        csd.score = cs.Grade;
+                        csds.Add(csd);
+                    }
+
+                    // 11. 科室学分  Grade
+                    // select * from Train_TrainingInfo where TrainType != '院外培训'
+                    if (ti.TrainType != "院外培训") {
+                        CreditScoreDetail csd = new CreditScoreDetail();
+                        csd.Type = "科室学分";
+                        csd.Time = ti.StartTime;
+                        csd.Name = ti.TrainingName;
+                        csd.score = cs.Grade;
+                        csds.Add(csd);
+                    }
+                }
+
+                foreach (var se in ses) {
+                    // 4. 核心期刊论文学分  Fraction
+                    // select * from DH207..Staff_Education where Journal = '是' and TypeID = 6
+                    if (se.Journal == "是" && se.TypeID == 6) {
+                        CreditScoreDetail csd = new CreditScoreDetail();
+                        csd.Type = "核心期刊论文";
+                        csd.Time = se.StaTime;
+                        csd.Name = se.School;
+                        if (!string.IsNullOrEmpty(se.Fraction) && se.Fraction!="NULL") {
+                            csd.score = float.Parse(se.Fraction);
+                        } else {
+                            csd.score = 0.0f;
+                        }
+                        csds.Add(csd);
+                    }
+
+                    // 5. 科研项目学分  Fraction
+                    // select * from DH207..Staff_Education where TypeID = 9
+                    if (se.TypeID == 0) {
+                        CreditScoreDetail csd = new CreditScoreDetail();
+                        csd.Type = "科研项目学分";
+                        csd.Time = se.StaTime;
+                        csd.Name = se.School;
+                        if (!string.IsNullOrEmpty(se.Fraction) && se.Fraction != "NULL") {
+                            csd.score = float.Parse(se.Fraction);
+                        } else {
+                            csd.score = 0.0f;
+                        }
+                        csds.Add(csd);
+                    }
+
+                    // 12. 考核学分 Grade
+                    // select * from DH207..Staff_Education where(Education = '理论' or Education = '操作') and TypeID = 5
+                    // --Education >= 60 + 1.5
+                    // --Fraction >= 85 + 0.5
+                    if (((se.Education == "理论" || se.Education == "操作") && se.TypeID == 5)
+                        || (se.TypeID == 8)) {
+                        CreditScoreDetail csd = new CreditScoreDetail();
+                        csd.Type = "考核学分";
+                        csd.Time = se.StaTime;
+                        csd.Name = se.School;
+                        csd.score = 0f;
+                        if (se.TypeID == 5) {
+                            csd.score = se.Grade;
+                        } else if (se.TypeID == 8) {
+                            if (!string.IsNullOrEmpty(se.Education) && se.Education != "NULL") {
+                                if (float.Parse(se.Education) >= 60) {
+                                    csd.score += 1.5f;
+                                }
+                            } else {
+                                csd.score += 0.0f;
+                            }
+                            if (!string.IsNullOrEmpty(se.Fraction) && se.Fraction != "NULL") {
+                                if (float.Parse(se.Fraction) >= 85) {
+                                    csd.score += 0.5f;
+                                }
+                            } else {
+                                csd.score += 0.0f;
+                            }
+                        }
+                        csds.Add(csd);
+                    }
+
+                    // 13. 非核心期刊论文学分 Fraction
+                    // select * from DH207..Staff_Education where TypeID = 6 and Journal != '是'
+                    if (se.TypeID == 6 && se.Journal != "是") {
+                        CreditScoreDetail csd = new CreditScoreDetail();
+                        csd.Type = "非核心期刊论文学分";
+                        csd.Time = se.StaTime;
+                        csd.Name = se.School;
+                        if (!string.IsNullOrEmpty(se.Fraction) && se.Fraction != "NULL") {
+                            csd.score = float.Parse(se.Fraction);
+                        } else {
+                            csd.score = 0.0f;
+
+                        }
+                        csds.Add(csd);
+                    }
+
+                    // 14. 自学培训学分 Fraction
+                    // select * from DH207..Staff_Education where TypeID = 12
+                    if (se.TypeID == 12) {
+                        CreditScoreDetail csd = new CreditScoreDetail();
+                        csd.Type = "自学培训学分";
+                        csd.Time = se.StaTime;
+                        csd.Name = se.School;
+                        if (!string.IsNullOrEmpty(se.Fraction) && se.Fraction != "NULL") {
+                            csd.score = float.Parse(se.Fraction);
+                        } else {
+                            csd.score = 0.0f;
+                        }
+                        csds.Add(csd);
+                    }
+
+                    // 15. 院外进修学分 Fraction
+                    // select * from DH207..Staff_Education where TypeID = 13
+                    if (se.TypeID == 13) {
+                        CreditScoreDetail csd = new CreditScoreDetail();
+                        csd.Type = "院外培训学分";
+                        csd.Time = se.StaTime;
+                        csd.Name = se.School;
+
+                        if (!string.IsNullOrEmpty(se.Fraction) && se.Fraction != "NULL") {
+                            csd.score = float.Parse(se.Fraction);
+                        } else {
+                            csd.score = 0.0f;
+                        }
+                        csds.Add(csd);
+                    }
+                }
+
+                // 按照年份过滤
+                List<CreditScoreDetail> body = new List<CreditScoreDetail>();
+                foreach (var csd in csds) {
+                    if (csd.Time.Year == year) {
+                        body.Add(csd);
+                    }
+                }                
+
+                result.body = body.OrderByDescending(o => o.Time).ToList();
+                result.code = 0;
+            } catch (Exception e) {
+                result.msg = "查询失败";
+                result.code = 1;
+                throw;
+            }
+            return result;
+        }
+
         #endregion
+
+
     }
 }

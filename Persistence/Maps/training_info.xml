@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="TrainingInfo" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="TrainingInfo" type="Aersysm.Domain.TrainingInfo, Aersysm.Domain" />
+  </alias>
+  <resultMaps>
+    <resultMap id="SelectResult" class="TrainingInfo">
+      <result property="TrainingID" column="﻿TrainId" />
+      <result property="TrainingName" column="TrainingName" />
+      <result property="StartTime" column="StartTime" />
+      <result property="Level" column="Level" />
+      <result property="LinkPhone" column="LinkPhone" />
+      <result property="CourseID" column="CourseID" />
+      <result property="ModifyDate" column="ModifyDate" />
+      <result property="Credit" column="Credit" />
+      <result property="TrainingNumber" column="TrainingNumber" />
+      <result property="TrainType" column="TrainType" />
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="BaseSelectTrainingInfo"  resultMap="SelectResult">
+      Select ﻿TrainId,
+      TrainingName,
+      StartTime,
+      Level,
+      LinkPhone,
+      CourseID,
+      ModifyDate,
+      Credit,
+      TrainingNumber,
+      TrainType
+      From traininginfo
+    </select>
+
+    <select id="SelectTrainingInfo"  resultMap="SelectResult">
+      Select ﻿TrainId,
+      TrainingName,
+      StartTime,
+      Level,
+      LinkPhone,
+      CourseID,
+      ModifyDate,
+      Credit,
+      TrainingNumber,
+      TrainType
+      From traininginfo where ﻿TrainId=#trainingId#
+    </select>
+
+  </statements>
+</sqlMap>
