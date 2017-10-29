@@ -1683,28 +1683,6 @@ namespace Services {
             }
         }
 
-        #region 添加医院
-        public string AddHospital() {
-            try {
-
-                // var dd= GetHospital();
-                //foreach (var item in )
-                //{
-
-                //}
-
-                //hospitalSqlMapDao hdao = new hospitalSqlMapDao();
-                //hospital h = new hospital();
-                //h.HospitalId = new aers_sys_seedSqlMapDao().GetMaxID("hospital");
-                //h.
-                //hdao.Addhospital(h);
-                return "0";
-            } catch (Exception e) {
-                return "1";
-            }
-        }
-        #endregion
-
         #endregion
 
         #region 软件反馈   0
@@ -2602,143 +2580,6 @@ namespace Services {
         }
         #endregion
 
-        #region 解绑   0
-        //public RsModel<string> UnBind(ViewBind model)
-        //{
-        //    RsModel<string> r = new Services.RsModel<string>();
-        //    if (string.IsNullOrWhiteSpace(model.RegisterId))
-        //    {
-        //        r.code = 1;
-        //        r.msg = "RegisterId不能为空";
-        //        return r;
-        //    }
-        //    try
-        //    {
-        //        if (!string.IsNullOrWhiteSpace(model.Phone))  //手机号不为空  ，解绑当前注册Id的手机号
-        //        {
-        //            userregisterSqlMapDao urdao = new userregisterSqlMapDao();
-        //            var udata = urdao.GetuserregisterDetail(model.RegisterId);
-        //            userregister ur = new userregister();
-        //            ur.Avatar = udata.Avatar;
-        //            ur.Name = udata.Name;
-        //            ur.NickName = udata.NickName;
-        //            ur.Password = udata.Password;
-        //            ur.RegisterId = udata.RegisterId;
-        //            ur.Phone = null;
-        //            urdao.Updateuserregister(ur);
-        //            r.code = 0;
-
-        //            return r;
-        //        }
-        //        if (model.QQData != null)
-        //        {
-        //            if (!string.IsNullOrWhiteSpace(model.QQData.OpenId))  //QQOpenId 不是空，解绑qq   需要优化
-        //            {
-        //                UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();
-        //                var data = uadao.GetUserauthsList().FirstOrDefault(o => o.RegisterId == model.RegisterId && o.LoginType == 1 && o.LoginNumber == model.QQData.OpenId);
-        //                if (data == null)
-        //                {
-        //                    r.code = 1;
-        //                    r.msg = "LoginType不能为空";
-        //                    return r;
-        //                }
-        //                uadao.Deleteuserauths(data.AuthsId);  //授权表里删除记录
-
-        //                QqSqlMapDao qdao = new QqSqlMapDao();
-        //                var qdata = qdao.GetQqList().FirstOrDefault(o => o.OpenId == model.QQData.OpenId); //需要优化
-        //                qdao.Deleteqq(qdata.Id);
-        //                r.code = 0;
-        //                return r;
-        //            }
-        //            else
-        //            {
-        //                r.code = 1;
-        //                r.msg = "QQopenId不能为空";
-        //                return r;
-        //            }
-        //        }
-        //        if (model.WXData != null)
-        //        {
-        //            if (!string.IsNullOrWhiteSpace(model.WXData.OpenId))  //QQOpenId 不是空，解绑qq   需要优化
-        //            {
-        //                UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();
-        //                var data = uadao.GetUserauthsList().FirstOrDefault(o => o.RegisterId == model.RegisterId && o.LoginType == 2 && o.LoginNumber == model.WXData.OpenId);
-        //                if (data == null)
-        //                {
-        //                    r.code = 1;
-        //                    r.msg = "LoginType不能为空";
-        //                    return r;
-        //                }
-        //                uadao.Deleteuserauths(data.AuthsId);  //授权表里删除记录
-
-        //                WeixinSqlMapDao wdao = new WeixinSqlMapDao();
-        //                var wdata = wdao.GetWeixinList().FirstOrDefault(o => o.OpenId == model.WXData.OpenId);
-        //                wdao.DeleteWeixin(wdata.Id);
-        //                r.code = 0;
-        //                return r;
-        //            }
-        //            else
-        //            {
-        //                r.code = 1;
-        //                r.msg = "微信openId不能为空";
-        //                return r;
-        //            }
-        //        }
-        //        if (model.WBData != null)
-        //        {
-        //            if (!string.IsNullOrWhiteSpace(model.WBData.idstr))  //QQOpenId 不是空，解绑qq   需要优化
-        //            {
-        //                UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();
-        //                var data = uadao.GetUserauthsList().FirstOrDefault(o => o.RegisterId == model.RegisterId && o.LoginType == 3 && o.LoginNumber == model.WBData.idstr);
-        //                if (data == null)
-        //                {
-        //                    r.code = 1;
-        //                    r.msg = "LoginType不能为空";
-        //                    return r;
-        //                }
-        //                uadao.Deleteuserauths(data.AuthsId);  //授权表里删除记录
-
-        //                WeiboSqlMapDao wdao = new WeiboSqlMapDao();
-        //                var wdata = wdao.GetWeiboList().FirstOrDefault(o => o.idstr == model.WBData.idstr);
-        //                wdao.DeleteWeibo(wdata.Id);
-        //                r.code = 0;
-        //                return r;
-        //            }
-        //            else
-        //            {
-        //                r.code = 1;
-        //                r.msg = "微信openId不能为空";
-        //                return r;
-        //            }
-        //        }
-        //        //if (!string.IsNullOrWhiteSpace(model.WBOpenId))  //WBOpenId 不是空，解绑微博  需要优化
-        //        //{
-        //        //    r.code = 1;
-        //        //    r.msg = "微博解绑测试未完";
-        //        //    return r;
-        //        //}
-        //        //if (!string.IsNullOrWhiteSpace(model.WXOpenId))  //WXOpenId 不是空，解绑微信  需要优化
-        //        //{
-        //        //    r.code = 1;
-        //        //    r.msg = "微信解绑测试未完";
-        //        //    return r;
-        //        //}
-        //        else
-        //        {
-        //            r.msg = "微博微信未完";
-        //            return r;
-        //        }
-
-        //    }
-        //    catch (Exception)
-        //    {
-        //        r.code = 1;
-        //        r.msg = "解绑失败";
-        //        return r;
-        //    }
-        //}
-        #endregion
-
         #region 解绑   0   9.7不能删除，只改状态
         public RsModel<string> UnBind(ViewBind model) {
             RsModel<string> r = new Services.RsModel<string>();
@@ -2924,231 +2765,7 @@ namespace Services {
         }
         #endregion
 
-        #region 绑定  0
-        //public RsModel<string> Bind(ViewBind model)
-        //{
-        //    RsModel<string> r = new Services.RsModel<string>();
-        //    if (string.IsNullOrWhiteSpace(model.RegisterId))
-        //    {
-        //        r.code = 1;
-        //        r.msg = "RegisterId不能为空";
-        //        return r;
-        //    }
-        //    try
-        //    {
-        //        if (!string.IsNullOrWhiteSpace(model.Phone))  //绑定手机号
-        //        {
-        //            userregisterSqlMapDao urdao = new userregisterSqlMapDao();
-        //            var udata = urdao.GetuserregisterDetail(model.RegisterId);
-        //            userregister ur = new userregister();
-        //            ur.Avatar = udata.Avatar;
-        //            ur.Name = udata.Name;
-        //            ur.NickName = udata.NickName;
-        //            ur.Password = udata.Password;
-        //            ur.RegisterId = udata.RegisterId;
-        //            ur.Phone = model.Phone;
-        //            urdao.Updateuserregister(ur);
-        //            r.code = 0;
-        //            return r;
-        //        }
-        //        else if (model.QQData != null)
-        //        {
-        //            if (model.QQData.OpenId != null)   //绑定qq号
-        //            {
-        //                UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();  //授权表
-        //                Userauths ua = new Userauths();
-        //                var data = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginNumber == model.QQData.OpenId);
-        //                if (data != null)
-        //                {
-        //                    r.code = 1;
-        //                    r.msg = "该qq已被绑定";
-        //                    return r;
-        //                }
-        //                ua.AuthsId = new aers_sys_seedSqlMapDao().GetMaxID("userauths");
-        //                ua.IMEI = model.QQData.DeviceId;
-        //                ua.LoginLastTime = DateTime.Now;
-        //                ua.LoginNumber = model.QQData.OpenId;
-        //                ua.LoginType = 1;  //1qq
-        //                ua.RegisterId = model.RegisterId;
-        //                ua.Verified = 0;
-        //                uadao.Adduserauths(ua);
 
-        //                QqSqlMapDao qdao = new QqSqlMapDao();
-        //                Qq qq = new Qq();
-        //                qq.AccessToken = model.QQData.AccessToken;
-        //                qq.City = model.QQData.City;
-        //                qq.DeviceId = model.QQData.DeviceId;
-        //                qq.Expires = model.QQData.Expires;
-        //                qq.FigureUrl = model.QQData.FigureUrl;
-        //                qq.Gender = model.QQData.Gender;
-        //                qq.Id = new aers_sys_seedSqlMapDao().GetMaxID("qq");
-        //                qq.NickName = model.QQData.NickName;
-        //                // qq.NickName =Common .Encode( model.QQData.NickName);
-        //                qq.OpenId = model.QQData.OpenId;
-        //                qq.Province = model.QQData.Province;
-        //                qq.RegisterId = model.RegisterId;
-        //                qdao.Addqq(qq);
-        //                r.code = 0;
-        //                return r;
-        //            }
-        //            else
-        //            {
-        //                r.code = 1;
-        //                r.msg = "OpenId不能为空";
-        //                return r;
-        //            }
-        //        }
-        //        else if (model.WXData != null)
-        //        {
-        //            if (!string.IsNullOrWhiteSpace(model.WXData.OpenId))
-        //            {
-        //                UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();  //授权表
-        //                Userauths ua = new Userauths();
-        //                var data = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginNumber == model.WXData.OpenId);
-        //                if (data != null)
-        //                {
-        //                    r.code = 1;
-        //                    r.msg = "该微信已被绑定";
-        //                    return r;
-        //                }
-        //                ua.AuthsId = new aers_sys_seedSqlMapDao().GetMaxID("userauths");
-        //                ua.IMEI = model.WXData.DeviceRegId;
-        //                ua.LoginLastTime = DateTime.Now;
-        //                ua.LoginNumber = model.WXData.OpenId;
-        //                ua.LoginType = 2;  //1qq
-        //                ua.RegisterId = model.RegisterId;
-        //                ua.Verified = 0;
-        //                uadao.Adduserauths(ua);
-
-        //                WeixinSqlMapDao wdao = new WeixinSqlMapDao();
-        //                Weixin w = new Weixin();
-        //                w.Id = new aers_sys_seedSqlMapDao().GetMaxID("weixin");
-        //                w.City = model.WXData.City;
-        //                w.Country = model.WXData.Country;
-        //                // w.DeviceRegId = model.WXData.DeviceRegId;
-        //                w.HeadImgurl = model.WXData.HeadImgurl;
-        //                w.Language = model.WXData.Language;
-        //                w.NickName = model.WXData.NickName;
-        //                w.OpenId = model.WXData.OpenId;
-        //                w.Province = model.WXData.Province;
-        //                w.Sex = model.WXData.Sex;
-        //                wdao.AddWeixin(w);
-        //                r.code = 0;
-        //                return r;
-        //            }
-        //            else
-        //            {
-        //                r.code = 1;
-        //                r.msg = "OpenId不能为空";
-        //                return r;
-        //            }
-        //        }
-        //        else if (model.WBData != null)
-        //        {
-        //            if (!string.IsNullOrWhiteSpace(model.WBData.idstr))
-        //            {
-        //                UserauthsSqlMapDao uadao = new UserauthsSqlMapDao();  //授权表
-        //                Userauths ua = new Userauths();
-        //                var data = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginNumber == model.WBData.idstr);
-        //                if (data != null)
-        //                {
-        //                    r.code = 1;
-        //                    r.msg = "该微信已被绑定";
-        //                    return r;
-        //                }
-        //                ua.AuthsId = new aers_sys_seedSqlMapDao().GetMaxID("userauths");
-        //                ua.IMEI = model.WBData.DeviceRegId;
-        //                ua.LoginLastTime = DateTime.Now;
-        //                ua.LoginNumber = model.WBData.idstr;
-        //                ua.LoginType = 3;  //1qq
-        //                ua.RegisterId = model.RegisterId;
-        //                ua.Verified = 0;
-        //                uadao.Adduserauths(ua);
-
-        //                WeiboSqlMapDao wdao = new WeiboSqlMapDao();
-        //                Weibo w = new Weibo();
-        //                w.Id = new aers_sys_seedSqlMapDao().GetMaxID("weibo");
-        //                w.description = model.WBData.description;
-        //                //  w.DeviceRegId = model.WXDa
-        //                w.gender = model.WBData.gender;
-        //                w.idstr = model.WBData.idstr;
-        //                w.location = model.WBData.location;
-        //                w.name = model.WBData.name;
-        //                w.profile_image_url = model.WBData.profile_image_url;
-        //                wdao.AddWeibo(w);
-        //                r.code = 0;
-        //                return r;
-        //            }
-        //            else
-        //            {
-        //                r.code = 1;
-        //                r.msg = "OpenId不能为空";
-        //                return r;
-        //            }
-        //        }
-        //        else if (model.LoginName != null)  //院内账号
-        //        {
-        //            var vacode = ValidateBlsjUser(model.LoginName, model.Password);  //不良时间用户体系进行合法性验证
-        //            if (vacode.code != 0)
-        //            {
-        //                r.code = 1;
-        //                r.msg = vacode.msg;
-        //                return r;
-        //            }
-        //            else
-        //            {
-
-        //                UserauthsSqlMapDao uadao = new UserauthsSqlMapDao(); //建立对应关系，授权表里面插入一条数据,先判断是否已经绑定
-        //                var audata = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginType == 0 && o.RegisterId == model.RegisterId && o.LoginNumber == model.LoginName);
-        //                if (audata != null)
-        //                {
-        //                    r.code = 1;
-        //                    r.msg = "该院内账号已被绑定";
-        //                    return r;
-        //                }
-        //                else
-        //                {
-        //                    try
-        //                    {
-        //                        aers_tbl_registereduserSqlMapDao ardao = new aers_tbl_registereduserSqlMapDao(); //根据用户名密码查出用户注册id
-        //                        var ardataRegusterId = ardao.FindByLoginName(model.LoginName).ReguserId;
-        //                        Userauths ua = new Userauths();
-        //                        ua.AuthsId = new aers_sys_seedSqlMapDao().GetMaxID("userauths");
-        //                        ua.LoginLastTime = DateTime.Now;
-        //                        ua.LoginNumber = model.LoginName;
-        //                        ua.LoginType = 0; //院内账号登陆类型  0
-        //                        ua.Password = model.Password;
-        //                        ua.RegisterId = model.RegisterId;
-        //                        ua.ReguserId = ardataRegusterId;
-        //                        ua.Verified = 0;
-        //                        uadao.Adduserauths(ua);
-        //                        r.code = 0;
-        //                        return r;
-        //                    }
-        //                    catch (Exception e)
-        //                    {
-        //                        r.code = 1;
-        //                        r.msg = "院内账号绑定失败";
-        //                        return r;
-        //                    }
-        //                }
-
-        //            }
-        //        }
-        //        else
-        //        {
-        //            r.msg = "绑定微信微博未完成";
-        //            return r;
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        r.code = 1;
-        //        r.msg = "绑定失败" + e;
-        //        return r;
-        //    }
-        //}
-        #endregion
 
         #region 绑定  0
         public RsModel<UserFirstInfo> Bind(ViewBind model) {
@@ -3382,8 +2999,15 @@ namespace Services {
                                 UserrelrecordSqlMapDao uDao = new UserrelrecordSqlMapDao();
                                 UFI.DepartmentUserCount = uDao.GetUserrelrecordList().Where(o => o.DepartmentId == UFI.DepartmentId && o.HospitalId == UFI.HospitalId).Count();
 
-                                var name = sDao.FindNameByRid(ardataRegusterId);
-                                UFI.Name = name;
+                                // 查询姓名
+                                userregisterSqlMapDao rDao = new userregisterSqlMapDao();
+                                var n = rDao.GetuserregisterDetail(model.RegisterId).Name;
+                                if (!string.IsNullOrWhiteSpace(n)) {
+                                    UFI.Name = n;
+                                } else {
+                                    var name = sDao.FindNameByRid(ardataRegusterId);
+                                    UFI.Name = name;
+                                }
                                 r.code = 0;
                                 UFI.ReguserId = ardataRegusterId;
                                 UFI.RegisterId = model.RegisterId;
@@ -3461,7 +3085,14 @@ namespace Services {
                                 UserrelrecordSqlMapDao uDao = new UserrelrecordSqlMapDao();
                                 UFI.DepartmentUserCount = uDao.GetUserrelrecordList().Where(o => o.DepartmentId == UFI.DepartmentId && o.HospitalId == UFI.HospitalId).Count();
 
-                                UFI.Name = cs.name;
+                                // 查询姓名
+                                userregisterSqlMapDao rDao = new userregisterSqlMapDao();
+                                var n = rDao.GetuserregisterDetail(model.RegisterId).Name;
+                                if (!string.IsNullOrWhiteSpace(n)) {
+                                    UFI.Name = n;
+                                } else {
+                                    UFI.Name = cs.name;
+                                }
                                 r.code = 0;
                                 UFI.XFId = cs.staffId;
                                 UFI.RegisterId = model.RegisterId;
@@ -5313,7 +4944,7 @@ namespace Services {
                 us.FirstLoginTime = DateTime.Now;
                 us.LastLoginTime = DateTime.Now;
                 usdao.AddUserLoginStatus(us);
-                Common.PushMsg("欢迎使用格格", DeviceRegId, RegisterId);
+                Common.PushMsg("欢迎使用燕尾帽", DeviceRegId, RegisterId);
                 r.code = 0;
                 return r;
             } else {
@@ -5334,13 +4965,13 @@ namespace Services {
             RsModel<string> r = new Services.RsModel<string>();
             aers_tbl_registereduserSqlMapDao rdao = new aers_tbl_registereduserSqlMapDao();  //先在不良事件用户库里验证用户
             var rdata = rdao.FindByLoginName(LoginName);
-            string pwd = Common.UserMd5(Password);
+            //string pwd = Common.UserMd5(Password);
             if (rdata == null) {
                 r.code = 1;
                 r.msg = "用户不存在";
                 return r;
             } else {
-                if (rdata.Password != pwd) {
+                if (rdata.Password != Password) {
                     r.code = 1;
                     r.msg = "密码错误";
                     return r;
@@ -5679,13 +5310,12 @@ namespace Services {
             }
             try {
                 HospitalSqlMapDao hdao = new HospitalSqlMapDao();
-                Hospital h = new Hospital();
                 model.HospitalId = new aers_sys_seedSqlMapDao().GetMaxID("hospital");  //注册表
-                h.OperatorTime = DateTime.Now;
-                hdao.Addhospital(h);
+                model.OperatorTime = DateTime.Now;
+                hdao.Addhospital(model);
                 r.code = 0;
                 return r;
-            } catch (Exception) {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "添加医院失败";
                 return r;
@@ -5821,7 +5451,6 @@ namespace Services {
                     ddatalist = ddatalist.Where(o => o.HospitalId == HospitalId).ToList();
                 }
 
-
                 HospitalSqlMapDao hdao = new HospitalSqlMapDao();
                 var hdata = hdao.GethospitalList();
                 foreach (var item in ddatalist) {
@@ -5850,7 +5479,7 @@ namespace Services {
             try {
                 DepartmentSqlMapDao ddao = new DepartmentSqlMapDao();
                 model.DepartmentId = new aers_sys_seedSqlMapDao().GetMaxID("department");
-                ddao.Updatedepartment(model);
+                ddao.Adddepartment(model);
                 r.code = 0;
                 return r;
             } catch (Exception) {
@@ -5880,7 +5509,7 @@ namespace Services {
                 ddao.Updatedepartment(model);
                 r.code = 0;
                 return r;
-            } catch (Exception) {
+            } catch (Exception e) {
                 r.code = 1;
                 r.msg = "科室修改失败";
                 return r;
@@ -6237,21 +5866,19 @@ namespace Services {
             }
             try {
                 BannerSqlMapDao bdao = new BannerSqlMapDao();
-                // 原始数据
+                // 需要修改的数据
                 var old = bdao.GetBannerDetail(model.BannerId);
 
-                // 新排序数据
+                // 需要新排序的数据
                 var exist = bdao.GetBannerByDisplayOrder(model.DisplayOrder);
 
-                if (old != exist) {
-                    var temp = old.DisplayOrder;
-                    old.DisplayOrder = exist.DisplayOrder;
-                    exist.DisplayOrder = temp;
-                    bdao.Updatebanner(old);
+                if (old.BannerId != exist.BannerId) {
+                    // 交欢两个Banner的排序位置
+                    exist.DisplayOrder = old.DisplayOrder;
                     bdao.Updatebanner(exist);
-                } else {
-                    bdao.Updatebanner(old);
                 }
+                bdao.Updatebanner(model);
+
                 r.code = 0;
                 return r;
             } catch (Exception e) {
@@ -7005,7 +6632,7 @@ namespace Services {
                         csd.Type = "核心期刊论文";
                         csd.Time = se.StaTime;
                         csd.Name = se.School;
-                        if (!string.IsNullOrEmpty(se.Fraction) && se.Fraction!="NULL") {
+                        if (!string.IsNullOrEmpty(se.Fraction) && se.Fraction != "NULL") {
                             csd.score = float.Parse(se.Fraction);
                         } else {
                             csd.score = 0.0f;
@@ -7114,7 +6741,7 @@ namespace Services {
                     if (csd.Time.Year == year) {
                         body.Add(csd);
                     }
-                }                
+                }
 
                 result.body = body.OrderByDescending(o => o.Time).ToList();
                 result.code = 0;
