@@ -2027,6 +2027,12 @@ namespace Services {
                     ufi.DepartmentName = xfStaff.body.inpatientAreaName;
                     UserrelrecordSqlMapDao uDao = new UserrelrecordSqlMapDao();
                     ufi.DepartmentUserCount = uDao.GetUserrelrecordList().Where(o => o.DepartmentId == ufi.DepartmentId && o.HospitalId == ufi.HospitalId).Count();
+
+                    // 查询不良事件账号
+                    var reguser =  uadao.GetUserauthsList().FirstOrDefault(o=>o.LoginType == 4 &&  o.RegisterId== auths.RegisterId);
+                    if (reguser != null) {
+                        ufi.ReguserId = reguser.ReguserId;
+                    }
                 }
                 // 否则就是第一次注册
                 else {
