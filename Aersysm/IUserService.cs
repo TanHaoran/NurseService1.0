@@ -204,7 +204,7 @@ namespace Services {
 
         [OperationContract]
         [WebGet(UriTemplate = "GetAddressByLngLat?lng={lng}&lat={lat}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
-        RsList<XMLDatatable> GetAddressByLngLat(string lng, string lat);
+        RsList<Hospital> GetAddressByLngLat(string lng, string lat);
 
         //根据医院ID查所有科室信息
         [OperationContract]
@@ -622,5 +622,21 @@ namespace Services {
         /// <returns></returns>
         [WebGet(UriTemplate = "GetCreditScore?staffId={staffId}&year={year}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
         RsList<CreditScoreDetail> GetCreditScore(string staffId, int year);
+
+        /// <summary>
+        /// 护理大会完善信息
+        /// </summary>
+        /// <param name="staffId"></param>
+        /// <returns></returns>
+        [WebGet(UriTemplate = "MeetingComplete?registerId={registerId}&hospitalId={hospitalId}&duty={duty}&role={role}&name={name}&phone={phone}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsModel<string> MeetingComplete(string registerId, string hospitalId, string duty, int role, string name, string phone);
+
+        /// <summary>
+        /// 护理大会切换身份
+        /// </summary>
+        /// <param name="staffId"></param>
+        /// <returns></returns>
+        [WebGet(UriTemplate = "MeetingChange?reguserId={reguserId}&role={role}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsModel<string> MeetingChange(string reguserId, int role);
     }
 }

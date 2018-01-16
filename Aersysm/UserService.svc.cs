@@ -650,6 +650,32 @@ namespace Services {
                     UserrelrecordSqlMapDao urdao = new UserrelrecordSqlMapDao();
                     urdao.Adduserrelrecord(ured);
 
+                    // 创建不良事件的账号
+                    aers_tbl_registereduserSqlMapDao atrDao = new aers_tbl_registereduserSqlMapDao();
+                    aers_tbl_registereduser atr = new aers_tbl_registereduser();
+                    atr.ReguserId = new aers_sys_seedSqlMapDao().GetMaxID("registereduser");
+                    atr.LoginName = userregisterId;
+                    atr.OperatorDate = DateTime.Now;
+                    atrDao.Insert(atr);
+
+                    aers_tbl_staffSqlMapDao atsDao = new aers_tbl_staffSqlMapDao();
+                    aers_tbl_staff ats = new aers_tbl_staff();
+                    var atsId = new aers_sys_seedSqlMapDao().GetMaxID("staff");
+                    ats.StaffId = atsId;
+                    ats.ReguserId = atr.ReguserId;
+                    ats.OperatorDate = DateTime.Now;
+                    atsDao.Insert(ats);
+
+                    // 给授权表中绑定不良事件的账号
+                    UserauthsSqlMapDao authsDao = new UserauthsSqlMapDao();
+                    var authsId = new aers_sys_seedSqlMapDao().GetMaxID("userauths");
+                    Userauths auths = new Userauths();
+                    auths.AuthsId = authsId;
+                    auths.RegisterId = userregisterId;
+                    auths.ReguserId = atr.ReguserId;
+                    auths.LoginType = 4;
+                    authsDao.Adduserauths(auths);
+
                     EmuserSqlMapDao eudao = new EmuserSqlMapDao();
                     Emuser eu = new Emuser();
                     eu.EmUserId = new aers_sys_seedSqlMapDao().GetMaxID("emuser");  //环信对应用户表
@@ -666,9 +692,9 @@ namespace Services {
                     var syncRequest = Client.DefaultSyncRequest;
 
                     var userr = syncRequest.UserCreate(new UserCreateReqeust() {
-                        nickname = string.Concat(eu.EmNickName, this._userName),
+                        nickname = userregisterId,
                         password = eu.EmPassword,
-                        username = string.Concat(eu.EmRegisterId, this._userName),
+                        username = userregisterId,
                     });
 
 
@@ -686,6 +712,7 @@ namespace Services {
                     r.code = 0;
                     UserFirstInfo ur = new UserFirstInfo();
                     ur.RegisterId = userregisterId;  //返回注册Id
+                    ur.ReguserId = atr.ReguserId;
                     //string[] reid = { ur.RegisterId };
                     //string s = Common.PushMsgByAliasId("您已成功注册注册智护", reid, DeviceId);
                     r.body = ur;
@@ -1627,55 +1654,13 @@ namespace Services {
         #endregion
 
         #region 根据经纬度获取医院    需优化  0
-        public RsList<XMLDatatable> GetAddressByLngLat(string lng, string lat) {
-            RsList<XMLDatatable> r = new Services.RsList<XMLDatatable>();
-            if (string.IsNullOrWhiteSpace(lng)) {
-                r.code = 1;
-                r.msg = "经度不能为空";
-                return r;
-            }
-            if (string.IsNullOrWhiteSpace(lat)) {
-                r.code = 1;
-                r.msg = "纬度不能为空";
-                return r;
-            }
+        public RsList<Hospital> GetAddressByLngLat(string lng, string lat) {
+            RsList<Hospital> r = new Services.RsList<Hospital>();
             try {
-                DataTable dataTable = Common.GetAddress(lng, lat, "医院", "2000");
-                if (dataTable == null)  //?
-                {
-                    r.code = 0;
-                    r.msg = "该经纬度未查到医院信息";
-                    r.body = null;
-                    return r;
-                }
-                var GetHospitalList = dataTable.AsEnumerable().Select(t => t.Field<string>("Name")).ToList();  //根据地图去到的医院列表
-
                 HospitalSqlMapDao hdao = new HospitalSqlMapDao();
-                var data = hdao.GethospitalList();  //从数据库中取得医院列表
-                var WeHospitalList = data.Select(o => o.Name).ToList();  //从数据库中取得医院列表
-
-                var dataList = GetHospitalList.Intersect(WeHospitalList).ToList();  //取交集
-
-                DataTable dt = new DataTable();
-                dt.Columns.Add("Name");
-                dt.Columns.Add("HospitalId");
-
-                foreach (var info in data) {
-                    DataRow dr = dt.NewRow();
-                    dr["Name"] = info.Name;
-                    dr["HospitalId"] = info.HospitalId;
-                    dt.Rows.Add(dr);
-                }
-                r.code = 0;
-                List<XMLDatatable> hoss = new List<XMLDatatable>();
-                XMLDatatable hos = new XMLDatatable();
-                hos.Name = "西安交通大学医学院第一附属医院";
-                hos.HospitalId = "hp00000002";
-                hoss.Add(hos);
-                //r.body = ModelConvertHelper<XMLDatatable>.ConvertToModel(dt);
-                r.body = hoss;
+                var data = hdao.GethospitalList().OrderBy(h => h.Name).ToList();
+                r.body = data;
                 return r;
-                //  return ModelConvertHelper<XMLDatatable>.ConvertToModel(dt);
             } catch (Exception) {
                 r.code = 1;
                 r.msg = "获取医院失败";
@@ -2029,7 +2014,7 @@ namespace Services {
                     ufi.DepartmentUserCount = uDao.GetUserrelrecordList().Where(o => o.DepartmentId == ufi.DepartmentId && o.HospitalId == ufi.HospitalId).Count();
 
                     // 查询不良事件账号
-                    var reguser =  uadao.GetUserauthsList().FirstOrDefault(o=>o.LoginType == 4 &&  o.RegisterId== auths.RegisterId);
+                    var reguser = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginType == 4 && o.RegisterId == auths.RegisterId);
                     if (reguser != null) {
                         ufi.ReguserId = reguser.ReguserId;
                     }
@@ -2213,6 +2198,34 @@ namespace Services {
                     ur.Name = urdata.Name;
                     ur.CountryCode = urdata.CountryCode;
                     urdao.Updateuserregister(ur);
+
+                    // 创建不良事件的账号
+                    aers_tbl_registereduserSqlMapDao atrDao = new aers_tbl_registereduserSqlMapDao();
+                    aers_tbl_registereduser atr = new aers_tbl_registereduser();
+                    atr.ReguserId = new aers_sys_seedSqlMapDao().GetMaxID("registereduser");
+                    atr.LoginName = ur.RegisterId;
+                    atr.OperatorDate = DateTime.Now;
+                    atrDao.Insert(atr);
+
+                    aers_tbl_staffSqlMapDao atsDao = new aers_tbl_staffSqlMapDao();
+                    aers_tbl_staff ats = new aers_tbl_staff();
+                    var atsId = new aers_sys_seedSqlMapDao().GetMaxID("staff");
+                    ats.StaffId = atsId;
+                    ats.ReguserId = atr.ReguserId;
+                    ats.OperatorDate = DateTime.Now;
+                    atsDao.Insert(ats);
+
+                    // 给授权表中绑定不良事件的账号
+                    UserauthsSqlMapDao authsDao = new UserauthsSqlMapDao();
+                    var authsId = new aers_sys_seedSqlMapDao().GetMaxID("userauths");
+                    Userauths auths = new Userauths();
+                    auths.AuthsId = authsId;
+                    auths.RegisterId = ur.RegisterId;
+                    auths.ReguserId = atr.ReguserId;
+                    auths.LoginType = 4;
+                    authsDao.Adduserauths(auths);
+
+
                     return GetUserFirstInfoById(ua.RegisterId);
                 }
 
@@ -2280,6 +2293,32 @@ namespace Services {
                     ur.CountryCode = urdata.CountryCode;
                     urdao.Updateuserregister(ur);
 
+                     // 创建不良事件的账号
+                    aers_tbl_registereduserSqlMapDao atrDao = new aers_tbl_registereduserSqlMapDao();
+                    aers_tbl_registereduser atr = new aers_tbl_registereduser();
+                    atr.ReguserId = new aers_sys_seedSqlMapDao().GetMaxID("registereduser");
+                    atr.LoginName = ur.RegisterId;
+                    atr.OperatorDate = DateTime.Now;
+                    atrDao.Insert(atr);
+
+                    aers_tbl_staffSqlMapDao atsDao = new aers_tbl_staffSqlMapDao();
+                    aers_tbl_staff ats = new aers_tbl_staff();
+                    var atsId = new aers_sys_seedSqlMapDao().GetMaxID("staff");
+                    ats.StaffId = atsId;
+                    ats.ReguserId = atr.ReguserId;
+                    ats.OperatorDate = DateTime.Now;
+                    atsDao.Insert(ats);
+
+                    // 给授权表中绑定不良事件的账号
+                    UserauthsSqlMapDao authsDao = new UserauthsSqlMapDao();
+                    var authsId = new aers_sys_seedSqlMapDao().GetMaxID("userauths");
+                    Userauths auths = new Userauths();
+                    auths.AuthsId = authsId;
+                    auths.RegisterId = ur.RegisterId;
+                    auths.ReguserId = atr.ReguserId;
+                    auths.LoginType = 4;
+                    authsDao.Adduserauths(auths);
+
                     return GetUserFirstInfoById(ua.RegisterId);
                 }
             } catch (Exception e) {
@@ -2343,6 +2382,33 @@ namespace Services {
                     ur.Name = urdata.Name;
                     ur.CountryCode = urdata.CountryCode;
                     urdao.Updateuserregister(ur);
+
+
+                    // 创建不良事件的账号
+                    aers_tbl_registereduserSqlMapDao atrDao = new aers_tbl_registereduserSqlMapDao();
+                    aers_tbl_registereduser atr = new aers_tbl_registereduser();
+                    atr.ReguserId = new aers_sys_seedSqlMapDao().GetMaxID("registereduser");
+                    atr.LoginName = ur.RegisterId;
+                    atr.OperatorDate = DateTime.Now;
+                    atrDao.Insert(atr);
+
+                    aers_tbl_staffSqlMapDao atsDao = new aers_tbl_staffSqlMapDao();
+                    aers_tbl_staff ats = new aers_tbl_staff();
+                    var atsId = new aers_sys_seedSqlMapDao().GetMaxID("staff");
+                    ats.StaffId = atsId;
+                    ats.ReguserId = atr.ReguserId;
+                    ats.OperatorDate = DateTime.Now;
+                    atsDao.Insert(ats);
+
+                    // 给授权表中绑定不良事件的账号
+                    UserauthsSqlMapDao authsDao = new UserauthsSqlMapDao();
+                    var authsId = new aers_sys_seedSqlMapDao().GetMaxID("userauths");
+                    Userauths auths = new Userauths();
+                    auths.AuthsId = authsId;
+                    auths.RegisterId = ur.RegisterId;
+                    auths.ReguserId = atr.ReguserId;
+                    auths.LoginType = 4;
+                    authsDao.Adduserauths(auths);
 
                     return GetUserFirstInfoById(ua.RegisterId);
                 }
@@ -2459,7 +2525,8 @@ namespace Services {
                 //return r;
 
                 // GetEnPassword
-                var eid = Common.GetEnPassword(RegisterId);
+                // var eid = Common.GetEnPassword(RegisterId);
+                var eid = RegisterId;
                 var dCode = Common.SaveCodeFile(eid);
                 ViewJsonCommon jc = new ViewJsonCommon();
                 jc.Name = dCode;
@@ -4129,109 +4196,6 @@ namespace Services {
                 return r;
             }
         }
-
-        //public RsModel<ViewGroupList> CreateGroup(List<userregister> model)
-        //{
-
-        //    RsModel<ViewGroupList> r = new Services.RsModel<ViewGroupList>();
-        //    if (string.IsNullOrWhiteSpace(model[0].RegisterId))
-        //    {
-        //        r.code = 1;
-        //        r.msg = "创建人Id不能为空";
-        //        return r;
-        //    }
-        //    if (model.Count < 3)
-        //    {
-        //        r.code = 1;
-        //        r.msg = "三个用户以上才可以创建群";
-        //        return r;
-        //    }
-        //    string OwnerId = model[0].RegisterId; //第一项是创建人Id
-        //    string GroupNickName = "群聊";
-        //    string Desc = OwnerId + "在" + DateTime.Now + "创建的群";
-        //    int MaxCountGroup = 100; //群最大人数
-        //    try
-        //    {
-
-        //        var response = Easemob.Restfull4Net.Client.DefaultSyncRequest.ChatGroupCreate(new CreateChatGroupRequest()
-        //        {
-        //            approval = false,
-        //            desc = Desc,
-        //            groupname = GroupNickName,
-        //            maxusers = MaxCountGroup,
-        //            members = model.Select(o => o.RegisterId).ToArray(),
-        //            owner = OwnerId
-        //        });
-        //        var HXresponse = response;
-        //        GroupinfoSqlMapDao gidao = new GroupinfoSqlMapDao();  //群信息表
-        //        Groupinfo gi = new Groupinfo();                                          // ViewGroupList gi = new ViewGroupList();
-        //        gi.GroupId = new aers_sys_seedSqlMapDao().GetMaxID("groupinfo");
-        //        gi.CreaterId = OwnerId;
-        //        gi.CreateTime = DateTime.Now;
-        //        gi.GroupNickName = GroupNickName;
-        //        gi.Descg = Desc;
-        //        gi.IsFlag = 1;
-        //        gi.MaxGroupCount = MaxCountGroup;
-        //        gi.UserCount = model.Count;
-        //        gi.HXGroupId = HXresponse.data.groupid;  //环信创建的群Id
-        //        gidao.Addgroupinfo(gi);    //群信息表添加
-
-
-        //        ViewGroupList vg = new ViewGroupList();
-        //        vg.CreateTime = gi.CreateTime;
-        //        vg.GroupId = gi.GroupId;
-        //        vg.GroupUserCount = gi.UserCount;
-        //        vg.HXGroupId = gi.HXGroupId;
-        //        vg.HXNickName = gi.GroupNickName;
-
-        //        userregisterSqlMapDao urdao = new userregisterSqlMapDao();
-
-        //        GroupuserSqlMapDao gudao = new GroupuserSqlMapDao();
-        //        Groupuser gu = new Groupuser();
-        //        foreach (var item in model)
-        //        {
-        //            Groupuser gup = new Groupuser();
-        //            gup.GroupUserId = new aers_sys_seedSqlMapDao().GetMaxID("groupuser"); //可优化
-        //            gup.IsFlag = 1;
-        //            gup.RegisterId = item.RegisterId;
-        //            if (gup.RegisterId == OwnerId)
-        //            {
-        //                gup.IsMaster = 1;
-        //            }
-        //            else
-        //            {
-        //                gup.IsMaster = 0;
-        //            }
-        //            gup.GroupId = gi.GroupId;
-        //            gup.HXGroupId = HXresponse.data.groupid;
-        //            gup.JoinTime = DateTime.Now;
-        //            gup.NickName = urdao.GetuserregisterDetail(item.RegisterId).NickName;
-        //            //  gup.NickName = Common.Decode(urdao.GetuserregisterDetail(item.RegisterId).NickName);
-        //            gudao.Addgroupuser(gup);
-        //        }
-        //        var response1 = Easemob.Restfull4Net.Client.DefaultSyncRequest.ChatGroupCreate(new CreateChatGroupRequest()
-        //        {
-        //            approval = false,
-        //            desc = Desc,
-        //            groupname = GroupNickName,
-        //            maxusers = MaxCountGroup,
-        //            members = model.Select(o => o.RegisterId).ToArray(),
-        //            owner = OwnerId
-        //        });
-        //        //string msg = "您已加入群";
-        //        //int i = SendMsgToGroupmember(msg, OwnerId, HXresponse.data.groupid);  //给群发消息
-
-        //        r.code = 0;
-        //        r.body = vg;
-        //        return r;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        r.code = 1;
-        //        r.msg = "创建群失败" + e;
-        //        return r;
-        //    }
-        //}
         #endregion
 
         #region 给群组成员发消息
@@ -4773,6 +4737,9 @@ namespace Services {
 
                 GroupuserSqlMapDao gudao = new GroupuserSqlMapDao();
 
+                var guList = gudao.GetGroupuserList();
+
+
                 List<string> grouplist = new List<string>();
                 foreach (var item in model.groupMemberList) {
                     Groupuser gu = new Groupuser();
@@ -4785,13 +4752,25 @@ namespace Services {
                     gu.NickName = urdata.FirstOrDefault(o => o.RegisterId == item.FriendId).NickName;
                     // gu.NickName = Common.Decode(urdata.FirstOrDefault(o => o.RegisterId == item.FriendId).NickName);
                     gu.RegisterId = item.FriendId;
-                    gudao.Addgroupuser(gu);     //可优化
 
-                    grouplist.Add(item.FriendId);
+                    var exist = guList.FirstOrDefault(o => o.RegisterId == item.FriendId && o.HXGroupId == gi.HXGroupId);
+                    if (exist == null) {
+                        gudao.Addgroupuser(gu);     //可优化
+                        grouplist.Add(item.FriendId);
+
+                    }
+
                 }
                 string[] group = grouplist.ToArray();
+
+                // 操作环信加群
                 var response = Easemob.Restfull4Net.Client.DefaultSyncRequest.ChatGroupMemberAddBatch(gi.HXGroupId, group);
+
                 r.code = 0;
+
+                if (model.groupMemberList.Count() == 1 && grouplist.Count == 0) {
+                    r.code = 2;
+                }
                 return r;
             } catch (Exception e) {
                 r.code = 1;
@@ -6761,6 +6740,94 @@ namespace Services {
 
         #endregion
 
+        /// <summary>
+        /// 护理大会完善信息
+        /// </summary>
+        /// <param name="staffId"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public RsModel<string> MeetingComplete(string registerId, string hospitalId, string duty, int role, string name, string phone) {
+            RsModel<string> r = new RsModel<string>();
 
+            try {
+                // 1. 修改staff表中的操作员信息，绑定所在医院和角色
+                aers_tbl_hospdepSqlMapDao athdDao = new aers_tbl_hospdepSqlMapDao();
+                aers_tbl_hospdep athd = new aers_tbl_hospdep();
+                athd.HospdepId = new aers_sys_seedSqlMapDao().GetMaxID("hospdep");
+                athd.HospId = hospitalId;
+                athdDao.AddHosDep(athd);
+
+                aers_tbl_registereduserSqlMapDao atrDao = new aers_tbl_registereduserSqlMapDao();
+                var atr = atrDao.FindByLoginName(registerId);
+
+                aers_tbl_staffSqlMapDao atsDao = new aers_tbl_staffSqlMapDao();
+                var staff = atsDao.FindByRUid(atr.ReguserId);
+                staff.DepId = athd.HospdepId;
+                staff.Position = duty;           
+                // 0是上报，1是审核
+                if (role == 0) {
+                    staff.RoleState = "146";
+                } else {
+                    staff.RoleState = "145";
+                }
+                atsDao.Update(staff);
+
+                // 2. 修改record表中绑定的医院信息
+                UserrelrecordSqlMapDao urDao = new UserrelrecordSqlMapDao();
+                var record = urDao.GetuserrelrecordDetail(registerId);
+
+                HospitalSqlMapDao hDao = new HospitalSqlMapDao();
+                var hospital = hDao.GethospitalDetail(hospitalId);
+                record.HospitalId = hospitalId;
+                if (hospital != null) {
+                    record.HospitalName = hospital.Name;
+                }
+                urDao.Updateuserrelrecord(record);
+
+                // 3. 修改用户表中的姓名
+                userregisterSqlMapDao dao = new userregisterSqlMapDao();
+                var user = dao.GetuserregisterDetail(registerId);
+                user.Name = name;
+                user.NickName = phone;
+                dao.Updateuserregister(user);
+
+                r.code = 0;    
+            } catch (Exception e) {
+
+                r.code = 1;
+                r.msg = "操作失败！";               
+                throw;
+            }
+            return r;
+        }
+
+        /// <summary>
+        /// 护理大会切换身份，0：护士长，1：护士
+        /// </summary>
+        /// <param name="reguserId"></param>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        public RsModel<string> MeetingChange(string reguserId, int role) {
+            RsModel<string> r = new RsModel<string>();
+            try {
+                aers_tbl_staffSqlMapDao atsDao = new aers_tbl_staffSqlMapDao();
+                aers_tbl_staff staff =  atsDao.FindStaffByRid(reguserId);
+                if (role == 0) {
+                    staff.RoleState = "146";
+                } else {
+                    staff.RoleState = "145";
+                }
+                atsDao.Update(staff);
+
+                r.code = 0;
+            } catch (Exception e) {
+                r.code = 1;
+                r.msg = "切换身份失败";
+                throw;
+            }
+            return r;
+        }
     }
 }
+
+   

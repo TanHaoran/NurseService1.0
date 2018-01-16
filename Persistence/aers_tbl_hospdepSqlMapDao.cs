@@ -46,6 +46,10 @@ namespace Aersysm.Persistence
             }
         }
 
+        public void AddHosDep(aers_tbl_hospdep hosDep) {
+            ExecuteInsert("InsertHosDep", hosDep);
+        }
+
         public int Delete(string HospdepId)
         {
 

@@ -48,7 +48,38 @@
     <select id="aers_tbl_hospdep_FindByHospdepName" parameterClass="String" resultMap="FullResultMap" extends="aers_tbl_hospdep_FindAll">
       WHERE      HospId = #HospId#  and HospdepName=#HospdepName#
     </select>
-    
+
+
+
+    <insert id="InsertHosDep" parameterClass="aers_tbl_hospdep">
+      INSERT INTO aers_tbl_hospdep (
+      HospdepId,
+      BasedepId,
+      HospId,
+      HospdepName,
+      SpellNo,
+      HospdepLogo,
+      DisplayOrder,
+      IsFlag,
+      Remarks,
+      OperatorId,
+      OperatorDate
+
+      ) VALUES (
+      #HospdepId#,
+      #BasedepId#,
+      #HospId#,
+      #HospdepName#,
+      #SpellNo#,
+      #HospdepLogo#,
+      #DisplayOrder#,
+      #IsFlag#,
+      #Remarks#,
+      #OperatorId#,
+      #OperatorDate#
+      )
+    </insert>
+
     <insert id="aers_tbl_hospdep_Insert" parameterClass="aers_tbl_hospdep">
 	    INSERT INTO aers_tbl_hospdep (
                     HospdepId,
@@ -90,7 +121,7 @@
                     Remarks = #Remarks#,
                     OperatorId = #OperatorId#,
                     OperatorDate = #OperatorDate#
-		WHERE
+		WHERE   
 		    (HospdepId = #HospdepId#)
 	</update>
     
