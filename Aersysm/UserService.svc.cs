@@ -320,14 +320,26 @@ namespace Services {
                         if (model.Type == 0) //注册 
                         {
                             // return Sign(model.Phone,model.DeviceId); //170976fa8ab5fc3cda2
-                            return Sign(model.Phone, model.DeviceRegId);
+                            if (model.temp == 1) {
+                                return Sign(model.Phone, model.DeviceRegId, 1);
+                            } else {
+                                return Sign(model.Phone, model.DeviceRegId, 0);
+                            }
                         } else if (model.Type == 1) //验证码登陆 手机号不存在时，进行注册 返回需要的信息
                           {
-                            return Sign(model.Phone, model.DeviceRegId);
+                            if (model.temp == 1) {
+                                return Sign(model.Phone, model.DeviceRegId, 1);
+                            } else {
+                                return Sign(model.Phone, model.DeviceRegId, 0);
+                            }
                             // return LoginByCode(model.Phone);
                         } else if (model.Type == 2) //忘记密码  返回0
                           {
-                            return Sign(model.Phone, model.DeviceRegId);
+                            if (model.temp == 1) {
+                                return Sign(model.Phone, model.DeviceRegId, 1);
+                            } else {
+                                return Sign(model.Phone, model.DeviceRegId, 0);
+                            }
                             // return ForgetPwd();  //和注册一样
                         } else if (model.Type == 3) //验证旧手机号 返回0
                           {
@@ -588,8 +600,10 @@ namespace Services {
 
         #endregion
 
+
+
         #region 注册0
-        public RsModel<UserFirstInfo> Sign(string Phone, string DeviceRegId) {
+        public RsModel<UserFirstInfo> Sign(string Phone, string DeviceRegId, int temp) {
             //  string registerIdd;
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
             userregister user = new userregister();
@@ -672,7 +686,11 @@ namespace Services {
                     Userauths auths = new Userauths();
                     auths.AuthsId = authsId;
                     auths.RegisterId = userregisterId;
-                    auths.ReguserId = atr.ReguserId;
+                    if (temp == 1) {
+                        auths.ReguserId = atr.ReguserId; 
+                    } else {
+                        auths.ReguserId = "ru00000002";
+                    }
                     auths.LoginType = 4;
                     authsDao.Adduserauths(auths);
 
@@ -712,7 +730,12 @@ namespace Services {
                     r.code = 0;
                     UserFirstInfo ur = new UserFirstInfo();
                     ur.RegisterId = userregisterId;  //返回注册Id
-                    ur.ReguserId = atr.ReguserId;
+
+                    if (temp == 1) {
+                        ur.ReguserId = atr.ReguserId;
+                    } else {
+                        ur.ReguserId = "ru00000002";
+                    }
                     //string[] reid = { ur.RegisterId };
                     //string s = Common.PushMsgByAliasId("您已成功注册注册智护", reid, DeviceId);
                     r.body = ur;
@@ -6361,7 +6384,7 @@ namespace Services {
                     result.msg = "手机号已存在";
                     return result;
                 }
-                string registerId = Sign(model.cellphone, "PC后台").body.RegisterId;
+                string registerId = Sign(model.cellphone, "PC后台", 0).body.RegisterId;
 
                 // 更新护士信息
                 model.registerId = registerId;
@@ -6755,6 +6778,7 @@ namespace Services {
                 aers_tbl_hospdep athd = new aers_tbl_hospdep();
                 athd.HospdepId = new aers_sys_seedSqlMapDao().GetMaxID("hospdep");
                 athd.HospId = hospitalId;
+                athd.OperatorDate = DateTime.Now;
                 athdDao.AddHosDep(athd);
 
                 aers_tbl_registereduserSqlMapDao atrDao = new aers_tbl_registereduserSqlMapDao();
@@ -6795,7 +6819,7 @@ namespace Services {
             } catch (Exception e) {
 
                 r.code = 1;
-                r.msg = "操作失败！";               
+                r.msg = "操作失败！" + e;               
                 throw;
             }
             return r;

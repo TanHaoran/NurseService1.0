@@ -26,5 +26,11 @@ namespace Aersysm.Domain
 
         [DataMember]
         public string DeviceRegId { get; set; }   //registration
+
+
+        [DataMember]
+        public int temp { get; set; } 
+
+
     }
 }
