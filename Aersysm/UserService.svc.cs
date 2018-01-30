@@ -567,9 +567,9 @@ namespace Services {
                 var syncRequest = Client.DefaultSyncRequest;
 
                 var userr = syncRequest.UserCreate(new UserCreateReqeust() {
-                    nickname = string.Concat(eu.EmNickName, this._userName),
+                    nickname = userregisterId,
                     password = eu.EmPassword,
-                    username = string.Concat(eu.EmRegisterId, this._userName),
+                    username = userregisterId,
                 });
 
                 // jPush("恭喜您注册成功");  //极光注册成功
@@ -666,9 +666,9 @@ namespace Services {
                     var syncRequest = Client.DefaultSyncRequest;
 
                     var userr = syncRequest.UserCreate(new UserCreateReqeust() {
-                        nickname = string.Concat(eu.EmNickName, this._userName),
+                        nickname = userregisterId,
                         password = eu.EmPassword,
-                        username = string.Concat(eu.EmRegisterId, this._userName),
+                        username = userregisterId,
                     });
 
 
@@ -779,9 +779,9 @@ namespace Services {
             var syncRequest = Client.DefaultSyncRequest;
 
             var userr = syncRequest.UserCreate(new UserCreateReqeust() {
-                nickname = string.Concat(userregisterId, this._userName),
+                nickname = userregisterId,
                 password = "WAJB357",
-                username = string.Concat(userregisterId, this._userName),
+                username = userregisterId,
             });
             return userregisterId;
         }
@@ -2049,9 +2049,9 @@ namespace Services {
                     var syncRequest = Client.DefaultSyncRequest;
 
                     var userr = syncRequest.UserCreate(new UserCreateReqeust() {
-                        nickname = string.Concat(ur.RegisterId, this._userName),
+                        nickname = ur.RegisterId,
                         password = "WAJB357",
-                        username = string.Concat(ur.RegisterId, this._userName),
+                        username = ur.RegisterId,
                     });
 
                     // 创建授权表
