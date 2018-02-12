@@ -622,5 +622,13 @@ namespace Services {
         /// <returns></returns>
         [WebGet(UriTemplate = "GetCreditScore?staffId={staffId}&year={year}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
         RsList<CreditScoreDetail> GetCreditScore(string staffId, int year);
+
+        /// <summary>
+        /// 获取Md5加密值
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [WebGet(UriTemplate = "GetMd5?value={value}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsModel<string> GetMd5(string value);
     }
 }

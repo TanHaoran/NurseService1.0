@@ -104,7 +104,11 @@ namespace Aersysm.Persistence
 
         }
 
-        
+        public void AddHosDep(aers_tbl_hospdep hosDep) {
+            ExecuteInsert("InsertHosDep", hosDep);
+        }
+
+
 
         #region 根据科室编码查询科室名称
         /// <summary>

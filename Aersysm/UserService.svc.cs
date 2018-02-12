@@ -78,7 +78,7 @@ namespace Services {
 
             var userr = syncRequest.UserCreate(new UserCreateReqeust() {
                 nickname = string.Concat("浩然就看见d", this._userName),
-                password = "123456",
+                password = "WAJB357",
                 username = string.Concat("00799944", this._userName),
             });
             return "0";
@@ -568,7 +568,7 @@ namespace Services {
 
                 var userr = syncRequest.UserCreate(new UserCreateReqeust() {
                     nickname = userregisterId,
-                    password = eu.EmPassword,
+                    password = "WAJB357",
                     username = userregisterId,
                 });
 
@@ -634,7 +634,6 @@ namespace Services {
                     UserpracticecertificateSqlMapDao updao = new UserpracticecertificateSqlMapDao();
                     updao.Adduserpracticecertificate(uptf);
 
-
                     Userquacertificate uqtf = new Userquacertificate();      //资格证
                     uqtf.RegisterId = userregisterId;
                     uqtf.DateBirth = Common.StrToDateTime();            //可优化
@@ -643,12 +642,51 @@ namespace Services {
                     UserquacertificateSqlMapDao uqdao = new UserquacertificateSqlMapDao();
                     uqdao.Adduserquacertificate(uqtf);
 
-
                     Userrelrecord ured = new Userrelrecord();     //组织关系表
                     ured.RegisterId = userregisterId;
 
                     UserrelrecordSqlMapDao urdao = new UserrelrecordSqlMapDao();
                     urdao.Adduserrelrecord(ured);
+
+                    // 创建不良事件的账号
+                    aers_tbl_registereduserSqlMapDao atrDao = new aers_tbl_registereduserSqlMapDao();
+                    aers_tbl_registereduser atr = new aers_tbl_registereduser();
+                    atr.ReguserId = new aers_sys_seedSqlMapDao().GetMaxID("registereduser");
+                    atr.IsFlag = 0;
+                    atr.OperatorId = "0000000001";
+                    atr.LoginName = userregisterId;
+                    atr.OperatorDate = DateTime.Now;
+                    atrDao.Insert(atr);
+
+                    aers_tbl_staffSqlMapDao atsDao = new aers_tbl_staffSqlMapDao();
+                    aers_tbl_staff ats = new aers_tbl_staff();
+                    var atsId = new aers_sys_seedSqlMapDao().GetMaxID("staff");
+                    ats.StaffId = atsId;
+                    ats.ReguserId = atr.ReguserId;
+                    ats.OperatorDate = DateTime.Now;
+                    atsDao.Insert(ats);
+
+                    // 给授权表中绑定不良事件的账号
+                    UserauthsSqlMapDao authsDao = new UserauthsSqlMapDao();
+                    var authsId = new aers_sys_seedSqlMapDao().GetMaxID("userauths");
+                    Userauths auths = new Userauths();
+                    auths.AuthsId = authsId;
+                    auths.RegisterId = userregisterId;
+                    auths.ReguserId = atr.ReguserId;
+                    auths.LoginType = 4;
+                    authsDao.Adduserauths(auths);
+
+                    // 完善不良事件上报相关信息
+                    completeEventReportInfo(userregisterId);
+
+                    //环信注册用户单个创建
+                    var syncRequest = Client.DefaultSyncRequest;
+
+                    var userr = syncRequest.UserCreate(new UserCreateReqeust() {
+                        nickname = userregisterId,
+                        password = "WAJB357",
+                        username = userregisterId,
+                    });
 
                     EmuserSqlMapDao eudao = new EmuserSqlMapDao();
                     Emuser eu = new Emuser();
@@ -662,15 +700,6 @@ namespace Services {
                     eu.EmPassword = Common.EMPassword();
                     eu.EmRegisterId = userregisterId;
                     eudao.Addemuser(eu);
-                    //环信注册用户单个创建
-                    var syncRequest = Client.DefaultSyncRequest;
-
-                    var userr = syncRequest.UserCreate(new UserCreateReqeust() {
-                        nickname = userregisterId,
-                        password = eu.EmPassword,
-                        username = userregisterId,
-                    });
-
 
                     //var syncRequest = Client.DefaultSyncRequest;
 
@@ -699,16 +728,54 @@ namespace Services {
         }
         #endregion
 
+        /// <summary>
+        /// 完善不良事件上报信息
+        /// </summary>
+        private void completeEventReportInfo(string registerId) {
+            var hospitalId = "hp00000151";
+            // 1. 修改staff表中的操作员信息，绑定所在医院和角色
+            aers_tbl_hospdepSqlMapDao athdDao = new aers_tbl_hospdepSqlMapDao();
+            aers_tbl_hospdep athd = new aers_tbl_hospdep();
+            athd.HospdepId = new aers_sys_seedSqlMapDao().GetMaxID("hospdep");
+            // 西安市第一医院的医院id:hp00000151
+            athd.HospId = hospitalId;
+            athd.OperatorId = "0000000001";
+            athd.OperatorDate = DateTime.Now;
+            athdDao.AddHosDep(athd);
+
+            aers_tbl_registereduserSqlMapDao atrDao = new aers_tbl_registereduserSqlMapDao();
+            var atr = atrDao.FindByLoginName(registerId);
+
+            aers_tbl_staffSqlMapDao atsDao = new aers_tbl_staffSqlMapDao();
+            var staff = atsDao.FindByRUid(atr.ReguserId);
+            staff.DepId = athd.HospdepId;
+            // 146是上报，145是审核
+            staff.RoleState = "146";
+            atsDao.Update(staff);
+
+            // 2. 修改record表中绑定的医院信息
+            UserrelrecordSqlMapDao urDao = new UserrelrecordSqlMapDao();
+            var record = urDao.GetuserrelrecordDetail(registerId);
+
+            HospitalSqlMapDao hDao = new HospitalSqlMapDao();
+            var hospital = hDao.GethospitalDetail(hospitalId);
+            record.HospitalId = hospitalId;
+            if (hospital != null) {
+                record.HospitalName = hospital.Name;
+            }
+            urDao.Updateuserrelrecord(record);            
+        }
+
         #region  环信注册测试
-        public string HXregiste(Emuser eu) {
+        public string HXregiste(string registerId) {
             // Emuser eu = new Emuser();
             try {
                 var syncRequest = Client.DefaultSyncRequest;
 
                 var userr = syncRequest.UserCreate(new UserCreateReqeust() {
-                    nickname = string.Concat(eu.EmNickName, this._userName),
-                    password = eu.EmPassword,
-                    username = string.Concat(eu.EmRegisterId, this._userName),
+                    nickname = registerId,
+                    password = "WAJB357",
+                    username = registerId,
                 });
                 return "0";
             } catch (Exception e) {
@@ -2029,7 +2096,7 @@ namespace Services {
                     ufi.DepartmentUserCount = uDao.GetUserrelrecordList().Where(o => o.DepartmentId == ufi.DepartmentId && o.HospitalId == ufi.HospitalId).Count();
 
                     // 查询不良事件账号
-                    var reguser =  uadao.GetUserauthsList().FirstOrDefault(o=>o.LoginType == 4 &&  o.RegisterId== auths.RegisterId);
+                    var reguser = uadao.GetUserauthsList().FirstOrDefault(o => o.LoginType == 4 && o.RegisterId == auths.RegisterId);
                     if (reguser != null) {
                         ufi.ReguserId = reguser.ReguserId;
                     }
@@ -2459,7 +2526,8 @@ namespace Services {
                 //return r;
 
                 // GetEnPassword
-                var eid = Common.GetEnPassword(RegisterId);
+                // var eid = Common.GetEnPassword(RegisterId);
+                var eid = RegisterId;
                 var dCode = Common.SaveCodeFile(eid);
                 ViewJsonCommon jc = new ViewJsonCommon();
                 jc.Name = dCode;
@@ -6760,6 +6828,33 @@ namespace Services {
         }
 
         #endregion
+
+        /// <summary>
+        /// 获取Md5加密值
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public RsModel<string> GetMd5(string value) {
+            RsModel<string> result = new RsModel<string>();
+            if (string.IsNullOrWhiteSpace(value)) {
+                result.code = 1;
+                result.msg = "加密值为空";
+                return result;
+            }
+
+            try {
+                var md5Value = Common.UserMd5(value);
+                result.code = 0;
+                result.msg = "加密成功";
+                result.body = md5Value;
+            } catch (Exception e) {
+                result.code = 1;
+                result.msg = "md5加密失败";
+                throw;
+            }
+
+            return result;
+        }
 
 
     }

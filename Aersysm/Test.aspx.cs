@@ -170,8 +170,10 @@ namespace Aersysm
             //var dfsad = dsa;
             //Aers service = new Aers();
             UserService cuserservice = new UserService();
-                
+
             //var result = cuserservice.GetAllToken("123");
+
+            cuserservice.HXregiste("123456789");
             //var d = result;
 
             var dsa = cuserservice.GetCountryCodeAll();
