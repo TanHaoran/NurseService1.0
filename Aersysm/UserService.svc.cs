@@ -320,26 +320,14 @@ namespace Services {
                         if (model.Type == 0) //注册 
                         {
                             // return Sign(model.Phone,model.DeviceId); //170976fa8ab5fc3cda2
-                            if (model.temp == 1) {
-                                return Sign(model.Phone, model.DeviceRegId, 1);
-                            } else {
-                                return Sign(model.Phone, model.DeviceRegId, 0);
-                            }
+                            return Sign(model.Phone, model.DeviceRegId);
                         } else if (model.Type == 1) //验证码登陆 手机号不存在时，进行注册 返回需要的信息
                           {
-                            if (model.temp == 1) {
-                                return Sign(model.Phone, model.DeviceRegId, 1);
-                            } else {
-                                return Sign(model.Phone, model.DeviceRegId, 0);
-                            }
+                            return Sign(model.Phone, model.DeviceRegId);
                             // return LoginByCode(model.Phone);
                         } else if (model.Type == 2) //忘记密码  返回0
                           {
-                            if (model.temp == 1) {
-                                return Sign(model.Phone, model.DeviceRegId, 1);
-                            } else {
-                                return Sign(model.Phone, model.DeviceRegId, 0);
-                            }
+                            return Sign(model.Phone, model.DeviceRegId);
                             // return ForgetPwd();  //和注册一样
                         } else if (model.Type == 3) //验证旧手机号 返回0
                           {
@@ -603,7 +591,7 @@ namespace Services {
 
 
         #region 注册0
-        public RsModel<UserFirstInfo> Sign(string Phone, string DeviceRegId, int temp) {
+        public RsModel<UserFirstInfo> Sign(string Phone, string DeviceRegId) {
             //  string registerIdd;
             RsModel<UserFirstInfo> r = new Services.RsModel<UserFirstInfo>();
             userregister user = new userregister();
@@ -686,11 +674,7 @@ namespace Services {
                     Userauths auths = new Userauths();
                     auths.AuthsId = authsId;
                     auths.RegisterId = userregisterId;
-                    if (temp == 1) {
-                        auths.ReguserId = atr.ReguserId; 
-                    } else {
-                        auths.ReguserId = "ru00000002";
-                    }
+                    auths.ReguserId = atr.ReguserId;
                     auths.LoginType = 4;
                     authsDao.Adduserauths(auths);
 
@@ -731,11 +715,7 @@ namespace Services {
                     UserFirstInfo ur = new UserFirstInfo();
                     ur.RegisterId = userregisterId;  //返回注册Id
 
-                    if (temp == 1) {
-                        ur.ReguserId = atr.ReguserId;
-                    } else {
-                        ur.ReguserId = "ru00000002";
-                    }
+                    ur.ReguserId = atr.ReguserId;
                     //string[] reid = { ur.RegisterId };
                     //string s = Common.PushMsgByAliasId("您已成功注册注册智护", reid, DeviceId);
                     r.body = ur;
@@ -2316,7 +2296,7 @@ namespace Services {
                     ur.CountryCode = urdata.CountryCode;
                     urdao.Updateuserregister(ur);
 
-                     // 创建不良事件的账号
+                    // 创建不良事件的账号
                     aers_tbl_registereduserSqlMapDao atrDao = new aers_tbl_registereduserSqlMapDao();
                     aers_tbl_registereduser atr = new aers_tbl_registereduser();
                     atr.ReguserId = new aers_sys_seedSqlMapDao().GetMaxID("registereduser");
@@ -6384,7 +6364,7 @@ namespace Services {
                     result.msg = "手机号已存在";
                     return result;
                 }
-                string registerId = Sign(model.cellphone, "PC后台", 0).body.RegisterId;
+                string registerId = Sign(model.cellphone, "PC后台").body.RegisterId;
 
                 // 更新护士信息
                 model.registerId = registerId;
@@ -6774,26 +6754,22 @@ namespace Services {
 
             try {
                 // 1. 修改staff表中的操作员信息，绑定所在医院和角色
-                aers_tbl_hospdepSqlMapDao athdDao = new aers_tbl_hospdepSqlMapDao();
-                aers_tbl_hospdep athd = new aers_tbl_hospdep();
-                athd.HospdepId = new aers_sys_seedSqlMapDao().GetMaxID("hospdep");
-                athd.HospId = hospitalId;
-                athd.OperatorDate = DateTime.Now;
-                athdDao.AddHosDep(athd);
+                //aers_tbl_hospdepSqlMapDao athdDao = new aers_tbl_hospdepSqlMapDao();
+                //aers_tbl_hospdep athd = new aers_tbl_hospdep();
+                //athd.HospdepId = new aers_sys_seedSqlMapDao().GetMaxID("hospdep");
+                //athd.HospId = hospitalId;
+                //athd.OperatorDate = DateTime.Now;
+                //athdDao.AddHosDep(athd);
 
                 aers_tbl_registereduserSqlMapDao atrDao = new aers_tbl_registereduserSqlMapDao();
                 var atr = atrDao.FindByLoginName(registerId);
 
                 aers_tbl_staffSqlMapDao atsDao = new aers_tbl_staffSqlMapDao();
                 var staff = atsDao.FindByRUid(atr.ReguserId);
-                staff.DepId = athd.HospdepId;
-                staff.Position = duty;           
-                // 0是上报，1是审核
-                if (role == 0) {
-                    staff.RoleState = "146";
-                } else {
-                    staff.RoleState = "145";
-                }
+                //staff.DepId = athd.HospdepId;
+                staff.Position = duty;
+                // 设置具有上报权限
+                staff.RoleState = "146";
                 atsDao.Update(staff);
 
                 // 2. 修改record表中绑定的医院信息
@@ -6815,11 +6791,11 @@ namespace Services {
                 user.NickName = phone;
                 dao.Updateuserregister(user);
 
-                r.code = 0;    
+                r.code = 0;
             } catch (Exception e) {
 
                 r.code = 1;
-                r.msg = "操作失败！" + e;               
+                r.msg = "操作失败！" + e;
                 throw;
             }
             return r;
@@ -6835,7 +6811,7 @@ namespace Services {
             RsModel<string> r = new RsModel<string>();
             try {
                 aers_tbl_staffSqlMapDao atsDao = new aers_tbl_staffSqlMapDao();
-                aers_tbl_staff staff =  atsDao.FindStaffByRid(reguserId);
+                aers_tbl_staff staff = atsDao.FindStaffByRid(reguserId);
                 if (role == 0) {
                     staff.RoleState = "146";
                 } else {
@@ -6851,7 +6827,35 @@ namespace Services {
             }
             return r;
         }
+
+        /// <summary>
+        /// 获取Md5加密值
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public RsModel<string> GetMd5(string value) {
+            RsModel<string> result = new RsModel<string>();
+            if (string.IsNullOrWhiteSpace(value)) {
+                result.code = 1;
+                result.msg = "加密值为空";
+                return result;
+            }
+
+            try {
+                var md5Value = Common.UserMd5(value);
+                result.code = 0;
+                result.msg = "加密成功";
+                result.body = md5Value;
+            } catch (Exception e) {
+                result.code = 1;
+                result.msg = "md5加密失败";
+                throw;
+            }
+
+            return result;
+        }
+
     }
 }
 
-   
+

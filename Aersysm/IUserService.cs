@@ -638,5 +638,13 @@ namespace Services {
         /// <returns></returns>
         [WebGet(UriTemplate = "MeetingChange?reguserId={reguserId}&role={role}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
         RsModel<string> MeetingChange(string reguserId, int role);
+
+        /// <summary>
+        /// 获取Md5加密值
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [WebGet(UriTemplate = "GetMd5?value={value}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        RsModel<string> GetMd5(string value);
     }
 }
